@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>JARVIS — INFINITY™ PRO</title>
+    <title>JARVIS — INFINITY™ 1000x GLOBAL</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Rajdhani:wght@400;600&display=swap" rel="stylesheet">
     <style>
-        :root { --main: #00aaff; --accent: #00eeff; --bg: #020810; --panel: rgba(4, 15, 30, 0.95); }
+        :root { --main: #00aaff; --accent: #00eeff; --bg: #020810; --panel: rgba(4, 15, 30, 0.96); }
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         body { background: var(--bg); color: #c0e8ff; font-family: 'Rajdhani', sans-serif; overflow: hidden; height: 100vh; width: 100vw; touch-action: none; }
 
@@ -19,16 +19,16 @@
         #app { opacity: 0; height: 100%; display: flex; flex-direction: column; transition: 1s; }
         header { padding: 10px 20px; display: flex; justify-content: space-between; align-items: center; background: rgba(2,8,16,0.8); border-bottom: 1px solid rgba(0,170,255,0.1); z-index: 10; }
 
-        /* DRAGGABLE PANELS */
+        /* SÜRÜKLENEBİLİR PANELLER */
         .draggable {
-            position: absolute; width: 90%; max-width: 380px;
+            position: absolute; width: 92%; max-width: 400px;
             background: var(--panel); border: 1px solid var(--main);
             border-radius: 20px; padding: 20px; z-index: 500;
-            backdrop-filter: blur(20px); box-shadow: 0 0 30px #000;
+            backdrop-filter: blur(25px); box-shadow: 0 0 40px #000;
             cursor: move; touch-action: none; display: none;
         }
-        .panel-header { display: flex; justify-content: space-between; margin-bottom: 10px; border-bottom: 1px solid rgba(0,170,255,0.2); padding-bottom: 5px; pointer-events: none; }
-        .close-btn { pointer-events: auto; cursor: pointer; color: var(--main); font-weight: bold; }
+        .panel-header { display: flex; justify-content: space-between; margin-bottom: 12px; border-bottom: 1px solid rgba(0,170,255,0.2); padding-bottom: 8px; pointer-events: none; }
+        .close-btn { pointer-events: auto; cursor: pointer; color: var(--main); font-weight: bold; font-size: 20px; }
 
         /* MAIN UI */
         .main-content { flex: 1; position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; }
@@ -36,12 +36,13 @@
         .listening { animation: pulse 0.5s infinite alternate; border-color: var(--accent); }
         @keyframes pulse { to { transform: scale(1.1); box-shadow: 0 0 50px var(--accent); } }
 
-        #news-panel { width: 92%; height: 160px; background: var(--panel); border-radius: 20px; padding: 15px; overflow-y: auto; border: 1px solid var(--main); margin-top: 20px; }
-        .news-card { font-size: 13px; margin-bottom: 10px; padding: 10px; background: rgba(0,170,255,0.05); border-radius: 12px; border-left: 4px solid var(--main); }
+        /* HABER PANELİ */
+        #news-panel { width: 92%; height: 200px; background: var(--panel); border-radius: 22px; padding: 18px; overflow-y: auto; border: 1px solid var(--main); margin-top: 25px; }
+        .news-card { font-size: 13px; margin-bottom: 10px; padding: 12px; background: rgba(0,170,255,0.06); border-radius: 14px; border-left: 4px solid var(--main); }
 
-        /* CONTROLS */
+        /* KONTROLLER */
         .controls { position: fixed; bottom: 15px; right: 15px; display: flex; flex-direction: column; gap: 8px; z-index: 1000; }
-        .switch-wrap { display: flex; align-items: center; justify-content: space-between; gap: 10px; background: var(--panel); padding: 10px 15px; border-radius: 20px; border: 1px solid var(--main); min-width: 150px; font-size: 11px; }
+        .switch-wrap { display: flex; align-items: center; justify-content: space-between; gap: 10px; background: var(--panel); padding: 10px 15px; border-radius: 20px; border: 1px solid var(--main); min-width: 160px; font-size: 11px; }
         .switch { position: relative; width: 38px; height: 20px; }
         .switch input { opacity: 0; width: 0; height: 0; }
         .slider { position: absolute; cursor: pointer; inset: 0; background: #222; border-radius: 34px; transition: .4s; }
@@ -49,7 +50,10 @@
         input:checked + .slider { background: var(--main); }
         input:checked + .slider:before { transform: translateX(18px); }
 
-        #chat-input { width: 100%; background: rgba(0,0,0,0.4); border: 1px solid var(--main); color: white; padding: 12px; border-radius: 12px; outline: none; margin-top: 10px; }
+        #chat-input { width: 100%; background: rgba(0,0,0,0.5); border: 1px solid var(--main); color: white; padding: 12px; border-radius: 12px; outline: none; margin-top: 10px; font-family: 'Rajdhani'; }
+
+        .stats { display: flex; gap: 10px; width: 92%; margin-bottom: 10px; }
+        .stat-box { flex: 1; background: var(--panel); padding: 12px; border-radius: 18px; text-align: center; border: 1px solid var(--main); }
     </style>
 </head>
 <body>
@@ -60,19 +64,24 @@
 
     <div id="app">
         <header>
-            <div style="font-family:'Orbitron'; font-size:16px; color:var(--main); letter-spacing:2px;">JARVIS PRO</div>
+            <div style="font-family:'Orbitron'; font-size:16px; color:var(--main); letter-spacing:2px; font-weight:bold;">JARVIS GLOBAL 1000x</div>
             <div id="clock" style="font-family:'Orbitron'; color:var(--accent);">00:00</div>
         </header>
 
         <div class="main-content">
-            <div id="transcript-area" class="draggable" style="top: 80px; left: 10px;">
-                <div class="panel-header"><span>ALTYAZI</span><span class="close-btn" onclick="closeBox('transcript-area')">✖</span></div>
-                <p id="transcript-text" style="font-size:15px; color:var(--accent); line-height:1.5;">Efendim, komutlarınızı bekliyorum.</p>
+            <div class="stats">
+                <div class="stat-box">ENERJİ<b id="bat" style="display:block; color:var(--accent);">--%</b></div>
+                <div class="stat-box">DURUM<b id="status-label" style="display:block; color:var(--accent);">BAĞLI</b></div>
             </div>
 
-            <div id="input-area" class="draggable" style="top: 240px; left: 10px;">
-                <div class="panel-header"><span>KLAVYE GİRİŞİ</span><span class="close-btn" onclick="closeBox('input-area')">✖</span></div>
-                <input type="text" id="chat-input" placeholder="Emredin..." onkeypress="handleChat(event)">
+            <div id="transcript-area" class="draggable" style="top: 100px; left: 15px;">
+                <div class="panel-header"><span>TRANSCRIPT</span><span class="close-btn" onclick="closeBox('transcript-area')">✖</span></div>
+                <p id="transcript-text" style="font-size:15px; color:var(--accent); line-height:1.6;">Sistem belleği 1000 kayıtla yüklendi.</p>
+            </div>
+
+            <div id="input-area" class="draggable" style="top: 260px; left: 15px;">
+                <div class="panel-header"><span>METNE GEÇİR</span><span class="close-btn" onclick="closeBox('input-area')">✖</span></div>
+                <input type="text" id="chat-input" placeholder="Emredin Efendim..." onkeypress="handleChat(event)">
             </div>
 
             <div class="orb-btn" id="main-orb" onclick="toggleMic()">
@@ -80,6 +89,7 @@
             </div>
 
             <div id="news-panel">
+                <p style="font-size:10px; color:var(--main); margin-bottom:12px; letter-spacing:3px; font-weight:bold;">AKTİF BELLEK ANALİZİ</p>
                 <div id="news-list"></div>
             </div>
         </div>
@@ -92,11 +102,12 @@
 
     <script>
         let isListening = false;
+        let batLevel = 100;
         let newsDatabase = [];
+        let selectedNews = [];
         let newsIndex = 0;
         const rec = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
         rec.lang = 'tr-TR';
-        rec.continuous = false;
 
         setTimeout(() => { 
             document.getElementById('intro').style.opacity = '0';
@@ -105,20 +116,30 @@
 
         function init() {
             setInterval(() => document.getElementById('clock').innerText = new Date().toLocaleTimeString('tr-TR', {hour:'2-digit', minute:'2-digit'}), 1000);
-            createNews();
+            create1000News();
+            updateBattery();
             makeDraggable(document.getElementById("transcript-area"));
             makeDraggable(document.getElementById("input-area"));
         }
 
-        function createNews() {
-            const topics = ["Spor", "Ekonomi", "Teknoloji", "Dünya", "Bilim"];
-            for(let i=1; i<=100; i++) {
-                newsDatabase.push(`${topics[i%5]} Gündemi: Kayıt No ${i}. Önemli gelişmeler yaşanıyor.`);
+        function create1000News() {
+            const subs = ["Ekonomi", "Borsa", "Transfer", "Yapay Zeka", "Uzay", "Teknoloji", "Milli Takım", "NASA", "Bilim", "Dünya"];
+            const actions = ["yeni bir rekor kırdı.", "kritik bir eşiği geçti.", "beklentileri alt üst etti.", "devrim niteliğinde bir buluş duyurdu.", "transfer görüşmelerine başladı.", "tarihi bir açıklama yaptı.", "yeni nesil sistemini tanıttı.", "tüm dengeleri değiştirdi."];
+            
+            for(let i=1; i<=1000; i++) {
+                let s = subs[Math.floor(Math.random()*subs.length)];
+                let a = actions[Math.floor(Math.random()*actions.length)];
+                newsDatabase.push(`${s} Gündemi: ${s} alanında ${a} (#${i})`);
             }
-            document.getElementById('news-list').innerHTML = newsDatabase.slice(0,30).map(n => `<div class="news-card">${n}</div>`).join('');
+            selectedNews = newsDatabase.sort(() => 0.5 - Math.random()).slice(0, 100);
+            document.getElementById('news-list').innerHTML = selectedNews.slice(0,30).map(n => `<div class="news-card">${n}</div>`).join('');
         }
 
-        function closeBox(id) { document.getElementById(id).style.display = 'none'; }
+        function closeBox(id) { 
+            document.getElementById(id).style.display = 'none';
+            if(id==='input-area' || id==='transcript-area') document.getElementById('panel-switch').checked = false;
+        }
+        
         function syncPanels() {
             const check = document.getElementById('panel-switch').checked;
             document.getElementById('transcript-area').style.display = check ? 'block' : 'none';
@@ -131,62 +152,79 @@
         rec.onend = () => { isListening=false; document.getElementById('main-orb').classList.remove('listening'); };
         rec.onresult = (e) => processJarvis(e.results[e.results.length-1][0].transcript.toLowerCase());
 
+        async function updateBattery() {
+            if (navigator.getBattery) {
+                const b = await navigator.getBattery();
+                const up = () => {
+                    batLevel = Math.round(b.level * 100);
+                    document.getElementById('bat').innerText = `%${batLevel}`;
+                    updateTheme(batLevel);
+                };
+                up(); b.onlevelchange = up;
+            }
+        }
+
+        function updateTheme(level) {
+            const root = document.documentElement;
+            if(level <= 20) root.style.setProperty('--main', '#ff4444');
+            else if(level <= 50) root.style.setProperty('--main', '#00ff88');
+            else root.style.setProperty('--main', '#00aaff');
+        }
+
         function processJarvis(msg) {
             let res = "";
+            const math = msg.match(/(\d+)\s*(artı|eksi|çarpı|bölü|\+|\-|\*|\/)\s*(\d+)/);
 
-            // --- HABER OKUMA IF BLOĞU ---
             if (msg.includes("bugün ne oldu") || msg.includes("haberi oku") || msg.includes("haberleri oku")) {
                 newsIndex = 0;
-                let firstBatch = newsDatabase.slice(0, 5);
-                res = "Efendim, bugün öne çıkan haberler şunlar: " + firstBatch.join(". ") + ". Devam et derseniz okumaya devam ederim.";
+                let batch = selectedNews.slice(0, 5);
+                res = "Efendim, bugünün özeti: " + batch.map((h,i)=>`${i+1}. haber: ${h}`).join(". ") + ". Devam etmemi ister misiniz?";
                 newsIndex = 5;
             } 
-            else if (msg.includes("devam et") || msg.includes("diğerlerini oku")) {
-                let nextBatch = newsDatabase.slice(newsIndex, newsIndex + 5);
-                if(nextBatch.length > 0) {
-                    res = "Devam ediyorum: " + nextBatch.join(". ");
+            else if (msg.includes("devam et")) {
+                let batch = selectedNews.slice(newsIndex, newsIndex + 5);
+                if(batch.length > 0) {
+                    res = "Haberlere devam ediyorum: " + batch.map((h,i)=>`${i+1}. haber: ${h}`).join(". ");
                     newsIndex += 5;
-                } else {
-                    res = "Tüm haberler bitti Efendim.";
-                }
+                } else res = "Tüm haberler bitti Efendim.";
             }
-            else if (msg.includes("selam") || msg.includes("nasılsın")) {
-                res = "İyiyim Efendim, sistemi sizin için optimize ettim. Haberleri okumamı ister misiniz?";
+            else if (msg.match(/([1-5])\.(?: haber|haberi)/)) {
+                let num = parseInt(msg.match(/([1-5])/)[0]);
+                let batch = selectedNews.slice(newsIndex-5, newsIndex);
+                res = batch[num-1] ? `${num}. haberi tekrar ediyorum: ${batch[num-1]}` : "O numaralı bir haber grupta bulunmuyor.";
             }
-            else {
-                res = "Sizi dinliyorum Efendim.";
+            else if (math) {
+                let n1 = parseFloat(math[1]), op = math[2], n2 = parseFloat(math[3]), ans = 0;
+                if(op.includes("artı") || op==="+") ans = n1 + n2;
+                else if(op.includes("eksi") || op==="-") ans = n1 - n2;
+                else if(op.includes("çarpı") || op==="*") ans = n1 * n2;
+                else if(op.includes("bölü") || op==="/") ans = n1 / n2;
+                res = `İşlemin sonucu ${ans} Efendim.`;
             }
+            else if (msg.includes("nasılsın") || msg.includes("selam")) {
+                res = `İyiyim Efendim. Saat ${new Date().getHours()}:${new Date().getMinutes()}. Şarjınız %${batLevel}.`;
+            } else res = "Sizi dinliyorum Efendim.";
 
             speak(res);
         }
 
         function speak(t) {
-            // Yazılı olarak göster
             document.getElementById('transcript-area').style.display = 'block';
             document.getElementById('panel-switch').checked = true;
             document.getElementById('transcript-text').innerText = t;
-            
-            // Sesli olarak oku
             if(document.getElementById('voice-switch').checked) {
-                const u = new SpeechSynthesisUtterance(t); 
-                u.lang='tr-TR'; 
-                u.rate = 1.0;
-                window.speechSynthesis.speak(u);
+                const u = new SpeechSynthesisUtterance(t); u.lang='tr-TR'; window.speechSynthesis.speak(u);
             }
         }
 
-        // --- GELİŞMİŞ SÜRÜKLE BIRAK (MOBİL + PC) ---
         function makeDraggable(el) {
             let posX = 0, posY = 0, startX = 0, startY = 0;
             el.addEventListener('mousedown', start);
             el.addEventListener('touchstart', start, {passive: false});
 
             function start(e) {
-                if(e.type === 'touchstart') {
-                    startX = e.touches[0].clientX; startY = e.touches[0].clientY;
-                } else {
-                    startX = e.clientX; startY = e.clientY;
-                }
+                if(e.type === 'touchstart') { startX = e.touches[0].clientX; startY = e.touches[0].clientY; }
+                else { startX = e.clientX; startY = e.clientY; }
                 document.addEventListener('mousemove', move);
                 document.addEventListener('touchmove', move, {passive: false});
                 document.addEventListener('mouseup', end);
@@ -194,14 +232,11 @@
             }
 
             function move(e) {
-                let currentX, currentY;
-                if(e.type === 'touchmove') {
-                    currentX = e.touches[0].clientX; currentY = e.touches[0].clientY;
-                } else {
-                    currentX = e.clientX; currentY = e.clientY;
-                }
-                posX = startX - currentX; posY = startY - currentY;
-                startX = currentX; startY = currentY;
+                let curX, curY;
+                if(e.type === 'touchmove') { curX = e.touches[0].clientX; curY = e.touches[0].clientY; }
+                else { curX = e.clientX; curY = e.clientY; }
+                posX = startX - curX; posY = startY - curY;
+                startX = curX; startY = curY;
                 el.style.top = (el.offsetTop - posY) + "px";
                 el.style.left = (el.offsetLeft - posX) + "px";
             }
