@@ -3,104 +3,74 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>JARVIS — INFINITY™ ENERGY</title>
+    <title>JARVIS — INFINITY™ PRO</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Rajdhani:wght@400;600&display=swap" rel="stylesheet">
     <style>
         :root {
-            /* Dinamik Değişecek Renkler */
             --main-color: #00aaff;
             --accent-color: #00eeff;
             --bg: #020810;
-            --panel: rgba(4, 15, 30, 0.9);
-            --r-lg: 30px;
-            --r-md: 20px;
+            --panel: rgba(4, 15, 30, 0.95);
+            --r-lg: 28px;
+            --r-md: 18px;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; transition: color 0.5s, border-color 0.5s, box-shadow 0.5s; }
-        body { 
-            background: var(--bg); 
-            color: #c0e8ff; 
-            font-family: 'Rajdhani', sans-serif; 
-            overflow: hidden; 
-            height: 100vh;
-            /* Arka planda hafif renk dalgalanması */
-            animation: bgGlow 8s infinite alternate;
-        }
-
-        @keyframes bgGlow {
-            from { background: radial-gradient(circle at center, rgba(0, 170, 255, 0.05) 0%, #020810 100%); }
-            to { background: radial-gradient(circle at center, rgba(0, 170, 255, 0.1) 0%, #020810 100%); }
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; transition: all 0.4s ease; }
+        body { background: var(--bg); color: #c0e8ff; font-family: 'Rajdhani', sans-serif; overflow: hidden; height: 100vh; }
 
         /* GİRİŞ EKRANI */
         #intro {
             position: fixed; inset: 0; z-index: 9999; background: #000;
             display: flex; align-items: center; justify-content: center; flex-direction: column;
-            transition: opacity 1.5s ease;
+            transition: opacity 1s ease;
         }
-        .inf-logo {
-            width: 200px; height: 100px; stroke: var(--main-color); stroke-width: 2.5; fill: none;
-            filter: drop-shadow(0 0 20px var(--main-color)); animation: draw 3s infinite alternate;
-        }
-        @keyframes draw { 0% { stroke-dasharray: 0 500; } 100% { stroke-dasharray: 500 0; } }
+        .inf-logo { width: 180px; stroke: var(--main-color); stroke-width: 2.5; fill: none; animation: draw 3s infinite alternate; }
+        @keyframes draw { 0% { stroke-dasharray: 0 500; } 100% { stroke-dasharray: 500 0; filter: drop-shadow(0 0 30px var(--main-color)); } }
 
-        /* ANA PANEL */
-        #app { opacity: 0; transition: 1.5s; height: 100%; display: flex; flex-direction: column; }
+        /* ANA UYGULAMA */
+        #app { opacity: 0; height: 100%; display: flex; flex-direction: column; }
         header { 
             padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; 
-            background: rgba(2,8,16,0.6); backdrop-filter: blur(15px); border-bottom: 1px solid rgba(0, 170, 255, 0.1);
+            background: rgba(2,8,16,0.8); backdrop-filter: blur(10px); border-bottom: 1px solid rgba(0, 170, 255, 0.1);
         }
 
-        .content { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: space-between; padding: 10px; position: relative; }
+        /* YAN MENÜ (DRAWER) */
+        #drawer {
+            position: fixed; top: 0; left: -300px; width: 280px; height: 100%;
+            background: var(--panel); z-index: 2000; padding: 40px 20px;
+            border-right: 1px solid var(--main-color); box-shadow: 10px 0 30px rgba(0,0,0,0.5);
+        }
+        .drawer-open { left: 0 !important; }
+        .menu-item {
+            padding: 15px; margin-bottom: 10px; border-radius: var(--r-md);
+            background: rgba(0, 170, 255, 0.1); cursor: pointer; border: 1px solid transparent;
+        }
+        .menu-item:hover { border-color: var(--main-color); background: rgba(0, 170, 255, 0.2); }
 
-        /* JARVIS DAİRE (DALGALANAN TEMA) */
+        /* METİN ALANI (KÖŞELERİ YUMUŞAK) */
+        #transcript-area {
+            position: absolute; top: 80px; width: 90%; max-width: 500px;
+            background: rgba(0,0,0,0.8); border: 1px solid var(--main-color);
+            border-radius: var(--r-lg); padding: 20px; display: none;
+            z-index: 500; backdrop-filter: blur(15px); max-height: 40%; overflow-y: auto;
+        }
+
+        /* JARVIS ORB */
         .orb-btn {
-            width: 150px; height: 150px; border-radius: 50%; border: 2px solid var(--main-color);
-            cursor: pointer; display: flex; align-items: center; justify-content: center;
-            box-shadow: 0 0 20px var(--main-color);
-            animation: themePulse 4s infinite alternate; /* Renk dalgalanması */
+            width: 140px; height: 140px; border-radius: 50%; border: 2px solid var(--main-color);
+            margin: 20px auto; display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 0 20px var(--main-color); cursor: pointer;
         }
-        @keyframes themePulse {
-            0% { box-shadow: 0 0 10px var(--main-color); filter: brightness(1); }
-            100% { box-shadow: 0 0 35px var(--accent-color); filter: brightness(1.3); }
-        }
+        .listening { animation: pulse 0.5s infinite alternate; border-color: var(--accent-color); }
+        @keyframes pulse { to { transform: scale(1.1); box-shadow: 0 0 40px var(--accent-color); } }
 
-        .listening { animation: orbWave 0.5s infinite alternate !important; border-color: var(--accent-color) !important; }
-        @keyframes orbWave { to { transform: scale(1.1); box-shadow: 0 0 50px var(--accent-color); } }
+        /* DİĞERLERİ */
+        .stats { display: flex; gap: 10px; width: 90%; margin: 10px auto; }
+        .stat-card { flex: 1; background: var(--panel); padding: 12px; border-radius: var(--r-md); text-align: center; border: 1px solid var(--main-color); }
+        #news-panel { width: 90%; height: 150px; margin: 10px auto; background: var(--panel); border-radius: var(--r-md); padding: 15px; overflow-y: auto; border: 1px solid var(--main-color); }
+        .news-card { font-size: 13px; margin-bottom: 8px; border-left: 3px solid var(--main-color); padding-left: 8px; }
 
-        /* ALTYAZI */
-        #jarvis-subtitle {
-            width: 90%; background: rgba(0, 0, 0, 0.3); border-radius: 15px;
-            padding: 12px; text-align: center; font-size: 14px; color: var(--accent-color);
-            margin: 10px 0; border: 1px solid var(--main-color);
-            min-height: 45px; display: flex; align-items: center; justify-content: center;
-        }
-
-        /* HABERLER */
-        #news-panel {
-            width: 95%; max-width: 500px; height: 140px; background: var(--panel); 
-            border-radius: var(--r-md); padding: 15px; border: 1px solid var(--main-color);
-            overflow-y: auto; margin-bottom: 65px;
-        }
-        .news-card { font-size: 13px; margin-bottom: 8px; padding: 10px; background: rgba(0, 0, 0, 0.2); border-radius: 12px; border-left: 3px solid var(--main-color); }
-
-        /* METİN GİRİŞİ */
-        #text-trigger {
-            position: fixed; bottom: 20px; right: 20px; width: 55px; height: 55px; border-radius: 50%;
-            background: var(--main-color); color: #000; display: flex; align-items: center; justify-content: center;
-            cursor: pointer; box-shadow: 0 0 15px var(--main-color); z-index: 1000; font-size: 24px;
-        }
-        #chat-input-container {
-            position: fixed; bottom: 85px; right: 20px; width: 280px; background: var(--bg);
-            padding: 15px; border-radius: var(--r-md); border: 1px solid var(--main-color); display: none; z-index: 1000;
-        }
-        #chat-input { width: 100%; background: #000; border: 1px solid var(--main-color); color: white; padding: 10px; border-radius: 10px; outline: none; }
-
-        .stats-row { display: flex; gap: 10px; width: 95%; margin-top: 5px; }
-        .stat-item { flex: 1; background: var(--panel); padding: 10px; border-radius: var(--r-md); text-align: center; border: 1px solid var(--main-color); }
-        .stat-item b { display: block; color: var(--accent-color); font-family: 'Orbitron'; font-size: 16px; }
-
-        footer { padding: 10px; text-align: center; font-size: 9px; opacity: 0.5; font-family: 'Orbitron'; letter-spacing: 2px; }
+        footer { padding: 10px; text-align: center; font-size: 10px; opacity: 0.5; font-family: 'Orbitron'; }
     </style>
 </head>
 <body>
@@ -110,34 +80,40 @@
         <div style="margin-top:15px; font-family:'Orbitron'; color:var(--main-color); letter-spacing:5px;">INFINITY TM</div>
     </div>
 
+    <div id="drawer">
+        <h3 style="font-family:'Orbitron'; margin-bottom:20px; border-bottom:1px solid var(--main-color);">KONTROL PANELİ</h3>
+        <div class="menu-item" onclick="toggleTranscript()">📝 Metne Dök</div>
+        <div class="menu-item" onclick="location.reload()">🔄 Sistemi Yenile</div>
+        <div style="margin-top:40px; font-size:12px; color:rgba(255,255,255,0.4);">
+            GitHub: cagriatav8-sudo<br>Gmail: cagriatav8@gmail.com
+        </div>
+    </div>
+
     <div id="app">
         <header>
-            <div style="font-size:20px; color:var(--main-color);">☰</div>
-            <div style="font-family:'Orbitron'; color:var(--main-color); letter-spacing:3px;">JARVIS</div>
-            <div id="clock" style="font-family:'Orbitron'; color:var(--accent-color);">00:00</div>
+            <div onclick="toggleDrawer()" style="cursor:pointer; font-size:24px; color:var(--main-color);">☰</div>
+            <div style="font-family:'Orbitron'; letter-spacing:3px;">JARVIS</div>
+            <div id="clock">00:00</div>
         </header>
 
-        <div class="content">
-            <div class="stats-row">
-                <div class="stat-item">DURUM<b id="status-label">STABİL</b></div>
-                <div class="stat-item">ŞARJ<b id="bat">--%</b></div>
+        <div style="flex:1; display:flex; flex-direction:column; align-items:center; position:relative;">
+            <div class="stats">
+                <div class="stat-card">DURUM<b id="status-label">BAĞLI</b></div>
+                <div class="stat-card">ŞARJ<b id="bat">--%</b></div>
+            </div>
+
+            <div id="transcript-area">
+                <p id="transcript-text" style="line-height:1.6; color:var(--accent-color);">Konuşmalar burada metne dökülecek...</p>
             </div>
 
             <div class="orb-btn" id="main-orb" onclick="toggleMic()">
-                <div style="width:90px; height:90px; border-radius:50%; background:radial-gradient(circle, var(--main-color) 0%, transparent 70%); opacity:0.4;"></div>
+                <div style="width:80px; height:80px; border-radius:50%; background:radial-gradient(circle, var(--main-color) 0%, transparent 70%); opacity:0.5;"></div>
             </div>
-
-            <div id="jarvis-subtitle">Sisteme bağlanılıyor...</div>
 
             <div id="news-panel">
-                <p style="font-size:10px; color:var(--main-color); margin-bottom:10px; letter-spacing:2px; font-weight:bold;">SON GELİŞMELER</p>
-                <div id="news-list">Senkronize ediliyor...</div>
+                <p style="font-size:10px; color:var(--main-color); margin-bottom:10px; letter-spacing:2px;">GÜNDEM ANALİZİ</p>
+                <div id="news-list">Veriler işleniyor...</div>
             </div>
-        </div>
-
-        <div id="text-trigger" onclick="toggleChat()">✎</div>
-        <div id="chat-input-container">
-            <input type="text" id="chat-input" placeholder="JARVIS'e yazın..." onkeypress="handleChat(event)">
         </div>
 
         <footer>WITH İNFİNİTY TM FROM ÇAĞRI ATAV</footer>
@@ -146,7 +122,6 @@
     <script>
         let isListening = false;
         let batLevel = 100;
-        let isCharging = false;
         const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
         recognition.lang = 'tr-TR';
 
@@ -167,78 +142,48 @@
 
         function updateClock() {
             setInterval(() => {
-                document.getElementById('clock').innerText = new Date().toLocaleTimeString('tr-TR', {hour: '2-digit', minute:'2-digit'});
+                document.getElementById('clock').innerText = new Date().toLocaleTimeString('tr-TR', {hour:'2-digit', minute:'2-digit'});
             }, 1000);
         }
 
-        // TEMA RENGİNİ BATARYAYA GÖRE DEĞİŞTİR
-        function updateTheme(level) {
-            const root = document.documentElement;
-            const statusLabel = document.getElementById('status-label');
-            
-            if (level <= 20) {
-                // KIRMIZI TEMA
-                root.style.setProperty('--main-color', '#ff4444');
-                root.style.setProperty('--accent-color', '#ff8888');
-                statusLabel.innerText = "KRİTİK";
-                statusLabel.style.color = "#ff4444";
-            } else if (level <= 50) {
-                // YEŞİL TEMA
-                root.style.setProperty('--main-color', '#00ff88');
-                root.style.setProperty('--accent-color', '#aaffdd');
-                statusLabel.innerText = "UYARI";
-                statusLabel.style.color = "#00ff88";
-            } else {
-                // MAVİ TEMA
-                root.style.setProperty('--main-color', '#00aaff');
-                root.style.setProperty('--accent-color', '#00eeff');
-                statusLabel.innerText = "STABİL";
-                statusLabel.style.color = "#00aaff";
-            }
+        function toggleDrawer() { document.getElementById('drawer').classList.toggle('drawer-open'); }
+
+        function toggleTranscript() {
+            const area = document.getElementById('transcript-area');
+            area.style.display = area.style.display === 'block' ? 'none' : 'block';
+            toggleDrawer();
         }
 
         async function updateBattery() {
             if (navigator.getBattery) {
-                const battery = await navigator.getBattery();
-                const update = () => {
-                    batLevel = Math.round(battery.level * 100);
-                    isCharging = battery.charging;
+                const b = await navigator.getBattery();
+                const up = () => {
+                    batLevel = Math.round(b.level * 100);
                     document.getElementById('bat').innerText = `%${batLevel}`;
-                    updateTheme(batLevel); // Rengi güncelle
+                    updateTheme(batLevel);
                 };
-                update();
-                battery.onlevelchange = update;
-                battery.onchargingchange = update;
+                up(); b.onlevelchange = up;
             }
+        }
+
+        function updateTheme(level) {
+            const root = document.documentElement;
+            if(level <= 20) root.style.setProperty('--main-color', '#ff4444');
+            else if(level <= 50) root.style.setProperty('--main-color', '#00ff88');
+            else root.style.setProperty('--main-color', '#00aaff');
         }
 
         async function get30News() {
             const list = document.getElementById('news-list');
             try {
-                const res = await fetch('https://api.rss2json.com/v1/api.json?rss_url=https://www.sozcu.com.tr/feeds-son-dakika&count=30');
+                const res = await fetch('https://api.rss2json.com/v1/api.json?rss_url=https://www.cnnturk.com/feed/rss/all/news&count=30');
                 const data = await res.json();
                 list.innerHTML = data.items.map(i => `<div class="news-card">${i.title}</div>`).join('');
-            } catch(e) {
-                list.innerHTML = "<div class='news-card'>Gündem akışı şu an statik Efendim.</div>";
-            }
-        }
-
-        function toggleChat() {
-            const c = document.getElementById('chat-input-container');
-            c.style.display = c.style.display === 'block' ? 'none' : 'block';
-            if(c.style.display === 'block') document.getElementById('chat-input').focus();
-        }
-
-        function handleChat(e) {
-            if(e.key === 'Enter') {
-                processResponse(e.target.value.toLowerCase());
-                e.target.value = '';
-                toggleChat();
-            }
+            } catch(e) { list.innerHTML = "Haberler şu an senkronize edilemiyor."; }
         }
 
         function toggleMic() {
-            if (!isListening) recognition.start();
+            if(!isListening) recognition.start();
             else recognition.stop();
         }
 
@@ -253,35 +198,41 @@
         };
 
         recognition.onresult = (event) => {
-            processResponse(event.results[0][0].transcript.toLowerCase());
+            const talk = event.results[0][0].transcript.toLowerCase();
+            processMathAndTalk(talk);
         };
 
-        function processResponse(msg) {
-            let responseText = "";
-            const time = document.getElementById('clock').innerText;
-
-            if (msg.includes("naber") || msg.includes("nasılsın") || msg.includes("selam")) {
-                responseText = `İyiyim efendim. Saat ${time}. Cihazınızın şarjı yüzde ${batLevel}.`;
+        function processMathAndTalk(msg) {
+            let response = "";
+            
+            // MATEMATİK MOTORU
+            const mathMatch = msg.match(/(\d+)\s*(artı|eksi|çarpı|bölü|\+|\-|\*|\/)\s*(\d+)/);
+            
+            if (mathMatch) {
+                let n1 = parseInt(mathMatch[1]);
+                let op = mathMatch[2];
+                let n2 = parseInt(mathMatch[3]);
+                let res = 0;
                 
-                if (batLevel <= 20 && !isCharging) {
-                    responseText += " Durum kritik, şarja takmayı tercih edebilirsin efendim.";
-                } else if (batLevel <= 50 && !isCharging) {
-                    responseText += " Enerji seviyesi düşüyor, şarja takmanızı öneririm.";
-                }
+                if(op.includes("artı") || op === "+") res = n1 + n2;
+                else if(op.includes("eksi") || op === "-") res = n1 - n2;
+                else if(op.includes("çarpı") || op === "*") res = n1 * n2;
+                else if(op.includes("bölü") || op === "/") res = n1 / n2;
                 
-                speak(responseText);
-            } else if (msg.includes("şarj") || msg.includes("pil")) {
-                responseText = `Efendim, mevcut şarj seviyesi yüzde ${batLevel}.`;
-                speak(responseText);
+                response = `İşlemin sonucu ${res} efendim.`;
+            } else if (msg.includes("nasılsın") || msg.includes("selam") || msg.includes("naber")) {
+                response = `İyiyim efendim. Saat ${document.getElementById('clock').innerText}. Şarjınız yüzde ${batLevel}.`;
+                if(batLevel < 50) response += " Şarja takmayı tercih edebilirsin.";
             } else {
-                responseText = "Sizi dinliyorum efendim.";
-                speak(responseText);
+                response = "Sizi dinliyorum efendim.";
             }
+
+            speak(response);
         }
 
-        function speak(text) {
-            document.getElementById('jarvis-subtitle').innerText = text;
-            const u = new SpeechSynthesisUtterance(text);
+        function speak(t) {
+            document.getElementById('transcript-text').innerText = t; // METNE DÖK
+            const u = new SpeechSynthesisUtterance(t);
             u.lang = 'tr-TR';
             window.speechSynthesis.speak(u);
         }
