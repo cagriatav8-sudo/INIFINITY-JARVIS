@@ -15,7 +15,7 @@
             --r-md: 18px;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; transition: all 0.4s ease; }
+        * { margin: 0; padding: 0; box-sizing: border-box; transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
         body { background: var(--bg); color: #c0e8ff; font-family: 'Rajdhani', sans-serif; overflow: hidden; height: 100vh; }
 
         /* GİRİŞ EKRANI */
@@ -34,7 +34,7 @@
             background: rgba(2,8,16,0.8); backdrop-filter: blur(10px); border-bottom: 1px solid rgba(0, 170, 255, 0.1);
         }
 
-        /* YAN MENÜ (DRAWER) */
+        /* YAN MENÜ */
         #drawer {
             position: fixed; top: 0; left: -300px; width: 280px; height: 100%;
             background: var(--panel); z-index: 2000; padding: 40px 20px;
@@ -47,12 +47,13 @@
         }
         .menu-item:hover { border-color: var(--main-color); background: rgba(0, 170, 255, 0.2); }
 
-        /* METİN ALANI (KÖŞELERİ YUMUŞAK) */
+        /* METİN ALANI */
         #transcript-area {
-            position: absolute; top: 80px; width: 90%; max-width: 500px;
-            background: rgba(0,0,0,0.8); border: 1px solid var(--main-color);
+            position: absolute; top: 85px; width: 90%; max-width: 500px;
+            background: rgba(0, 5, 15, 0.9); border: 1px solid var(--main-color);
             border-radius: var(--r-lg); padding: 20px; display: none;
-            z-index: 500; backdrop-filter: blur(15px); max-height: 40%; overflow-y: auto;
+            z-index: 500; backdrop-filter: blur(20px); max-height: 40%; overflow-y: auto;
+            box-shadow: 0 0 30px rgba(0,0,0,1);
         }
 
         /* JARVIS ORB */
@@ -60,17 +61,27 @@
             width: 140px; height: 140px; border-radius: 50%; border: 2px solid var(--main-color);
             margin: 20px auto; display: flex; align-items: center; justify-content: center;
             box-shadow: 0 0 20px var(--main-color); cursor: pointer;
+            position: relative;
         }
         .listening { animation: pulse 0.5s infinite alternate; border-color: var(--accent-color); }
-        @keyframes pulse { to { transform: scale(1.1); box-shadow: 0 0 40px var(--accent-color); } }
+        @keyframes pulse { to { transform: scale(1.1); box-shadow: 0 0 45px var(--accent-color); } }
 
-        /* DİĞERLERİ */
-        .stats { display: flex; gap: 10px; width: 90%; margin: 10px auto; }
+        /* HABERLER */
+        #news-panel { 
+            width: 90%; height: 180px; margin: 15px auto; 
+            background: var(--panel); border-radius: var(--r-md); 
+            padding: 15px; overflow-y: auto; border: 1px solid var(--main-color); 
+        }
+        .news-card { 
+            font-size: 13px; margin-bottom: 10px; padding: 8px;
+            background: rgba(0, 170, 255, 0.05); border-radius: 10px;
+            border-left: 4px solid var(--main-color); 
+        }
+
+        .stats { display: flex; gap: 10px; width: 90%; margin: 5px auto; }
         .stat-card { flex: 1; background: var(--panel); padding: 12px; border-radius: var(--r-md); text-align: center; border: 1px solid var(--main-color); }
-        #news-panel { width: 90%; height: 150px; margin: 10px auto; background: var(--panel); border-radius: var(--r-md); padding: 15px; overflow-y: auto; border: 1px solid var(--main-color); }
-        .news-card { font-size: 13px; margin-bottom: 8px; border-left: 3px solid var(--main-color); padding-left: 8px; }
-
-        footer { padding: 10px; text-align: center; font-size: 10px; opacity: 0.5; font-family: 'Orbitron'; }
+        
+        footer { padding: 10px; text-align: center; font-size: 10px; opacity: 0.6; font-family: 'Orbitron'; letter-spacing: 2px; }
     </style>
 </head>
 <body>
@@ -81,38 +92,39 @@
     </div>
 
     <div id="drawer">
-        <h3 style="font-family:'Orbitron'; margin-bottom:20px; border-bottom:1px solid var(--main-color);">KONTROL PANELİ</h3>
+        <h3 style="font-family:'Orbitron'; margin-bottom:25px; color:var(--main-color); border-bottom:1px solid rgba(0,170,255,0.2);">JARVIS MENÜ</h3>
         <div class="menu-item" onclick="toggleTranscript()">📝 Metne Dök</div>
-        <div class="menu-item" onclick="location.reload()">🔄 Sistemi Yenile</div>
-        <div style="margin-top:40px; font-size:12px; color:rgba(255,255,255,0.4);">
-            GitHub: cagriatav8-sudo<br>Gmail: cagriatav8@gmail.com
+        <div class="menu-item" onclick="get30News()">🔄 Haberleri Yenile</div>
+        <div class="menu-item" onclick="location.reload()">⚙️ Sistemi Yeniden Başlat</div>
+        <div style="margin-top:50px; font-size:11px; color:rgba(0,170,255,0.5);">
+            BY ÇAĞRI ATAV<br>Infinity TM © 2026
         </div>
     </div>
 
     <div id="app">
         <header>
-            <div onclick="toggleDrawer()" style="cursor:pointer; font-size:24px; color:var(--main-color);">☰</div>
-            <div style="font-family:'Orbitron'; letter-spacing:3px;">JARVIS</div>
-            <div id="clock">00:00</div>
+            <div onclick="toggleDrawer()" style="cursor:pointer; font-size:26px; color:var(--main-color);">☰</div>
+            <div style="font-family:'Orbitron'; letter-spacing:4px; font-weight:700;">JARVIS</div>
+            <div id="clock" style="font-family:'Orbitron'; color:var(--accent-color);">00:00</div>
         </header>
 
-        <div style="flex:1; display:flex; flex-direction:column; align-items:center; position:relative;">
+        <div style="flex:1; display:flex; flex-direction:column; align-items:center;">
             <div class="stats">
-                <div class="stat-card">DURUM<b id="status-label">BAĞLI</b></div>
-                <div class="stat-card">ŞARJ<b id="bat">--%</b></div>
+                <div class="stat-card">ENERJİ<b id="bat">--%</b></div>
+                <div class="stat-card">DURUM<b id="status-label">AKTİF</b></div>
             </div>
 
             <div id="transcript-area">
-                <p id="transcript-text" style="line-height:1.6; color:var(--accent-color);">Konuşmalar burada metne dökülecek...</p>
+                <p id="transcript-text" style="line-height:1.6; color:var(--accent-color);">Efendim, duymak istediğiniz veya işlem yaptığınız her şey burada görüntülenecek.</p>
             </div>
 
             <div class="orb-btn" id="main-orb" onclick="toggleMic()">
-                <div style="width:80px; height:80px; border-radius:50%; background:radial-gradient(circle, var(--main-color) 0%, transparent 70%); opacity:0.5;"></div>
+                <div style="width:85px; height:85px; border-radius:50%; background:radial-gradient(circle, var(--main-color) 0%, transparent 80%); opacity:0.6;"></div>
             </div>
 
             <div id="news-panel">
-                <p style="font-size:10px; color:var(--main-color); margin-bottom:10px; letter-spacing:2px;">GÜNDEM ANALİZİ</p>
-                <div id="news-list">Veriler işleniyor...</div>
+                <p style="font-size:10px; color:var(--main-color); margin-bottom:12px; letter-spacing:3px; font-weight:bold;">GÜNDEM VERİLERİ (30)</p>
+                <div id="news-list">Haberler senkronize ediliyor...</div>
             </div>
         </div>
 
@@ -151,7 +163,7 @@
         function toggleTranscript() {
             const area = document.getElementById('transcript-area');
             area.style.display = area.style.display === 'block' ? 'none' : 'block';
-            toggleDrawer();
+            if(area.style.display === 'block') toggleDrawer();
         }
 
         async function updateBattery() {
@@ -173,13 +185,25 @@
             else root.style.setProperty('--main-color', '#00aaff');
         }
 
+        // HABERLERİ ÇEKME - ÇİFT KAYNAKLI SİSTEM
         async function get30News() {
             const list = document.getElementById('news-list');
-            try {
-                const res = await fetch('https://api.rss2json.com/v1/api.json?rss_url=https://www.cnnturk.com/feed/rss/all/news&count=30');
-                const data = await res.json();
-                list.innerHTML = data.items.map(i => `<div class="news-card">${i.title}</div>`).join('');
-            } catch(e) { list.innerHTML = "Haberler şu an senkronize edilemiyor."; }
+            const sources = [
+                'https://api.rss2json.com/v1/api.json?rss_url=https://www.sozcu.com.tr/feeds-son-dakika&count=30',
+                'https://api.rss2json.com/v1/api.json?rss_url=https://www.cnnturk.com/feed/rss/all/news&count=30'
+            ];
+
+            for (let source of sources) {
+                try {
+                    const res = await fetch(source);
+                    const data = await res.json();
+                    if(data.status === 'ok') {
+                        list.innerHTML = data.items.map(i => `<div class="news-card">${i.title}</div>`).join('');
+                        return; // Başarılıysa döngüden çık
+                    }
+                } catch(e) { console.log("Kaynak hatası, diğeri deneniyor..."); }
+            }
+            list.innerHTML = "<div class='news-card'>Haberler şu an senkronize edilemiyor. Lütfen internetinizi kontrol edin.</div>";
         }
 
         function toggleMic() {
@@ -199,19 +223,20 @@
 
         recognition.onresult = (event) => {
             const talk = event.results[0][0].transcript.toLowerCase();
-            processMathAndTalk(talk);
+            processIntelligence(talk);
         };
 
-        function processMathAndTalk(msg) {
+        function processIntelligence(msg) {
             let response = "";
             
-            // MATEMATİK MOTORU
-            const mathMatch = msg.match(/(\d+)\s*(artı|eksi|çarpı|bölü|\+|\-|\*|\/)\s*(\d+)/);
+            // MATEMATİK MOTORU (GELİŞMİŞ)
+            const mathPattern = /([-+]?[0-9]*\.?[0-9]+)\s*(artı|\+|eksi|\-|çarpı|\*|bölü|\/)\s*([-+]?[0-9]*\.?[0-9]+)/;
+            const mathMatch = msg.match(mathPattern);
             
             if (mathMatch) {
-                let n1 = parseInt(mathMatch[1]);
+                let n1 = parseFloat(mathMatch[1]);
                 let op = mathMatch[2];
-                let n2 = parseInt(mathMatch[3]);
+                let n2 = parseFloat(mathMatch[3]);
                 let res = 0;
                 
                 if(op.includes("artı") || op === "+") res = n1 + n2;
@@ -219,19 +244,19 @@
                 else if(op.includes("çarpı") || op === "*") res = n1 * n2;
                 else if(op.includes("bölü") || op === "/") res = n1 / n2;
                 
-                response = `İşlemin sonucu ${res} efendim.`;
+                response = `Matematiksel işlemin sonucu: ${res} efendim.`;
             } else if (msg.includes("nasılsın") || msg.includes("selam") || msg.includes("naber")) {
-                response = `İyiyim efendim. Saat ${document.getElementById('clock').innerText}. Şarjınız yüzde ${batLevel}.`;
-                if(batLevel < 50) response += " Şarja takmayı tercih edebilirsin.";
+                response = `İyiyim efendim. Saat ${document.getElementById('clock').innerText}. Şarj seviyeniz yüzde ${batLevel}.`;
+                if(batLevel < 50) response += " Enerji tasarrufu için şarja takmanızı öneririm.";
             } else {
-                response = "Sizi dinliyorum efendim.";
+                response = "Sizi dinliyorum efendim, başka bir arzunuz var mı?";
             }
 
             speak(response);
         }
 
         function speak(t) {
-            document.getElementById('transcript-text').innerText = t; // METNE DÖK
+            document.getElementById('transcript-text').innerText = t; 
             const u = new SpeechSynthesisUtterance(t);
             u.lang = 'tr-TR';
             window.speechSynthesis.speak(u);
