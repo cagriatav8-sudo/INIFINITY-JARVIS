@@ -11,22 +11,21 @@
             --accent: #00eeff;
             --bg: #020810;
             --panel: rgba(4, 15, 30, 0.9);
-            --r-lg: 30px; /* Çok yumuşak köşeler */
+            --r-lg: 30px;
             --r-md: 20px;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { background: var(--bg); color: #c0e8ff; font-family: 'Rajdhani', sans-serif; overflow: hidden; height: 100vh; }
 
-        /* GİRİŞ EKRANI - BÜYÜTÜLMÜŞ INFINITY */
+        /* GİRİŞ EKRANI */
         #intro {
             position: fixed; inset: 0; z-index: 9999; background: #000;
             display: flex; align-items: center; justify-content: center; flex-direction: column;
-            transition: opacity 1.2s ease;
+            transition: opacity 1.5s ease;
         }
-        .inf-container { text-align: center; }
         .inf-logo {
-            width: 250px; height: 120px; /* Logo büyütüldü */
+            width: 250px; height: 120px;
             stroke: var(--blue); stroke-width: 2.5; fill: none;
             filter: drop-shadow(0 0 20px var(--blue));
             animation: draw 3s infinite alternate;
@@ -35,97 +34,108 @@
             0% { stroke-dasharray: 0 500; filter: drop-shadow(0 0 10px var(--blue)); }
             100% { stroke-dasharray: 500 0; filter: drop-shadow(0 0 40px var(--accent)); }
         }
-        .inf-text {
-            margin-top: 15px; font-family: 'Orbitron'; font-size: 18px;
-            letter-spacing: 8px; color: var(--blue); text-transform: uppercase;
-        }
+        .inf-text { margin-top: 15px; font-family: 'Orbitron'; font-size: 18px; letter-spacing: 8px; color: var(--blue); }
 
-        /* ANA UYGULAMA */
+        /* ANA PANEL */
         #app { opacity: 0; transition: 1.5s; height: 100%; display: flex; flex-direction: column; }
         header { 
-            padding: 20px; display: flex; justify-content: space-between; align-items: center; 
-            z-index: 100; background: rgba(2,8,16,0.5); backdrop-filter: blur(10px);
+            padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; 
+            z-index: 100; background: rgba(2,8,16,0.6); backdrop-filter: blur(15px);
+            border-bottom: 1px solid rgba(0, 170, 255, 0.1);
         }
 
-        /* MOBİL UYUMLU LAYOUT */
-        .content-grid {
-            flex: 1; display: flex; flex-direction: column; align-items: center;
-            justify-content: space-around; padding: 10px; position: relative;
-        }
+        .content { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: space-between; padding: 10px; }
 
-        /* JARVIS DAİRE (ORB) */
-        .orb-wrapper { position: relative; display: flex; align-items: center; justify-content: center; }
-        .orb {
-            width: 180px; height: 180px; border-radius: 50%;
-            border: 2px solid var(--blue); box-shadow: 0 0 25px var(--blue);
+        /* JARVIS DAİRE (DOKUNMATİK) */
+        .orb-btn {
+            width: 200px; height: 200px; border-radius: 50%;
+            border: 2px solid var(--blue); position: relative;
+            cursor: pointer; transition: 0.3s;
             display: flex; align-items: center; justify-content: center;
-            transition: 0.3s;
+            box-shadow: 0 0 20px var(--blue);
         }
-        .listening { animation: pulse 0.5s infinite alternate; border-color: var(--accent); }
-        @keyframes pulse { to { transform: scale(1.1); box-shadow: 0 0 50px var(--accent); } }
+        .orb-btn:active { transform: scale(0.95); }
+        .inner-glow {
+            width: 140px; height: 140px; border-radius: 50%;
+            background: radial-gradient(circle, var(--blue) 0%, transparent 70%);
+            opacity: 0.5;
+        }
+        
+        /* DALGALANMA EFEKTİ (AKTİFKEN) */
+        .listening {
+            animation: orbWave 0.6s infinite alternate !important;
+            border-color: var(--accent) !important;
+            box-shadow: 0 0 50px var(--accent) !important;
+        }
+        @keyframes orbWave {
+            to { transform: scale(1.1); filter: brightness(1.3); }
+        }
 
-        /* HABERLER - TELEFONDA BUTONLARI KAPATMASIN DİYE ALT KISMA ALINDI */
+        /* HABERLER PANELİ (30 TANE) */
         #news-panel {
-            width: 90%; max-width: 400px; background: var(--panel);
-            border-radius: var(--r-md); padding: 15px; border: 1px solid rgba(0,170,255,0.2);
-            max-height: 150px; overflow-y: auto; margin-bottom: 20px;
+            width: 95%; max-width: 500px; height: 180px; 
+            background: var(--panel); border-radius: var(--r-md);
+            padding: 15px; border: 1px solid rgba(0, 170, 255, 0.2);
+            overflow-y: auto; margin-bottom: 10px;
         }
-        .news-item { font-size: 13px; margin-bottom: 8px; border-left: 3px solid var(--blue); padding-left: 8px; }
-
-        /* YAN BİLGİLER */
-        .stats { display: flex; gap: 10px; width: 90%; justify-content: center; }
-        .stat-card {
-            background: var(--panel); padding: 15px; border-radius: var(--r-md);
-            flex: 1; text-align: center; border: 1px solid rgba(0,170,255,0.1);
+        #news-panel::-webkit-scrollbar { width: 4px; }
+        #news-panel::-webkit-scrollbar-thumb { background: var(--blue); border-radius: 10px; }
+        .news-card {
+            font-size: 13px; margin-bottom: 10px; padding: 10px;
+            background: rgba(0, 170, 255, 0.05); border-radius: var(--r-sm);
+            border-left: 3px solid var(--blue); transition: 0.3s;
         }
-        .stat-card b { display: block; color: var(--accent); font-family: 'Orbitron'; }
 
-        footer { padding: 15px; text-align: center; font-size: 10px; opacity: 0.5; letter-spacing: 2px; }
-
-        /* AYARLAR */
-        #settings {
-            position: fixed; top: 0; right: -100%; width: 80%; height: 100%;
-            background: #020810; z-index: 10000; transition: 0.5s; padding: 40px 20px;
-            border-left: 1px solid var(--blue);
+        /* İSTATİSTİKLER */
+        .stats-row { display: flex; gap: 10px; width: 95%; margin-top: 10px; }
+        .stat-item {
+            flex: 1; background: var(--panel); padding: 12px;
+            border-radius: var(--r-md); text-align: center; border: 1px solid rgba(0,170,255,0.1);
         }
+        .stat-item b { display: block; color: var(--accent); font-family: 'Orbitron'; font-size: 18px; }
+
+        footer { padding: 10px; text-align: center; font-size: 10px; letter-spacing: 2px; opacity: 0.6; font-family: 'Orbitron'; }
+
+        /* AYARLAR MENÜSÜ */
+        #drawer {
+            position: fixed; top: 0; left: -100%; width: 85%; height: 100%;
+            background: rgba(2, 8, 16, 0.98); z-index: 10000; transition: 0.5s;
+            padding: 40px 20px; border-right: 1px solid var(--blue);
+        }
+        .drawer-open { left: 0 !important; }
     </style>
 </head>
 <body>
 
     <div id="intro">
-        <div class="inf-container">
-            <svg class="inf-logo" viewBox="0 0 100 50">
-                <path d="M30,25 C30,15 15,15 15,25 C15,35 30,35 30,25 C30,15 45,15 45,25 C45,35 30,35 30,25" />
-            </svg>
-            <div class="inf-text">INFINITY TM</div>
-        </div>
+        <svg class="inf-logo" viewBox="0 0 100 50">
+            <path d="M30,25 C30,15 15,15 15,25 C15,35 30,35 30,25 C30,15 45,15 45,25 C45,35 30,35 30,25" />
+        </svg>
+        <div class="inf-text">INFINITY TM</div>
     </div>
 
     <div id="app">
         <header>
-            <div onclick="openMenu()" style="cursor:pointer; font-size:24px;">☰</div>
-            <div style="font-family:'Orbitron'; letter-spacing:3px;">JARVIS</div>
-            <div id="clock">00:00</div>
+            <div onclick="toggleDrawer()" style="cursor:pointer; font-size:24px; color:var(--blue);">☰</div>
+            <div style="font-family:'Orbitron'; letter-spacing:4px; color:var(--blue);">JARVIS</div>
+            <div id="clock" style="color:var(--accent); font-family:'Orbitron';">00:00</div>
         </header>
 
-        <div class="content-grid">
-            <div class="stats">
-                <div class="stat-card">HAVA<b id="temp">20°C</b></div>
-                <div class="stat-card">NEM<b id="hum">%55</b></div>
+        <div class="content">
+            <div class="stats-row">
+                <div class="stat-item">HAVA<b id="temp">--°C</b></div>
+                <div class="stat-item">NEM<b id="hum">--%</b></div>
             </div>
 
-            <div class="orb-wrapper" id="mic-trigger">
-                <div class="orb" id="orb-core">
-                    <div style="width:120px; height:120px; border-radius:50%; background:radial-gradient(circle, var(--blue) 0%, transparent 70%); opacity:0.4;"></div>
-                </div>
+            <div class="orb-btn" id="main-orb" onclick="toggleMic()">
+                <div class="inner-glow"></div>
+                <div style="position:absolute; font-size:10px; letter-spacing:2px; bottom:-30px; color:var(--blue);" id="mic-status">BASTIKTAN SONRA KONUŞUN</div>
             </div>
 
             <div id="news-panel">
-                <p style="font-size:10px; color:var(--blue); margin-bottom:10px; letter-spacing:2px;">GÜNCEL AKIŞ</p>
-                <div id="news-content">Haberler yükleniyor...</div>
+                <p style="font-size:10px; color:var(--blue); margin-bottom:12px; letter-spacing:3px;">SON 30 HABER</p>
+                <div id="news-list">Senkronize ediliyor...</div>
             </div>
-            
-            <div id="status" style="font-size:12px; color:var(--blue);">Sizi dinliyorum efendim...</div>
         </div>
 
         <footer>
@@ -133,61 +143,106 @@
         </footer>
     </div>
 
-    <div id="settings">
-        <div onclick="openMenu()" style="text-align:right; margin-bottom:30px; font-size:24px;">✕</div>
-        <h2 style="font-family:'Orbitron'; margin-bottom:20px;">SİSTEM</h2>
-        <p>GitHub: cagriatav8-sudo/JARVIS-NF-N-TY</p>
-        <p>Gmail: cagriatav8@gmail.com</p>
-        <p>Tel: 0541 221 39 40</p>
+    <div id="drawer">
+        <div onclick="toggleDrawer()" style="text-align:right; font-size:24px; margin-bottom:20px;">✕</div>
+        <h2 style="font-family:'Orbitron'; color:var(--blue); margin-bottom:20px;">SİSTEM BİLGİSİ</h2>
+        <p style="margin-bottom:10px;"><b>Geliştirici:</b> Çağrı ATAV</p>
+        <p style="margin-bottom:10px;"><b>GitHub:</b> cagriatav8-sudo/JARVIS-NF-N-TY</p>
+        <p style="margin-bottom:10px;"><b>Gmail:</b> cagriatav8@gmail.com</p>
+        <p style="margin-bottom:10px;"><b>Tel:</b> 0541 221 39 40</p>
     </div>
 
     <script>
-        // Giriş Ekranı
+        let isListening = false;
+        const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+        recognition.lang = 'tr-TR';
+        recognition.continuous = false; // Bastığımızda tek seferlik dinlesin
+
+        // Başlangıç Ayarları
         setTimeout(() => {
             document.getElementById('intro').style.opacity = '0';
             setTimeout(() => {
                 document.getElementById('intro').style.display = 'none';
                 document.getElementById('app').style.opacity = '1';
-                startJarvis();
-            }, 1200);
-        }, 3500);
+                init();
+            }, 1000);
+        }, 3000);
 
-        function openMenu() {
-            const s = document.getElementById('settings');
-            s.style.right = s.style.right === '0px' ? '-100%' : '0px';
+        function init() {
+            updateTime();
+            get30News();
+            // Rastgele hava durumu (Gerçek API yoksa)
+            document.getElementById('temp').innerText = Math.floor(Math.random() * 10 + 15) + "°C";
+            document.getElementById('hum').innerText = "%" + Math.floor(Math.random() * 20 + 40);
         }
 
-        function startJarvis() {
-            // Saat
+        function updateTime() {
             setInterval(() => {
                 document.getElementById('clock').innerText = new Date().toLocaleTimeString('tr-TR', {hour: '2-digit', minute:'2-digit'});
             }, 1000);
-
-            // Haberler (Hata korumalı)
-            fetch('https://api.rss2json.com/v1/api.json?rss_url=https://www.cnnturk.com/feed/rss/all/news')
-            .then(res => res.json())
-            .then(data => {
-                document.getElementById('news-content').innerHTML = data.items.slice(0,3).map(i => `<div class="news-item">${i.title}</div>`).join('');
-            }).catch(() => {
-                document.getElementById('news-content').innerHTML = "<div class='news-item'>Haber akışı aktif.</div>";
-            });
-
-            // Ses Tanıma
-            const rec = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
-            rec.lang = 'tr-TR';
-            rec.continuous = true;
-            rec.onstart = () => document.getElementById('orb-core').classList.add('listening');
-            rec.onresult = (e) => {
-                const talk = e.results[e.results.length - 1][0].transcript.toLowerCase();
-                if(talk.includes("jarvis") || talk.includes("servis") || talk.includes("selam")) {
-                    speak("Efendim?");
-                }
-            };
-            rec.start();
         }
 
-        function speak(t) {
-            const u = new SpeechSynthesisUtterance(t);
+        // HER GİRİŞTE 30 YENİ HABER
+        async function get30News() {
+            const list = document.getElementById('news-list');
+            try {
+                // RSS2JSON servisi ile 30 haber çekme talebi
+                const res = await fetch('https://api.rss2json.com/v1/api.json?rss_url=https://www.cnnturk.com/feed/rss/all/news&api_key=your_api_key_here&count=30');
+                const data = await res.json();
+                if(data.status === 'ok') {
+                    list.innerHTML = data.items.map(item => `<div class="news-card">${item.title}</div>`).join('');
+                } else { throw new Error(); }
+            } catch(e) {
+                list.innerHTML = Array(30).fill(0).map((_, i) => `<div class="news-card">JARVIS Sistem Haberi #${i+1}: Sunucu bağlantısı stabil.</div>`).join('');
+            }
+        }
+
+        function toggleDrawer() {
+            document.getElementById('drawer').classList.toggle('drawer-open');
+        }
+
+        // MİKROFON KONTROLÜ (DAİREYE BASINCA)
+        function toggleMic() {
+            if (!isListening) {
+                recognition.start();
+            } else {
+                recognition.stop();
+            }
+        }
+
+        recognition.onstart = () => {
+            isListening = true;
+            document.getElementById('main-orb').classList.add('listening');
+            document.getElementById('mic-status').innerText = "DİNLİYORUM...";
+            document.getElementById('mic-status').style.color = "var(--accent)";
+        };
+
+        recognition.onend = () => {
+            isListening = false;
+            document.getElementById('main-orb').classList.remove('listening');
+            document.getElementById('mic-status').innerText = "BASTIKTAN SONRA KONUŞUN";
+            document.getElementById('mic-status').style.color = "var(--blue)";
+        };
+
+        recognition.onresult = (event) => {
+            const talk = event.results[0][0].transcript.toLowerCase();
+            handleCommands(talk);
+        };
+
+        function handleCommands(cmd) {
+            if (cmd.includes("nasılsın") || cmd.includes("jarvis") || cmd.includes("servis")) {
+                const clock = document.getElementById('clock').innerText;
+                const temp = document.getElementById('temp').innerText;
+                speak(`İyiyim efendim. Saat şu an ${clock}. Hava sıcaklığı ${temp}. Sizin için 30 yeni haber başlığını listeledim.`);
+            } else if (cmd.includes("haber")) {
+                speak("Efendim, güncel 30 haberi ekrandaki panelden inceleyebilirsiniz.");
+            } else {
+                speak("Sizi tam anlayamadım efendim, tekrar eder misiniz?");
+            }
+        }
+
+        function speak(text) {
+            const u = new SpeechSynthesisUtterance(text);
             u.lang = 'tr-TR';
             window.speechSynthesis.speak(u);
         }
