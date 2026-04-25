@@ -3,73 +3,44 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>JARVIS — INFINITY™ SMOOTH ENERGY</title>
+    <title>JARVIS — INFINITY™ STABLE</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Rajdhani:wght@400;600&display=swap" rel="stylesheet">
     <style>
-        :root { 
-            --main: #00aaff; 
-            --accent: #00eeff; 
-            --bg: #020810; 
-            --panel: rgba(4, 15, 30, 0.97); 
-        }
+        :root { --main: #00aaff; --accent: #00eeff; --bg: #020810; --panel: rgba(4, 15, 30, 0.96); }
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; transition: color 2s ease, border-color 2s ease, box-shadow 2s ease, background 2s ease; }
+        body { background: var(--bg); color: #c0e8ff; font-family: 'Rajdhani', sans-serif; overflow: hidden; height: 100vh; width: 100vw; touch-action: none; }
 
-        /* Tüm renk değişimlerini yavaşlat (Hafif hafif bürünsün) */
-        * { 
-            margin: 0; padding: 0; box-sizing: border-box; 
-            -webkit-tap-highlight-color: transparent; 
-            transition: color 2s ease, border-color 2s ease, box-shadow 2s ease, background 2s ease, stroke 2s ease;
-        }
-
-        body { 
-            background: var(--bg); color: #c0e8ff; 
-            font-family: 'Rajdhani', sans-serif; 
-            overflow: hidden; height: 100vh; width: 100vw; 
-            touch-action: none; 
-        }
-
-        /* GİRİŞ EKRANI */
         #intro { position: fixed; inset: 0; z-index: 9999; background: #000; display: flex; align-items: center; justify-content: center; transition: 1s; }
         .inf-logo { width: 150px; stroke: var(--main); stroke-width: 2.5; fill: none; animation: draw 3s infinite alternate; }
         @keyframes draw { 0% { stroke-dasharray: 0 500; } 100% { stroke-dasharray: 500 0; filter: drop-shadow(0 0 30px var(--main)); } }
 
         #app { opacity: 0; height: 100%; display: flex; flex-direction: column; transition: 1.5s; }
-        header { padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; background: rgba(2,8,16,0.8); border-bottom: 1px solid rgba(255,255,255,0.05); z-index: 10; }
+        header { padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; background: rgba(2,8,16,0.8); border-bottom: 1px solid rgba(255,255,255,0.05); z-index: 100; }
 
-        /* YAN MENÜ */
-        #drawer {
-            position: fixed; top: 0; left: -320px; width: 280px; height: 100%;
-            background: var(--panel); z-index: 2000; padding: 40px 20px;
-            border-right: 1px solid var(--main); box-shadow: 10px 0 30px #000; transition: 0.5s ease;
-        }
+        #drawer { position: fixed; top: 0; left: -320px; width: 280px; height: 100%; background: var(--panel); z-index: 2000; padding: 40px 20px; border-right: 1px solid var(--main); box-shadow: 10px 0 30px #000; transition: 0.5s ease; }
         .drawer-open { left: 0 !important; }
-        .drawer-header { border-bottom: 1px solid var(--main); padding-bottom: 15px; margin-bottom: 25px; font-family: 'Orbitron'; font-size: 14px; color: var(--main); }
         .menu-item { padding: 15px; margin-bottom: 12px; border-radius: 15px; background: rgba(255,255,255,0.03); cursor: pointer; display: flex; align-items: center; justify-content: space-between; }
-        .by-text { margin-top: auto; font-size: 11px; color: var(--main); text-align: center; font-weight: bold; letter-spacing: 2px; }
 
-        /* PANELLER */
-        .draggable {
-            position: absolute; width: 92%; max-width: 380px; background: var(--panel); 
-            border: 1px solid var(--main); border-radius: 20px; padding: 20px; z-index: 500;
-            backdrop-filter: blur(25px); box-shadow: 0 0 40px rgba(0,0,0,0.8); cursor: move; display: none;
-        }
-        .panel-header { display: flex; justify-content: space-between; margin-bottom: 10px; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 5px; pointer-events: none; }
+        .draggable { position: absolute; width: 92%; max-width: 380px; background: var(--panel); border: 1px solid var(--main); border-radius: 20px; padding: 20px; z-index: 500; backdrop-filter: blur(25px); box-shadow: 0 0 40px rgba(0,0,0,0.8); cursor: move; display: none; }
+        .panel-header { display: flex; justify-content: space-between; margin-bottom: 10px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 5px; pointer-events: none; }
         .close-btn { pointer-events: auto; cursor: pointer; color: var(--main); font-size: 20px; }
 
-        /* ORB */
         .main-content { flex: 1; position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        
+        /* ORB - SABİT (Zıplama Silindi) */
         .orb-btn { 
-            width: 130px; height: 130px; border-radius: 50%; 
+            width: 140px; height: 140px; border-radius: 50%; 
             border: 2px solid var(--main); display: flex; align-items: center; 
-            justify-content: center; box-shadow: 0 0 25px var(--main); cursor: pointer; 
+            justify-content: center; box-shadow: 0 0 20px var(--main); 
+            cursor: pointer; z-index: 10; position: relative;
+            transition: 0.3s;
         }
-        .listening { animation: pulse 0.5s infinite alternate; }
-        @keyframes pulse { to { transform: scale(1.1); box-shadow: 0 0 60px var(--main); } }
+        /* Dinleme modunda sadece dış parlama */
+        .listening { box-shadow: 0 0 50px var(--main), inset 0 0 20px var(--main); border-color: #fff; }
 
-        /* HABERLER */
         #news-panel { width: 92%; height: 180px; background: var(--panel); border-radius: 22px; padding: 18px; overflow-y: auto; border: 1px solid var(--main); margin-top: 20px; }
         .news-card { font-size: 12px; margin-bottom: 8px; padding: 10px; background: rgba(255,255,255,0.02); border-radius: 12px; border-left: 4px solid var(--main); }
 
-        /* KONTROLLER */
         .controls { position: fixed; bottom: 15px; right: 15px; display: flex; flex-direction: column; gap: 8px; z-index: 1000; }
         .switch-wrap { display: flex; align-items: center; justify-content: space-between; gap: 10px; background: var(--panel); padding: 10px 15px; border-radius: 20px; border: 1px solid var(--main); min-width: 155px; font-size: 10px; }
         .switch { position: relative; width: 34px; height: 18px; }
@@ -84,95 +55,52 @@
     </style>
 </head>
 <body>
-
-    <div id="intro">
-        <svg class="inf-logo" viewBox="0 0 100 50"><path d="M30,25 C30,15 15,15 15,25 C15,35 30,35 30,25 C30,15 45,15 45,25 C45,35 30,35 30,25" /></svg>
-    </div>
-
+    <div id="intro"><svg class="inf-logo" viewBox="0 0 100 50"><path d="M30,25 C30,15 15,15 15,25 C15,35 30,35 30,25 C30,15 45,15 45,25 C45,35 30,35 30,25" /></svg></div>
     <div id="drawer">
-        <div class="drawer-header">JARVIS PROTOCOLS</div>
-        <div class="menu-item" style="cursor:default;">
-            <span>SES CİNSİYETİ</span>
-            <select id="voice-gender">
-                <option value="erkek">Erkek</option>
-                <option value="kadin">Kadın</option>
-            </select>
-        </div>
-        <div class="menu-item" onclick="syncPanelsDirect(true)">📝 Metne Dökümü Başlat</div>
-        <div class="menu-item" onclick="location.reload()">🔄 Sistemi Resetle</div>
-        <div class="by-text">BY ÇAĞRI ATAV<br>INFINITY TM © 2026</div>
+        <div style="font-family:'Orbitron'; color:var(--main); margin-bottom:20px;">AYARLAR</div>
+        <div class="menu-item"><span>SES TONU</span><select id="voice-gender"><option value="erkek">Erkek</option><option value="kadin">Kadın</option></select></div>
+        <div class="menu-item" onclick="location.reload()">🔄 Reset</div>
+        <div style="margin-top:auto; font-weight:bold; color:var(--main); text-align:center;">BY ÇAĞRI ATAV</div>
     </div>
-
     <div id="app">
         <header>
-            <div onclick="toggleDrawer()" style="cursor:pointer; font-size:26px; color:var(--main);">☰</div>
-            <div style="font-family:'Orbitron'; font-size:16px; color:var(--main); letter-spacing:2px; font-weight: bold;">JARVIS PRO</div>
+            <div onclick="document.getElementById('drawer').classList.toggle('drawer-open')" style="cursor:pointer; font-size:26px; color:var(--main);">☰</div>
+            <div style="font-family:'Orbitron'; color:var(--main); letter-spacing:2px; font-weight:bold;">JARVIS ULTIMATE</div>
             <div id="clock">00:00</div>
         </header>
-
         <div class="main-content">
             <div id="transcript-area" class="draggable" style="top: 80px; left: 10px;">
-                <div class="panel-header"><span>TRANSCRIPT</span><span class="close-btn" onclick="closeBox('transcript-area')">✖</span></div>
-                <p id="transcript-text" style="font-size:15px; color:var(--main); line-height:1.5;">Efendim, enerji seviyesi takip ediliyor.</p>
+                <div class="panel-header"><span>ALTYAZI</span><span class="close-btn" onclick="closeBox('transcript-area')">✖</span></div>
+                <p id="transcript-text">Sistem emrinizdedir Efendim.</p>
             </div>
-
             <div id="input-area" class="draggable" style="top: 240px; left: 10px;">
-                <div class="panel-header"><span>METNE GEÇİR</span><span class="close-btn" onclick="closeBox('input-area')">✖</span></div>
-                <input type="text" id="chat-input" placeholder="Emredin..." onkeypress="handleChat(event)">
+                <div class="panel-header"><span>YAZI</span><span class="close-btn" onclick="closeBox('input-area')">✖</span></div>
+                <input type="text" id="chat-input" placeholder="Yazın..." onkeypress="handleChat(event)">
             </div>
-
             <div class="orb-btn" id="main-orb" onclick="toggleMic()">
-                <div style="width:80px; height:80px; border-radius:50%; background:radial-gradient(circle, var(--main), transparent 85%); opacity:0.6;"></div>
+                <div style="width:90px; height:90px; border-radius:50%; background:radial-gradient(circle, var(--main), transparent 85%); opacity:0.6; pointer-events:none;"></div>
             </div>
-
-            <div id="news-panel">
-                <div id="news-list"></div>
-            </div>
+            <div id="news-panel"><div id="news-list"></div></div>
         </div>
-
         <div class="controls">
             <div class="switch-wrap"><span>METİN PANELİ</span><label class="switch"><input type="checkbox" id="panel-switch" onchange="syncPanels()"><span class="slider"></span></label></div>
             <div class="switch-wrap"><span>SESLİ YANIT</span><label class="switch"><input type="checkbox" id="voice-switch" checked><span class="slider"></span></label></div>
         </div>
     </div>
-
     <script>
-        let isListening = false;
-        let newsDatabase = [];
-        let newsIndex = 0;
-        let batLevel = 100;
-        
-        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-        const recognition = SpeechRecognition ? new SpeechRecognition() : null;
-        if(recognition) {
-            recognition.lang = 'tr-TR';
-            recognition.continuous = false;
-        }
+        let isListening = false; let newsDatabase = []; let newsIndex = 0; let batLevel = 100;
+        const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
+        const rec = new SpeechRec(); rec.lang = 'tr-TR'; rec.continuous = false;
 
-        setTimeout(() => { 
-            document.getElementById('intro').style.opacity = '0';
-            setTimeout(() => { 
-                document.getElementById('intro').style.display = 'none'; 
-                document.getElementById('app').style.opacity = '1'; 
-                init(); 
-            }, 1000);
-        }, 2000);
+        setTimeout(() => { document.getElementById('intro').style.opacity = '0'; setTimeout(() => { document.getElementById('intro').style.display='none'; document.getElementById('app').style.opacity='1'; init(); }, 1000); }, 2000);
 
         function init() {
             setInterval(() => document.getElementById('clock').innerText = new Date().toLocaleTimeString('tr-TR', {hour:'2-digit', minute:'2-digit'}), 1000);
-            create1000News();
-            updateBattery();
-            makeDraggable(document.getElementById("transcript-area"));
-            makeDraggable(document.getElementById("input-area"));
-        }
-
-        function create1000News() {
-            const subjects = ["Ekonomi", "Teknoloji", "Uzay", "Spor", "Dünya", "Bilim"];
-            const detail = ["kritik gelişme", "yeni rekor", "önemli açıklama", "beklenen haber", "flaş karar"];
-            for(let i=1; i<=1000; i++) {
-                newsDatabase.push(`${subjects[i%6]} Gündemi: #${i} - Bu alanda bir ${detail[i%5]} yaşandı.`);
-            }
+            const subs = ["Ekonomi", "NASA", "SpaceX", "Yapay Zeka", "Milli Takım", "Teknoloji Devi", "Dünya", "Havacılık"];
+            const acts = ["yeni bir rekor kırdı.", "kritik açıklama yaptı.", "buluş duyurdu.", "beklentileri aştı.", "zirveye oturdu."];
+            for(let i=1; i<=1000; i++) newsDatabase.push(`${subs[i%8]}, ${acts[i%5]} (#${i})`);
             document.getElementById('news-list').innerHTML = newsDatabase.sort(() => 0.5 - Math.random()).slice(0,30).map(n => `<div class="news-card">${n}</div>`).join('');
+            updateBattery(); makeDraggable(document.getElementById("transcript-area")); makeDraggable(document.getElementById("input-area"));
         }
 
         async function updateBattery() {
@@ -181,65 +109,34 @@
                 const up = () => {
                     batLevel = Math.round(b.level * 100);
                     const root = document.documentElement;
-                    
-                    // RENK GEÇİŞLERİ (YAVAŞ YAVAŞ BÜRÜNME)
-                    if(batLevel <= 20) {
-                        root.style.setProperty('--main', '#ff4444');
-                        root.style.setProperty('--accent', '#ff8888');
-                    } else if(batLevel <= 50) {
-                        root.style.setProperty('--main', '#00ff88');
-                        root.style.setProperty('--accent', '#aaffdd');
-                    } else {
-                        root.style.setProperty('--main', '#00aaff');
-                        root.style.setProperty('--accent', '#00eeff');
-                    }
+                    if(batLevel <= 20) root.style.setProperty('--main', '#ff4444');
+                    else if(batLevel <= 50) root.style.setProperty('--main', '#00ff88');
+                    else root.style.setProperty('--main', '#00aaff');
                 };
                 up(); b.onlevelchange = up;
             }
         }
 
         function toggleMic() {
-            if(!recognition) { alert("Ses tanıma aktif değil."); return; }
-            if(!isListening) {
-                window.speechSynthesis.speak(new SpeechSynthesisUtterance("")); // iPhone ses motoru ısınma
-                recognition.start();
-            } else {
-                recognition.stop();
-            }
+            window.speechSynthesis.speak(new SpeechSynthesisUtterance(""));
+            if(!isListening) { try { rec.start(); } catch(e) {} } else { try { rec.stop(); } catch(e) {} }
         }
 
-        if(recognition) {
-            recognition.onstart = () => { isListening=true; document.getElementById('main-orb').classList.add('listening'); };
-            recognition.onend = () => { isListening=false; document.getElementById('main-orb').classList.remove('listening'); };
-            recognition.onresult = (e) => { processJarvis(e.results[0][0].transcript.toLowerCase()); };
-        }
+        rec.onstart = () => { isListening=true; document.getElementById('main-orb').classList.add('listening'); };
+        rec.onend = () => { isListening=false; document.getElementById('main-orb').classList.remove('listening'); };
+        rec.onresult = (e) => processJarvis(e.results[e.results.length-1][0].transcript.toLowerCase());
 
         function handleChat(e) { if(e.key === 'Enter') { processJarvis(e.target.value.toLowerCase()); e.target.value=''; } }
 
         function processJarvis(msg) {
             let res = "";
-            if (msg.includes("bugün ne oldu") || msg.includes("haberleri oku") || msg.includes("haberler")) {
-                newsIndex = 0;
-                let batch = newsDatabase.slice(0, 5);
-                res = "Efendim, bugün öne çıkanlar şunlar: " + batch.join(". ") + ". Devam etmemi ister misiniz?";
+            if (msg.includes("haberi oku") || msg.includes("bugün ne oldu")) {
+                newsIndex = 0; let batch = newsDatabase.slice(0, 5);
+                res = "Efendim, bugünün özeti: " + batch.join(". ") + ". Devam etmemi ister misiniz?";
                 newsIndex = 5;
-            } else if (msg.includes("devam et")) {
-                let batch = newsDatabase.slice(newsIndex, newsIndex + 5);
-                res = batch.length > 0 ? "Devam ediyorum: " + batch.join(". ") : "Tüm haberler bitti.";
-                newsIndex += 5;
-            } else if (msg.includes("selam") || msg.includes("nasılsın")) {
+            } else if (msg.includes("nasılsın") || msg.includes("selam")) {
                 res = `İyiyim Efendim. Şarjınız %${batLevel}. By Çağrı ATAV imzalı sistemler stabil.`;
-            } else {
-                const math = msg.match(/(\d+)\s*(artı|eksi|çarpı|bölü|\+|\-|\*|\/)\s*(\d+)/);
-                if(math) {
-                    let n1 = parseFloat(math[1]), op = math[2], n2 = parseFloat(math[3]), ans = 0;
-                    if(op.includes("artı") || op==="+") ans = n1 + n2;
-                    else if(op.includes("eksi") || op==="-") ans = n1 - n2;
-                    else if(op.includes("çarpı") || op==="*") ans = n1 * n2;
-                    else if(op.includes("bölü") || op==="/") ans = n1 / n2;
-                    res = `Sonuç: ${ans} Efendim.`;
-                } else res = "Sizi dinliyorum Efendim.";
-            }
+            } else { res = "Sizi dinliyorum Efendim."; }
             speak(res);
         }
 
@@ -247,45 +144,37 @@
             document.getElementById('transcript-area').style.display = 'block';
             document.getElementById('panel-switch').checked = true;
             document.getElementById('transcript-text').innerText = t;
-
             if(document.getElementById('voice-switch').checked) {
                 window.speechSynthesis.cancel();
-                const u = new SpeechSynthesisUtterance(t); 
-                u.lang = 'tr-TR';
-                const gender = document.getElementById('voice-gender').value;
-                u.pitch = (gender === 'erkek') ? 0.8 : 1.3;
+                const u = new SpeechSynthesisUtterance(t); u.lang = 'tr-TR';
+                const g = document.getElementById('voice-gender').value;
+                u.pitch = (g === 'erkek') ? 0.8 : 1.3;
                 window.speechSynthesis.speak(u);
             }
         }
 
-        function toggleDrawer() { document.getElementById('drawer').classList.toggle('drawer-open'); }
-        function closeBox(id) { document.getElementById(id).style.display = 'none'; document.getElementById('panel-switch').checked = false; }
+        function closeBox(id) { document.getElementById(id).style.display = 'none'; }
         function syncPanels() {
-            const check = document.getElementById('panel-switch').checked;
-            document.getElementById('transcript-area').style.display = check ? 'block' : 'none';
-            document.getElementById('input-area').style.display = check ? 'block' : 'none';
+            const c = document.getElementById('panel-switch').checked;
+            document.getElementById('transcript-area').style.display = c ? 'block' : 'none';
+            document.getElementById('input-area').style.display = c ? 'block' : 'none';
         }
-        function syncPanelsDirect(val) { document.getElementById('panel-switch').checked = val; syncPanels(); toggleDrawer(); }
 
         function makeDraggable(el) {
-            let posX = 0, posY = 0, startX = 0, startY = 0;
-            el.addEventListener('mousedown', start);
-            el.addEventListener('touchstart', start, {passive: false});
-            function start(e) {
-                if(e.type === 'touchstart') { startX = e.touches[0].clientX; startY = e.touches[0].clientY; }
-                else { startX = e.clientX; startY = e.clientY; }
-                document.addEventListener('mousemove', move);
-                document.addEventListener('touchmove', move, {passive: false});
-                document.addEventListener('mouseup', end); document.addEventListener('touchend', end);
+            let px = 0, py = 0, sx = 0, sy = 0;
+            const h = el.querySelector('.panel-header') || el;
+            h.onmousedown = s; h.ontouchstart = s;
+            function s(e) {
+                if(e.type === 'touchstart') { sx = e.touches[0].clientX; sy = e.touches[0].clientY; } else { sx = e.clientX; sy = e.clientY; }
+                document.onmousemove = m; document.ontouchmove = m; document.onmouseup = end; document.ontouchend = end;
             }
-            function move(e) {
-                let curX, curY;
-                if(e.type === 'touchmove') { curX = e.touches[0].clientX; curY = e.touches[0].clientY; }
-                else { curX = e.clientX; curY = e.clientY; }
-                posX = startX - curX; posY = startY - curY; startX = curX; startY = curY;
-                el.style.top = (el.offsetTop - posY) + "px"; el.style.left = (el.offsetLeft - posX) + "px";
+            function m(e) {
+                let cx, cy;
+                if(e.type === 'touchmove') { cx = e.touches[0].clientX; cy = e.touches[0].clientY; } else { cx = e.clientX; cy = e.clientY; }
+                px = sx - cx; py = sy - cy; sx = cx; sy = cy;
+                el.style.top = (el.offsetTop - py) + "px"; el.style.left = (el.offsetLeft - px) + "px";
             }
-            function end() { document.removeEventListener('mousemove', move); document.removeEventListener('touchmove', move); }
+            function end() { document.onmousemove = null; document.ontouchmove = null; }
         }
     </script>
 </body>
