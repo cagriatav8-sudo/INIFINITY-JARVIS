@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>JARVIS — INFINITY™ OFFLINE</title>
+    <title>JARVIS — INFINITY™ 1000x</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Rajdhani:wght@400;600&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -24,13 +24,12 @@
             display: flex; align-items: center; justify-content: center; flex-direction: column;
             transition: opacity 1s ease;
         }
-        .inf-logo { width: 250px; stroke: var(--main-color); stroke-width: 2.5; fill: none; animation: draw 3s infinite alternate; }
+        .inf-logo { width: 180px; stroke: var(--main-color); stroke-width: 2.5; fill: none; animation: draw 3s infinite alternate; }
         @keyframes draw { 0% { stroke-dasharray: 0 500; } 100% { stroke-dasharray: 500 0; filter: drop-shadow(0 0 30px var(--main-color)); } }
-        .inf-text { margin-top: 20px; font-family: 'Orbitron'; letter-spacing: 10px; color: var(--main-color); }
 
-        /* UYGULAMA */
+        /* APP UI */
         #app { opacity: 0; height: 100%; display: flex; flex-direction: column; }
-        header { padding: 20px; display: flex; justify-content: space-between; align-items: center; background: rgba(2,8,16,0.7); backdrop-filter: blur(10px); border-bottom: 1px solid rgba(0,170,255,0.1); }
+        header { padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; background: rgba(2,8,16,0.7); backdrop-filter: blur(10px); border-bottom: 1px solid rgba(0,170,255,0.1); }
 
         /* YAN MENÜ */
         #drawer {
@@ -39,74 +38,71 @@
             border-right: 1px solid var(--main-color);
         }
         .drawer-open { left: 0 !important; }
-        .menu-item { padding: 15px; margin-bottom: 10px; border-radius: var(--r-md); background: rgba(0,170,255,0.1); cursor: pointer; border: 1px solid transparent; }
-        .menu-item:hover { border-color: var(--main-color); }
+        .menu-item { padding: 15px; margin-bottom: 10px; border-radius: var(--r-md); background: rgba(0,170,255,0.1); cursor: pointer; }
 
         /* METİN ALANI */
         #transcript-area {
-            position: absolute; top: 90px; width: 90%; max-width: 500px;
-            background: rgba(0, 0, 0, 0.9); border: 1px solid var(--main-color);
+            position: absolute; top: 85px; width: 90%; max-width: 500px;
+            background: rgba(0, 0, 0, 0.95); border: 1px solid var(--main-color);
             border-radius: var(--r-lg); padding: 25px; display: none;
             z-index: 500; backdrop-filter: blur(20px); max-height: 40%; overflow-y: auto;
         }
 
         /* ORB */
         .orb-btn {
-            width: 160px; height: 160px; border-radius: 50%; border: 2px solid var(--main-color);
+            width: 140px; height: 140px; border-radius: 50%; border: 2px solid var(--main-color);
             margin: 20px auto; display: flex; align-items: center; justify-content: center;
             box-shadow: 0 0 25px var(--main-color); cursor: pointer;
         }
         .listening { animation: pulse 0.5s infinite alternate; border-color: var(--accent-color); }
-        @keyframes pulse { to { transform: scale(1.15); box-shadow: 0 0 50px var(--accent-color); } }
+        @keyframes pulse { to { transform: scale(1.08); box-shadow: 0 0 50px var(--accent-color); } }
 
-        /* HABERLER PANELİ */
-        #news-panel { width: 90%; height: 200px; margin: 10px auto; background: var(--panel); border-radius: var(--r-md); padding: 15px; overflow-y: auto; border: 1px solid var(--main-color); }
-        .news-card { font-size: 13px; margin-bottom: 10px; padding: 12px; background: rgba(0,170,255,0.05); border-radius: 12px; border-left: 4px solid var(--main-color); animation: slideIn 0.3s ease-out; }
-        @keyframes slideIn { from { opacity: 0; transform: translateX(-10px); } to { opacity: 1; transform: translateX(0); } }
+        /* HABERLER */
+        #news-panel { width: 90%; height: 210px; margin: 10px auto; background: var(--panel); border-radius: var(--r-md); padding: 15px; overflow-y: auto; border: 1px solid var(--main-color); }
+        .news-card { font-size: 13px; margin-bottom: 10px; padding: 12px; background: rgba(0,170,255,0.05); border-radius: 12px; border-left: 4px solid var(--main-color); }
 
-        .stats { display: flex; gap: 15px; width: 90%; margin: 10px auto; }
-        .stat-box { flex: 1; background: var(--panel); padding: 15px; border-radius: var(--r-md); text-align: center; border: 1px solid var(--main-color); }
-        .stat-box b { display: block; color: var(--accent-color); font-family: 'Orbitron'; font-size: 20px; }
+        .stats { display: flex; gap: 10px; width: 90%; margin: 10px auto; }
+        .stat-box { flex: 1; background: var(--panel); padding: 12px; border-radius: var(--r-md); text-align: center; border: 1px solid var(--main-color); }
+        .stat-box b { display: block; color: var(--accent-color); font-family: 'Orbitron'; font-size: 18px; }
 
-        footer { padding: 15px; text-align: center; font-size: 10px; opacity: 0.5; font-family: 'Orbitron'; letter-spacing: 3px; }
+        footer { padding: 10px; text-align: center; font-size: 10px; opacity: 0.5; font-family: 'Orbitron'; letter-spacing: 3px; }
     </style>
 </head>
 <body>
 
     <div id="intro">
         <svg class="inf-logo" viewBox="0 0 100 50"><path d="M30,25 C30,15 15,15 15,25 C15,35 30,35 30,25 C30,15 45,15 45,25 C45,35 30,35 30,25" /></svg>
-        <div class="inf-text">INFINITY TM</div>
+        <div style="margin-top:20px; font-family:'Orbitron'; color:var(--main-color); letter-spacing:8px;">INFINITY TM</div>
     </div>
 
     <div id="drawer">
-        <h3 style="font-family:'Orbitron'; margin-bottom:20px; color:var(--main-color);">SİSTEM MENÜSÜ</h3>
+        <h3 style="font-family:'Orbitron'; margin-bottom:20px; color:var(--main-color);">JARVIS 1000x BELLEK</h3>
         <div class="menu-item" onclick="toggleTranscript()">📝 Metne Dök</div>
         <div class="menu-item" onclick="location.reload()">🔄 Belleği Yenile</div>
-        <div style="margin-top:60px; font-size:11px; opacity:0.4;">BY ÇAĞRI ATAV</div>
     </div>
 
     <div id="app">
         <header>
-            <div onclick="toggleDrawer()" style="cursor:pointer; font-size:28px;">☰</div>
-            <div style="font-family:'Orbitron'; letter-spacing:5px; font-weight:bold;">JARVIS</div>
+            <div onclick="toggleDrawer()" style="cursor:pointer; font-size:26px;">☰</div>
+            <div style="font-family:'Orbitron'; letter-spacing:4px;">JARVIS</div>
             <div id="clock">00:00</div>
         </header>
 
         <div style="flex:1; display:flex; flex-direction:column; align-items:center; position:relative;">
             <div class="stats">
-                <div class="stat-box">GÜÇ<b id="bat">--%</b></div>
+                <div class="stat-box">ENERJİ<b id="bat">--%</b></div>
                 <div class="stat-box">DURUM<b id="status-label">BAĞLI</b></div>
             </div>
 
-            <div id="transcript-area"><p id="transcript-text" style="color:var(--accent-color);">Bellek hazır Efendim.</p></div>
+            <div id="transcript-area"><p id="transcript-text" style="color:var(--accent-color);">Bellek 1000 kayıtla optimize edildi Efendim.</p></div>
 
             <div class="orb-btn" id="main-orb" onclick="toggleMic()">
-                <div style="width:110px; height:110px; border-radius:50%; background:radial-gradient(circle, var(--main-color) 0%, transparent 75%); opacity:0.6;"></div>
+                <div style="width:90px; height:90px; border-radius:50%; background:radial-gradient(circle, var(--main-color) 0%, transparent 75%); opacity:0.6;"></div>
             </div>
 
             <div id="news-panel">
-                <p style="font-size:10px; color:var(--main-color); margin-bottom:12px; letter-spacing:3px; font-weight:bold;">ÇEVRİMDIŞI GÜNDEM BELLEĞİ (30)</p>
-                <div id="news-list">Yükleniyor...</div>
+                <p style="font-size:10px; color:var(--main-color); margin-bottom:12px; letter-spacing:2px; font-weight:bold;">SİSTEM GÜNDEMİ (1000 HABER HAVUZU)</p>
+                <div id="news-list">Senkronizasyon...</div>
             </div>
         </div>
 
@@ -114,64 +110,21 @@
     </div>
 
     <script>
-        const newsDatabase = [
-            "Yapay zeka sistemleri küresel pazarda %40 büyüme kaydetti.",
-            "Infinity TM, yeni JARVIS çekirdek güncellemesini yayınladı.",
-            "Mars kolonisi için ilk sürdürülebilir enerji panelleri test edildi.",
-            "Kuantum bilgisayarlar şifreleme dünyasında devrim yaratıyor.",
-            "Çağrı ATAV, yeni nesil web teknolojileri üzerine makale yayınladı.",
-            "Dünyanın en hızlı elektrikli motoru Türkiye'de üretildi.",
-            "Deepfake teknolojisine karşı yeni güvenlik kalkanı geliştirildi.",
-            "Güneş fırtınaları nedeniyle uydu iletişiminde kısa süreli kesinti yaşandı.",
-            "Holografik ekranlar akıllı telefonlara entegre edilmeye başlandı.",
-            "Yapay zeka ile antik diller saniyeler içinde tercüme edildi.",
-            "Robotik cerrahide hata payı %0.01 seviyesine indirildi.",
-            "Elektrikli araç şarj süresi 5 dakikanın altına düştü.",
-            "Yeni bir exoplanet yaşanabilir bölgede keşfedildi.",
-            "Metaverse üzerinden ilk resmi devlet görüşmesi yapıldı.",
-            "Otonom uçan taksiler ilk şehir içi testini başarıyla tamamladı.",
-            "Giyilebilir teknoloji ile kalp krizi 24 saat önceden tespit edilebiliyor.",
-            "Okyanus temizleme projesi Pasifik'teki atıkları %30 azalttı.",
-            "Yeni nesil işlemciler 1 nanometre sınırını aştı.",
-            "Biyometrik pasaportlar yerine DNA taraması gündemde.",
-            "Dünya nüfusu dijital kimlik kullanımında rekora ulaştı.",
-            "Siber güvenlik saldırılarına karşı JARVIS savunma hattı aktif.",
-            "Yeni nesil lityum piller 10 kat daha fazla kapasite sunuyor.",
-            "Akıllı ev sistemleri artık kullanıcı moduna göre ışık ayarlıyor.",
-            "Dijital sanat eserleri müze sergilerinde başrolü aldı.",
-            "3D yazıcılarla üretilen ilk kalıcı konut projesi bitti.",
-            "Uzay turizmi biletleri önümüzdeki yıl için tükendi.",
-            "Küresel ısınmaya karşı dev buzdağı taşıma projesi onaylandı.",
-            "Zihin kontrolü ile çalışan ilk protez kol piyasaya çıktı.",
-            "Süper iletken malzemeler oda sıcaklığında çalışmaya başladı.",
-            "Blockchain tabanlı yeni oylama sistemi test edildi.",
-            // ... (Burada 200 haberi simüle eden bir döngü veya geniş liste var)
-            "Yeni bir asteroit madenciliği şirketi kuruldu.",
-            "Yapay zeka artık kendi başına kod yazabiliyor.",
-            "Sanal gerçeklikte koku duyusu aktarımı başarıldı.",
-            "Bitkisel bazlı yapay et üretimi maliyetleri düştü.",
-            "Mikro plastikleri temizleyen nano robotlar denize bırakıldı.",
-            "Kablosuz elektrik iletimi 100 metre mesafede test edildi.",
-            "Hücre yenileyici serum testleri olumlu sonuç verdi.",
-            "Dijital ikiz teknolojisi şehir planlamada kullanılmaya başlandı.",
-            "Ay yüzeyinde ilk su çıkarma operasyonu başarılı oldu.",
-            "Yeni nesil jet motorları hidrojenle çalışmaya başladı.",
-            "Biyonik göz teknolojisi ile görme engelliler için umut doğdu.",
-            "Siber suçlarla mücadelede yapay zeka ajanları devrede.",
-            "Düşünce hızıyla metin yazan kask prototipi tanıtıldı.",
-            "Dünyanın en derin çukuru için yeni araştırma robotu yapıldı.",
-            "Yapay zeka tarafından bestelenen senfoni ayakta alkışlandı.",
-            "Dikey tarım projeleri gıda krizine çözüm oluyor.",
-            "Kendi kendini onaran beton teknolojisi binalarda kullanıldı.",
-            "Veri depolamada DNA bazlı yeni sürücü geliştirildi.",
-            "Küresel ağ hızı saniyede 1 terabit sınırını geçti.",
-            "Çağrı ATAV'ın 'Infinity' projesi teknoloji ödülüne aday gösterildi."
-        ];
-        // 200'e tamamlamak için benzeri haberler kodda çoğaltılır...
-        for(let i=0; i<150; i++) newsDatabase.push(`Teknoloji Gündemi: Gelişme #${i+100} - JARVIS tarafından analiz edildi.`);
+        // 1000 HABER HAVUZU ÜRETİCİSİ
+        const subjects = ["Ekonomi", "Teknoloji", "Spor", "Dünya", "Bilim", "Sanat", "Havacılık", "Otomobil", "Yapay Zeka", "Uzay"];
+        const predicates = ["kritik gelişme kaydedildi.", "yeni bir döneme giriyor.", "beklentilerin üzerinde sonuçlandı.", "tüm dünyada yankı uyandırdı.", "uzmanlar tarafından analiz edildi.", "gelecek planları açıklandı.", "rekor seviyeye ulaştı.", "yenilikçi adımlar atıldı.", "başarıyla tamamlandı.", "yeni bir tartışma başlattı."];
+        
+        const newsDatabase = [];
+        for (let i = 1; i <= 1000; i++) {
+            let sub = subjects[Math.floor(Math.random() * subjects.length)];
+            let pre = predicates[Math.floor(Math.random() * predicates.length)];
+            newsDatabase.push(`${sub} Gündemi: Kayıt #${i} - Bu alanda ${pre}`);
+        }
 
         let isListening = false;
         let batLevel = 100;
+        let selectedNews = [];
+        let newsIndex = 0;
         const rec = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
         rec.lang = 'tr-TR';
 
@@ -198,10 +151,9 @@
 
         function loadOfflineNews() {
             const list = document.getElementById('news-list');
-            // Havuzdan rastgele 30 tane seç
-            const shuffled = newsDatabase.sort(() => 0.5 - Math.random());
-            const selected = shuffled.slice(0, 30);
-            list.innerHTML = selected.map(n => `<div class="news-card">${n}</div>`).join('');
+            selectedNews = newsDatabase.sort(() => 0.5 - Math.random()).slice(0, 30);
+            list.innerHTML = selectedNews.map(txt => `<div class="news-card">${txt}</div>`).join('');
+            newsIndex = 0;
         }
 
         function toggleDrawer() { document.getElementById('drawer').classList.toggle('drawer-open'); }
@@ -252,19 +204,37 @@
 
         function processJarvis(msg) {
             let response = "";
-            const math = msg.match(/(\d+)\s*(artı|eksi|çarpı|bölü|\+|\-|\*|\/)\s*(\d+)/);
 
-            if (math) {
-                let n1 = parseFloat(math[1]), op = math[2], n2 = parseFloat(math[3]), res = 0;
-                if(op.includes("artı") || op === "+") res = n1 + n2;
-                else if(op.includes("eksi") || op === "-") res = n1 - n2;
-                else if(op.includes("çarpı") || op === "*") res = n1 * n2;
-                else if(op.includes("bölü") || op === "/") res = n1 / n2;
-                response = `Sonuç: ${res} efendim.`;
-            } else if (msg.includes("nasılsın") || msg.includes("selam")) {
-                response = `İyiyim efendim. Saat ${document.getElementById('clock').innerText}. Enerjiniz yüzde ${batLevel}.`;
-            } else {
-                response = "Sizi dinliyorum efendim.";
+            if (msg.includes("bugün ne oldu") || msg.includes("haberleri say")) {
+                newsIndex = 0;
+                let newsToSay = selectedNews.slice(0, 5);
+                response = "Efendim, bugün öne çıkan haberler şunlar: " + newsToSay.join(". ") + ". Devam etmemi ister misiniz?";
+                newsIndex = 5;
+            } 
+            else if (msg.includes("devam et") || msg.includes("devam")) {
+                if (newsIndex >= selectedNews.length) {
+                    response = "1000 haberlik havuzdan seçilen tüm kayıtları sundum efendim. Başka bir arzunuz?";
+                } else {
+                    let newsToSay = selectedNews.slice(newsIndex, newsIndex + 5);
+                    response = "Devam ediyorum: " + newsToSay.join(". ") + ". Daha fazlası için devam et diyebilirsiniz.";
+                    newsIndex += 5;
+                }
+            }
+            else if (msg.includes("nasılsın") || msg.includes("selam")) {
+                response = `İyiyim efendim. Saat ${document.getElementById('clock').innerText}. Şarjınız yüzde ${batLevel}. 1000 haberlik belleğim senkronize edildi.`;
+            }
+            else {
+                const math = msg.match(/(\d+)\s*(artı|eksi|çarpı|bölü|\+|\-|\*|\/)\s*(\d+)/);
+                if (math) {
+                    let n1 = parseFloat(math[1]), op = math[2], n2 = parseFloat(math[3]), res = 0;
+                    if(op.includes("artı") || op === "+") res = n1 + n2;
+                    else if(op.includes("eksi") || op === "-") res = n1 - n2;
+                    else if(op.includes("çarpı") || op === "*") res = n1 * n2;
+                    else if(op.includes("bölü") || op === "/") res = n1 / n2;
+                    response = `Sonuç ${res} efendim.`;
+                } else {
+                    response = "Sizi dinliyorum efendim.";
+                }
             }
             speak(response);
         }
