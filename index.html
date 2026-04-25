@@ -3,57 +3,63 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>JARVIS — INFINITY™ 1000x GLOBAL</title>
+    <title>JARVIS — INFINITY™ ULTIMATE</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Rajdhani:wght@400;600&display=swap" rel="stylesheet">
     <style>
         :root { --main: #00aaff; --accent: #00eeff; --bg: #020810; --panel: rgba(4, 15, 30, 0.96); }
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         body { background: var(--bg); color: #c0e8ff; font-family: 'Rajdhani', sans-serif; overflow: hidden; height: 100vh; width: 100vw; touch-action: none; }
 
-        /* INTRO */
+        /* GİRİŞ EKRANI */
         #intro { position: fixed; inset: 0; z-index: 9999; background: #000; display: flex; align-items: center; justify-content: center; transition: 1s; }
         .inf-logo { width: 150px; stroke: var(--main); stroke-width: 2.5; fill: none; animation: draw 3s infinite alternate; }
         @keyframes draw { 0% { stroke-dasharray: 0 500; } 100% { stroke-dasharray: 500 0; filter: drop-shadow(0 0 30px var(--main)); } }
 
-        /* APP */
         #app { opacity: 0; height: 100%; display: flex; flex-direction: column; transition: 1s; }
-        header { padding: 10px 20px; display: flex; justify-content: space-between; align-items: center; background: rgba(2,8,16,0.8); border-bottom: 1px solid rgba(0,170,255,0.1); z-index: 10; }
+        header { padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; background: rgba(2,8,16,0.8); border-bottom: 1px solid rgba(0,170,255,0.1); z-index: 10; }
+
+        /* YAN MENÜ (DRAWER) */
+        #drawer {
+            position: fixed; top: 0; left: -320px; width: 280px; height: 100%;
+            background: var(--panel); z-index: 2000; padding: 40px 20px;
+            border-right: 1px solid var(--main); box-shadow: 10px 0 30px rgba(0,0,0,1); transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .drawer-open { left: 0 !important; }
+        .drawer-header { border-bottom: 1px solid var(--main); padding-bottom: 15px; margin-bottom: 25px; font-family: 'Orbitron'; font-size: 14px; color: var(--main); }
+        .menu-item { padding: 15px; margin-bottom: 12px; border-radius: 15px; background: rgba(0,170,255,0.08); cursor: pointer; border: 1px solid transparent; display: flex; align-items: center; justify-content: space-between; }
+        .menu-item:active { background: rgba(0,170,255,0.2); }
+        .by-text { margin-top: auto; font-size: 11px; opacity: 0.6; color: var(--main); letter-spacing: 2px; text-align: center; }
 
         /* SÜRÜKLENEBİLİR PANELLER */
         .draggable {
-            position: absolute; width: 92%; max-width: 400px;
-            background: var(--panel); border: 1px solid var(--main);
-            border-radius: 20px; padding: 20px; z-index: 500;
-            backdrop-filter: blur(25px); box-shadow: 0 0 40px #000;
-            cursor: move; touch-action: none; display: none;
+            position: absolute; width: 92%; max-width: 380px; background: var(--panel); 
+            border: 1px solid var(--main); border-radius: 20px; padding: 20px; z-index: 500;
+            backdrop-filter: blur(25px); box-shadow: 0 0 40px #000; cursor: move; display: none;
         }
-        .panel-header { display: flex; justify-content: space-between; margin-bottom: 12px; border-bottom: 1px solid rgba(0,170,255,0.2); padding-bottom: 8px; pointer-events: none; }
-        .close-btn { pointer-events: auto; cursor: pointer; color: var(--main); font-weight: bold; font-size: 20px; }
+        .panel-header { display: flex; justify-content: space-between; margin-bottom: 10px; border-bottom: 1px solid rgba(0,170,255,0.2); padding-bottom: 5px; pointer-events: none; }
+        .close-btn { pointer-events: auto; cursor: pointer; color: var(--main); font-size: 20px; }
 
-        /* MAIN UI */
+        /* MAIN */
         .main-content { flex: 1; position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; }
-        .orb-btn { width: 130px; height: 130px; border-radius: 50%; border: 2px solid var(--main); display: flex; align-items: center; justify-content: center; box-shadow: 0 0 25px var(--main); cursor: pointer; z-index: 5; }
-        .listening { animation: pulse 0.5s infinite alternate; border-color: var(--accent); }
+        .orb-btn { width: 130px; height: 130px; border-radius: 50%; border: 2px solid var(--main); display: flex; align-items: center; justify-content: center; box-shadow: 0 0 25px var(--main); cursor: pointer; }
+        .listening { animation: pulse 0.5s infinite alternate; }
         @keyframes pulse { to { transform: scale(1.1); box-shadow: 0 0 50px var(--accent); } }
 
-        /* HABER PANELİ */
-        #news-panel { width: 92%; height: 200px; background: var(--panel); border-radius: 22px; padding: 18px; overflow-y: auto; border: 1px solid var(--main); margin-top: 25px; }
-        .news-card { font-size: 13px; margin-bottom: 10px; padding: 12px; background: rgba(0,170,255,0.06); border-radius: 14px; border-left: 4px solid var(--main); }
+        #news-panel { width: 92%; height: 180px; background: var(--panel); border-radius: 22px; padding: 18px; overflow-y: auto; border: 1px solid var(--main); margin-top: 20px; }
+        .news-card { font-size: 12px; margin-bottom: 8px; padding: 10px; background: rgba(0,170,255,0.06); border-radius: 12px; border-left: 4px solid var(--main); }
 
-        /* KONTROLLER */
+        /* SWITCHES */
         .controls { position: fixed; bottom: 15px; right: 15px; display: flex; flex-direction: column; gap: 8px; z-index: 1000; }
-        .switch-wrap { display: flex; align-items: center; justify-content: space-between; gap: 10px; background: var(--panel); padding: 10px 15px; border-radius: 20px; border: 1px solid var(--main); min-width: 160px; font-size: 11px; }
-        .switch { position: relative; width: 38px; height: 20px; }
+        .switch-wrap { display: flex; align-items: center; justify-content: space-between; gap: 10px; background: var(--panel); padding: 10px 15px; border-radius: 20px; border: 1px solid var(--main); min-width: 155px; font-size: 10px; }
+        .switch { position: relative; width: 34px; height: 18px; }
         .switch input { opacity: 0; width: 0; height: 0; }
         .slider { position: absolute; cursor: pointer; inset: 0; background: #222; border-radius: 34px; transition: .4s; }
-        .slider:before { position: absolute; content: ""; height: 14px; width: 14px; left: 3px; bottom: 3px; background: white; border-radius: 50%; transition: .4s; }
+        .slider:before { position: absolute; content: ""; height: 12px; width: 12px; left: 3px; bottom: 3px; background: white; border-radius: 50%; transition: .4s; }
         input:checked + .slider { background: var(--main); }
-        input:checked + .slider:before { transform: translateX(18px); }
+        input:checked + .slider:before { transform: translateX(16px); }
 
-        #chat-input { width: 100%; background: rgba(0,0,0,0.5); border: 1px solid var(--main); color: white; padding: 12px; border-radius: 12px; outline: none; margin-top: 10px; font-family: 'Rajdhani'; }
-
-        .stats { display: flex; gap: 10px; width: 92%; margin-bottom: 10px; }
-        .stat-box { flex: 1; background: var(--panel); padding: 12px; border-radius: 18px; text-align: center; border: 1px solid var(--main); }
+        select { background: #000; color: var(--main); border: 1px solid var(--main); border-radius: 10px; font-family: 'Rajdhani'; font-size: 12px; padding: 3px; outline: none; }
+        #chat-input { width: 100%; background: rgba(0,0,0,0.5); border: 1px solid var(--main); color: white; padding: 12px; border-radius: 12px; outline: none; margin-top: 10px; }
     </style>
 </head>
 <body>
@@ -62,26 +68,37 @@
         <svg class="inf-logo" viewBox="0 0 100 50"><path d="M30,25 C30,15 15,15 15,25 C15,35 30,35 30,25 C30,15 45,15 45,25 C45,35 30,35 30,25" /></svg>
     </div>
 
+    <div id="drawer">
+        <div class="drawer-header">SİSTEM AYARLARI</div>
+        <div class="menu-item" style="cursor:default;">
+            <span>SES CİNSİYETİ</span>
+            <select id="voice-gender" onchange="changeVoice()">
+                <option value="erkek">Erkek</option>
+                <option value="kadin">Kadın</option>
+            </select>
+        </div>
+        <div class="menu-item" onclick="syncPanelsDirect(true)">📝 Metne Döküme Başla</div>
+        <div class="menu-item" onclick="location.reload()">🔄 Sistemi Resetle</div>
+        
+        <div class="by-text">BY ÇAĞRI ATAV<br>INFINITY TM © 2026</div>
+    </div>
+
     <div id="app">
         <header>
-            <div style="font-family:'Orbitron'; font-size:16px; color:var(--main); letter-spacing:2px; font-weight:bold;">JARVIS GLOBAL 1000x</div>
-            <div id="clock" style="font-family:'Orbitron'; color:var(--accent);">00:00</div>
+            <div onclick="toggleDrawer()" style="cursor:pointer; font-size:26px; color:var(--main);">☰</div>
+            <div style="font-family:'Orbitron'; font-size:16px; color:var(--main);">JARVIS GLOBAL</div>
+            <div id="clock">00:00</div>
         </header>
 
         <div class="main-content">
-            <div class="stats">
-                <div class="stat-box">ENERJİ<b id="bat" style="display:block; color:var(--accent);">--%</b></div>
-                <div class="stat-box">DURUM<b id="status-label" style="display:block; color:var(--accent);">BAĞLI</b></div>
+            <div id="transcript-area" class="draggable" style="top: 80px; left: 10px;">
+                <div class="panel-header"><span>ALTYAZI</span><span class="close-btn" onclick="closeBox('transcript-area')">✖</span></div>
+                <p id="transcript-text" style="font-size:15px; color:var(--accent); line-height:1.5;">Efendim, JARVIS aktif.</p>
             </div>
 
-            <div id="transcript-area" class="draggable" style="top: 100px; left: 15px;">
-                <div class="panel-header"><span>TRANSCRIPT</span><span class="close-btn" onclick="closeBox('transcript-area')">✖</span></div>
-                <p id="transcript-text" style="font-size:15px; color:var(--accent); line-height:1.6;">Sistem belleği 1000 kayıtla yüklendi.</p>
-            </div>
-
-            <div id="input-area" class="draggable" style="top: 260px; left: 15px;">
+            <div id="input-area" class="draggable" style="top: 240px; left: 10px;">
                 <div class="panel-header"><span>METNE GEÇİR</span><span class="close-btn" onclick="closeBox('input-area')">✖</span></div>
-                <input type="text" id="chat-input" placeholder="Emredin Efendim..." onkeypress="handleChat(event)">
+                <input type="text" id="chat-input" placeholder="Emredin..." onkeypress="handleChat(event)">
             </div>
 
             <div class="orb-btn" id="main-orb" onclick="toggleMic()">
@@ -89,7 +106,6 @@
             </div>
 
             <div id="news-panel">
-                <p style="font-size:10px; color:var(--main); margin-bottom:12px; letter-spacing:3px; font-weight:bold;">AKTİF BELLEK ANALİZİ</p>
                 <div id="news-list"></div>
             </div>
         </div>
@@ -102,10 +118,10 @@
 
     <script>
         let isListening = false;
-        let batLevel = 100;
         let newsDatabase = [];
-        let selectedNews = [];
         let newsIndex = 0;
+        let selectedVoice = null;
+        
         const rec = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
         rec.lang = 'tr-TR';
 
@@ -118,32 +134,42 @@
             setInterval(() => document.getElementById('clock').innerText = new Date().toLocaleTimeString('tr-TR', {hour:'2-digit', minute:'2-digit'}), 1000);
             create1000News();
             updateBattery();
+            changeVoice(); // İlk sesi ayarla
             makeDraggable(document.getElementById("transcript-area"));
             makeDraggable(document.getElementById("input-area"));
         }
 
-        function create1000News() {
-            const subs = ["Ekonomi", "Borsa", "Transfer", "Yapay Zeka", "Uzay", "Teknoloji", "Milli Takım", "NASA", "Bilim", "Dünya"];
-            const actions = ["yeni bir rekor kırdı.", "kritik bir eşiği geçti.", "beklentileri alt üst etti.", "devrim niteliğinde bir buluş duyurdu.", "transfer görüşmelerine başladı.", "tarihi bir açıklama yaptı.", "yeni nesil sistemini tanıttı.", "tüm dengeleri değiştirdi."];
-            
-            for(let i=1; i<=1000; i++) {
-                let s = subs[Math.floor(Math.random()*subs.length)];
-                let a = actions[Math.floor(Math.random()*actions.length)];
-                newsDatabase.push(`${s} Gündemi: ${s} alanında ${a} (#${i})`);
-            }
-            selectedNews = newsDatabase.sort(() => 0.5 - Math.random()).slice(0, 100);
-            document.getElementById('news-list').innerHTML = selectedNews.slice(0,30).map(n => `<div class="news-card">${n}</div>`).join('');
+        function toggleDrawer() { document.getElementById('drawer').classList.toggle('drawer-open'); }
+
+        function changeVoice() {
+            const gender = document.getElementById('voice-gender').value;
+            const voices = window.speechSynthesis.getVoices();
+            // Basit bir eşleme: Bazı tarayıcılarda ses isimlerine göre seçer
+            selectedVoice = voices.find(v => v.lang.includes('tr')) || null;
+            // Not: Web Speech API her cihazda farklı sesler sunar, pitch ve rate ile tonu ayarlıyoruz
         }
 
-        function closeBox(id) { 
-            document.getElementById(id).style.display = 'none';
-            if(id==='input-area' || id==='transcript-area') document.getElementById('panel-switch').checked = false;
+        function create1000News() {
+            const subjects = ["Ekonomi", "Teknoloji", "Uzay", "Spor", "Dünya", "Bilim"];
+            const detail = ["kritik gelişme", "yeni rekor", "önemli açıklama", "beklenen haber", "flaş karar"];
+            for(let i=1; i<=1000; i++) {
+                newsDatabase.push(`${subjects[i%6]} Gündemi: Kayıt #${i}. ${detail[i%5]} az önce paylaşıldı.`);
+            }
+            document.getElementById('news-list').innerHTML = newsDatabase.sort(() => 0.5 - Math.random()).slice(0,30).map(n => `<div class="news-card">${n}</div>`).join('');
         }
+
+        function closeBox(id) { document.getElementById(id).style.display = 'none'; document.getElementById('panel-switch').checked = false; }
         
         function syncPanels() {
             const check = document.getElementById('panel-switch').checked;
             document.getElementById('transcript-area').style.display = check ? 'block' : 'none';
             document.getElementById('input-area').style.display = check ? 'block' : 'none';
+        }
+
+        function syncPanelsDirect(val) {
+            document.getElementById('panel-switch').checked = val;
+            syncPanels();
+            toggleDrawer();
         }
 
         function handleChat(e) { if(e.key === 'Enter') { processJarvis(e.target.value.toLowerCase()); e.target.value=''; } }
@@ -156,55 +182,41 @@
             if (navigator.getBattery) {
                 const b = await navigator.getBattery();
                 const up = () => {
-                    batLevel = Math.round(b.level * 100);
-                    document.getElementById('bat').innerText = `%${batLevel}`;
-                    updateTheme(batLevel);
+                    const level = Math.round(b.level * 100);
+                    document.getElementById('bat').innerText = `%${level}`;
+                    const root = document.documentElement;
+                    if(level <= 20) root.style.setProperty('--main', '#ff4444');
+                    else if(level <= 50) root.style.setProperty('--main', '#00ff88');
+                    else root.style.setProperty('--main', '#00aaff');
                 };
                 up(); b.onlevelchange = up;
             }
         }
 
-        function updateTheme(level) {
-            const root = document.documentElement;
-            if(level <= 20) root.style.setProperty('--main', '#ff4444');
-            else if(level <= 50) root.style.setProperty('--main', '#00ff88');
-            else root.style.setProperty('--main', '#00aaff');
-        }
-
         function processJarvis(msg) {
             let res = "";
-            const math = msg.match(/(\d+)\s*(artı|eksi|çarpı|bölü|\+|\-|\*|\/)\s*(\d+)/);
-
-            if (msg.includes("bugün ne oldu") || msg.includes("haberi oku") || msg.includes("haberleri oku")) {
+            if (msg.includes("bugün ne oldu") || msg.includes("haberleri oku")) {
                 newsIndex = 0;
-                let batch = selectedNews.slice(0, 5);
-                res = "Efendim, bugünün özeti: " + batch.map((h,i)=>`${i+1}. haber: ${h}`).join(". ") + ". Devam etmemi ister misiniz?";
+                let batch = newsDatabase.slice(0, 5);
+                res = "Efendim, bugün öne çıkanlar şunlar: " + batch.join(". ") + ". Devam etmemi ister misiniz?";
                 newsIndex = 5;
-            } 
-            else if (msg.includes("devam et")) {
-                let batch = selectedNews.slice(newsIndex, newsIndex + 5);
-                if(batch.length > 0) {
-                    res = "Haberlere devam ediyorum: " + batch.map((h,i)=>`${i+1}. haber: ${h}`).join(". ");
-                    newsIndex += 5;
-                } else res = "Tüm haberler bitti Efendim.";
+            } else if (msg.includes("devam et")) {
+                let batch = newsDatabase.slice(newsIndex, newsIndex + 5);
+                res = batch.length > 0 ? "Devam ediyorum: " + batch.join(". ") : "Tüm haberler bitti.";
+                newsIndex += 5;
+            } else if (msg.includes("selam") || msg.includes("nasılsın")) {
+                res = "İyiyim Efendim, JARVIS tüm sistemleriyle aktif. By Çağrı ATAV imzalı son güncellemeleri yükledim.";
+            } else {
+                const math = msg.match(/(\d+)\s*(artı|eksi|çarpı|bölü|\+|\-|\*|\/)\s*(\d+)/);
+                if(math) {
+                    let n1 = parseFloat(math[1]), op = math[2], n2 = parseFloat(math[3]), ans = 0;
+                    if(op.includes("artı") || op==="+") ans = n1 + n2;
+                    else if(op.includes("eksi") || op==="-") ans = n1 - n2;
+                    else if(op.includes("çarpı") || op==="*") ans = n1 * n2;
+                    else if(op.includes("bölü") || op==="/") ans = n1 / n2;
+                    res = `Sonuç: ${ans} Efendim.`;
+                } else res = "Sizi dinliyorum Efendim.";
             }
-            else if (msg.match(/([1-5])\.(?: haber|haberi)/)) {
-                let num = parseInt(msg.match(/([1-5])/)[0]);
-                let batch = selectedNews.slice(newsIndex-5, newsIndex);
-                res = batch[num-1] ? `${num}. haberi tekrar ediyorum: ${batch[num-1]}` : "O numaralı bir haber grupta bulunmuyor.";
-            }
-            else if (math) {
-                let n1 = parseFloat(math[1]), op = math[2], n2 = parseFloat(math[3]), ans = 0;
-                if(op.includes("artı") || op==="+") ans = n1 + n2;
-                else if(op.includes("eksi") || op==="-") ans = n1 - n2;
-                else if(op.includes("çarpı") || op==="*") ans = n1 * n2;
-                else if(op.includes("bölü") || op==="/") ans = n1 / n2;
-                res = `İşlemin sonucu ${ans} Efendim.`;
-            }
-            else if (msg.includes("nasılsın") || msg.includes("selam")) {
-                res = `İyiyim Efendim. Saat ${new Date().getHours()}:${new Date().getMinutes()}. Şarjınız %${batLevel}.`;
-            } else res = "Sizi dinliyorum Efendim.";
-
             speak(res);
         }
 
@@ -213,7 +225,12 @@
             document.getElementById('panel-switch').checked = true;
             document.getElementById('transcript-text').innerText = t;
             if(document.getElementById('voice-switch').checked) {
-                const u = new SpeechSynthesisUtterance(t); u.lang='tr-TR'; window.speechSynthesis.speak(u);
+                const u = new SpeechSynthesisUtterance(t); 
+                u.lang='tr-TR';
+                const gender = document.getElementById('voice-gender').value;
+                u.pitch = gender === 'erkek' ? 0.8 : 1.4; // Erkek kalın, kadın ince ses
+                u.rate = 1.0;
+                window.speechSynthesis.speak(u);
             }
         }
 
@@ -221,30 +238,21 @@
             let posX = 0, posY = 0, startX = 0, startY = 0;
             el.addEventListener('mousedown', start);
             el.addEventListener('touchstart', start, {passive: false});
-
             function start(e) {
                 if(e.type === 'touchstart') { startX = e.touches[0].clientX; startY = e.touches[0].clientY; }
                 else { startX = e.clientX; startY = e.clientY; }
                 document.addEventListener('mousemove', move);
                 document.addEventListener('touchmove', move, {passive: false});
-                document.addEventListener('mouseup', end);
-                document.addEventListener('touchend', end);
+                document.addEventListener('mouseup', end); document.addEventListener('touchend', end);
             }
-
             function move(e) {
                 let curX, curY;
                 if(e.type === 'touchmove') { curX = e.touches[0].clientX; curY = e.touches[0].clientY; }
                 else { curX = e.clientX; curY = e.clientY; }
-                posX = startX - curX; posY = startY - curY;
-                startX = curX; startY = curY;
-                el.style.top = (el.offsetTop - posY) + "px";
-                el.style.left = (el.offsetLeft - posX) + "px";
+                posX = startX - curX; posY = startY - curY; startX = curX; startY = curY;
+                el.style.top = (el.offsetTop - posY) + "px"; el.style.left = (el.offsetLeft - posX) + "px";
             }
-
-            function end() {
-                document.removeEventListener('mousemove', move);
-                document.removeEventListener('touchmove', move);
-            }
+            function end() { document.removeEventListener('mousemove', move); document.removeEventListener('touchmove', move); }
         }
     </script>
 </body>
