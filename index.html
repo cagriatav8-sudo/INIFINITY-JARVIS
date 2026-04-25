@@ -3,106 +3,116 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>JARVIS — INFINITY™ 1000x</title>
+    <title>JARVIS — INFINITY™ MEMORY PRO</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Rajdhani:wght@400;600&display=swap" rel="stylesheet">
     <style>
         :root {
             --main-color: #00aaff;
             --accent-color: #00eeff;
             --bg: #020810;
-            --panel: rgba(4, 15, 30, 0.9);
+            --panel: rgba(4, 15, 30, 0.95);
             --r-lg: 30px;
             --r-md: 20px;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; transition: all 0.4s ease; }
+        * { margin: 0; padding: 0; box-sizing: border-box; transition: 0.3s; }
         body { background: var(--bg); color: #c0e8ff; font-family: 'Rajdhani', sans-serif; overflow: hidden; height: 100vh; }
 
-        /* GİRİŞ EKRANI */
-        #intro {
-            position: fixed; inset: 0; z-index: 9999; background: #000;
-            display: flex; align-items: center; justify-content: center; flex-direction: column;
-            transition: opacity 1s ease;
-        }
+        #intro { position: fixed; inset: 0; z-index: 9999; background: #000; display: flex; align-items: center; justify-content: center; flex-direction: column; transition: 1s; }
         .inf-logo { width: 180px; stroke: var(--main-color); stroke-width: 2.5; fill: none; animation: draw 3s infinite alternate; }
         @keyframes draw { 0% { stroke-dasharray: 0 500; } 100% { stroke-dasharray: 500 0; filter: drop-shadow(0 0 30px var(--main-color)); } }
 
-        /* APP UI */
         #app { opacity: 0; height: 100%; display: flex; flex-direction: column; }
         header { padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; background: rgba(2,8,16,0.7); backdrop-filter: blur(10px); border-bottom: 1px solid rgba(0,170,255,0.1); }
 
-        /* YAN MENÜ */
-        #drawer {
-            position: fixed; top: 0; left: -300px; width: 280px; height: 100%;
-            background: var(--panel); z-index: 2000; padding: 40px 20px;
-            border-right: 1px solid var(--main-color);
+        .floating-box {
+            position: absolute; top: 90px; width: 95%; max-width: 450px;
+            background: rgba(0, 5, 15, 0.98); border: 1px solid var(--main-color);
+            border-radius: var(--r-lg); padding: 25px; display: none; z-index: 500;
+            backdrop-filter: blur(25px); box-shadow: 0 0 40px rgba(0,0,0,1);
         }
-        .drawer-open { left: 0 !important; }
-        .menu-item { padding: 15px; margin-bottom: 10px; border-radius: var(--r-md); background: rgba(0,170,255,0.1); cursor: pointer; }
+        .close-btn { position: absolute; right: 20px; top: 20px; cursor: pointer; color: var(--main-color); font-size: 20px; }
 
-        /* METİN ALANI */
-        #transcript-area {
-            position: absolute; top: 85px; width: 90%; max-width: 500px;
-            background: rgba(0, 0, 0, 0.95); border: 1px solid var(--main-color);
-            border-radius: var(--r-lg); padding: 25px; display: none;
-            z-index: 500; backdrop-filter: blur(20px); max-height: 40%; overflow-y: auto;
-        }
+        #chat-input { width: 100%; background: rgba(0, 170, 255, 0.1); border: 1px solid var(--main-color); color: white; padding: 12px; border-radius: var(--r-md); outline: none; margin-top: 15px; }
 
-        /* ORB */
-        .orb-btn {
-            width: 140px; height: 140px; border-radius: 50%; border: 2px solid var(--main-color);
-            margin: 20px auto; display: flex; align-items: center; justify-content: center;
-            box-shadow: 0 0 25px var(--main-color); cursor: pointer;
-        }
+        .orb-btn { width: 140px; height: 140px; border-radius: 50%; border: 2px solid var(--main-color); margin: 20px auto; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 25px var(--main-color); cursor: pointer; }
         .listening { animation: pulse 0.5s infinite alternate; border-color: var(--accent-color); }
-        @keyframes pulse { to { transform: scale(1.08); box-shadow: 0 0 50px var(--accent-color); } }
+        @keyframes pulse { to { transform: scale(1.1); box-shadow: 0 0 45px var(--accent-color); } }
 
-        /* HABERLER */
-        #news-panel { width: 90%; height: 210px; margin: 10px auto; background: var(--panel); border-radius: var(--r-md); padding: 15px; overflow-y: auto; border: 1px solid var(--main-color); }
-        .news-card { font-size: 13px; margin-bottom: 10px; padding: 12px; background: rgba(0,170,255,0.05); border-radius: 12px; border-left: 4px solid var(--main-color); }
+        #news-panel { width: 90%; height: 180px; margin: 10px auto; background: var(--panel); border-radius: var(--r-md); padding: 15px; overflow-y: auto; border: 1px solid var(--main-color); }
+        .news-card { font-size: 13px; margin-bottom: 8px; padding: 10px; background: rgba(0,170,255,0.05); border-radius: 12px; border-left: 4px solid var(--main-color); }
+
+        .controls { position: fixed; bottom: 20px; right: 20px; display: flex; flex-direction: column; gap: 8px; z-index: 1000; }
+        .switch-wrap { display: flex; align-items: center; justify-content: space-between; gap: 10px; background: var(--panel); padding: 10px 15px; border-radius: 20px; border: 1px solid var(--main-color); min-width: 160px; }
+        
+        .switch { position: relative; display: inline-block; width: 40px; height: 22px; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #222; transition: .4s; border-radius: 34px; }
+        .slider:before { position: absolute; content: ""; height: 16px; width: 16px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; }
+        input:checked + .slider { background-color: var(--main-color); }
+        input:checked + .slider:before { transform: translateX(18px); }
 
         .stats { display: flex; gap: 10px; width: 90%; margin: 10px auto; }
         .stat-box { flex: 1; background: var(--panel); padding: 12px; border-radius: var(--r-md); text-align: center; border: 1px solid var(--main-color); }
-        .stat-box b { display: block; color: var(--accent-color); font-family: 'Orbitron'; font-size: 18px; }
-
-        footer { padding: 10px; text-align: center; font-size: 10px; opacity: 0.5; font-family: 'Orbitron'; letter-spacing: 3px; }
+        
+        footer { padding: 10px; text-align: center; font-size: 10px; opacity: 0.5; font-family: 'Orbitron'; letter-spacing: 2px; }
     </style>
 </head>
 <body>
 
     <div id="intro">
         <svg class="inf-logo" viewBox="0 0 100 50"><path d="M30,25 C30,15 15,15 15,25 C15,35 30,35 30,25 C30,15 45,15 45,25 C45,35 30,35 30,25" /></svg>
-        <div style="margin-top:20px; font-family:'Orbitron'; color:var(--main-color); letter-spacing:8px;">INFINITY TM</div>
-    </div>
-
-    <div id="drawer">
-        <h3 style="font-family:'Orbitron'; margin-bottom:20px; color:var(--main-color);">JARVIS 1000x BELLEK</h3>
-        <div class="menu-item" onclick="toggleTranscript()">📝 Metne Dök</div>
-        <div class="menu-item" onclick="location.reload()">🔄 Belleği Yenile</div>
+        <div style="margin-top:15px; font-family:'Orbitron'; color:var(--main-color); letter-spacing:8px;">INFINITY TM</div>
     </div>
 
     <div id="app">
         <header>
-            <div onclick="toggleDrawer()" style="cursor:pointer; font-size:26px;">☰</div>
-            <div style="font-family:'Orbitron'; letter-spacing:4px;">JARVIS</div>
+            <div style="cursor:pointer; font-size:26px; color:var(--main-color);">☰</div>
+            <div style="font-family:'Orbitron'; letter-spacing:4px; font-weight: bold;">JARVIS</div>
             <div id="clock">00:00</div>
         </header>
 
         <div style="flex:1; display:flex; flex-direction:column; align-items:center; position:relative;">
             <div class="stats">
-                <div class="stat-box">ENERJİ<b id="bat">--%</b></div>
+                <div class="stat-box">GÜÇ<b id="bat">--%</b></div>
                 <div class="stat-box">DURUM<b id="status-label">BAĞLI</b></div>
             </div>
 
-            <div id="transcript-area"><p id="transcript-text" style="color:var(--accent-color);">Bellek 1000 kayıtla optimize edildi Efendim.</p></div>
+            <div id="transcript-area" class="floating-box">
+                <span class="close-btn" onclick="closeBox('transcript-area')">✖</span>
+                <p id="transcript-text" style="color:var(--accent-color); line-height:1.6; font-size: 15px;">Sistem hazır Efendim.</p>
+            </div>
+
+            <div id="input-area" class="floating-box">
+                <span class="close-btn" onclick="closeBox('input-area')">✖</span>
+                <p style="font-size:12px; margin-bottom:5px; opacity: 0.7;">KLAVYE GİRİŞİ:</p>
+                <input type="text" id="chat-input" placeholder="Emredin..." onkeypress="handleChat(event)">
+            </div>
 
             <div class="orb-btn" id="main-orb" onclick="toggleMic()">
                 <div style="width:90px; height:90px; border-radius:50%; background:radial-gradient(circle, var(--main-color) 0%, transparent 75%); opacity:0.6;"></div>
             </div>
 
             <div id="news-panel">
-                <p style="font-size:10px; color:var(--main-color); margin-bottom:12px; letter-spacing:2px; font-weight:bold;">SİSTEM GÜNDEMİ (1000 HABER HAVUZU)</p>
-                <div id="news-list">Senkronizasyon...</div>
+                <p style="font-size:10px; color:var(--main-color); margin-bottom:12px; letter-spacing:2px; font-weight:bold;">STRATEJİK GÜNDEM (1000 KAYIT)</p>
+                <div id="news-list">Yükleniyor...</div>
+            </div>
+        </div>
+
+        <div class="controls">
+            <div class="switch-wrap">
+                <span>METİN PANELİ</span>
+                <label class="switch">
+                    <input type="checkbox" id="panel-switch" onchange="syncPanels()">
+                    <span class="slider"></span>
+                </label>
+            </div>
+            <div class="switch-wrap">
+                <span>SESLİ YANIT</span>
+                <label class="switch">
+                    <input type="checkbox" id="voice-switch" checked>
+                    <span class="slider"></span>
+                </label>
             </div>
         </div>
 
@@ -110,21 +120,21 @@
     </div>
 
     <script>
-        // 1000 HABER HAVUZU ÜRETİCİSİ
-        const subjects = ["Ekonomi", "Teknoloji", "Spor", "Dünya", "Bilim", "Sanat", "Havacılık", "Otomobil", "Yapay Zeka", "Uzay"];
-        const predicates = ["kritik gelişme kaydedildi.", "yeni bir döneme giriyor.", "beklentilerin üzerinde sonuçlandı.", "tüm dünyada yankı uyandırdı.", "uzmanlar tarafından analiz edildi.", "gelecek planları açıklandı.", "rekor seviyeye ulaştı.", "yenilikçi adımlar atıldı.", "başarıyla tamamlandı.", "yeni bir tartışma başlattı."];
-        
+        // 1000 HABER ÜRETİCİ
+        const subs = ["Merkez Bankası", "SpaceX", "NASA", "Yapay Zeka", "Milli Takım", "Teknoloji Devi", "Tesla", "Bilim Heyeti"];
+        const acts = ["rekor kırdı.", "açıklama yaptı.", "yeni proje duyurdu.", "hareketlilik yarattı.", "buluşa imza attı."];
         const newsDatabase = [];
         for (let i = 1; i <= 1000; i++) {
-            let sub = subjects[Math.floor(Math.random() * subjects.length)];
-            let pre = predicates[Math.floor(Math.random() * predicates.length)];
-            newsDatabase.push(`${sub} Gündemi: Kayıt #${i} - Bu alanda ${pre}`);
+            newsDatabase.push(`${subs[Math.floor(Math.random()*subs.length)]}, ${acts[Math.floor(Math.random()*acts.length)]} (#${i})`);
         }
 
         let isListening = false;
         let batLevel = 100;
         let selectedNews = [];
+        let currentGroup = [];
         let newsIndex = 0;
+        let lastSaid = "";
+
         const rec = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
         rec.lang = 'tr-TR';
 
@@ -135,11 +145,11 @@
                 document.getElementById('app').style.opacity = '1';
                 init();
             }, 1000);
-        }, 3000);
+        }, 2000);
 
         function init() {
             updateClock();
-            loadOfflineNews();
+            loadNews();
             updateBattery();
         }
 
@@ -149,18 +159,28 @@
             }, 1000);
         }
 
-        function loadOfflineNews() {
-            const list = document.getElementById('news-list');
-            selectedNews = newsDatabase.sort(() => 0.5 - Math.random()).slice(0, 30);
-            list.innerHTML = selectedNews.map(txt => `<div class="news-card">${txt}</div>`).join('');
+        function loadNews() {
+            selectedNews = newsDatabase.sort(() => 0.5 - Math.random()).slice(0, 100);
+            document.getElementById('news-list').innerHTML = selectedNews.slice(0,30).map(n => `<div class="news-card">${n}</div>`).join('');
             newsIndex = 0;
         }
 
-        function toggleDrawer() { document.getElementById('drawer').classList.toggle('drawer-open'); }
-        function toggleTranscript() {
-            const area = document.getElementById('transcript-area');
-            area.style.display = area.style.display === 'block' ? 'none' : 'block';
-            toggleDrawer();
+        function closeBox(id) { 
+            document.getElementById(id).style.display = 'none'; 
+            if(id === 'input-area' || id === 'transcript-area') document.getElementById('panel-switch').checked = false;
+        }
+        
+        function syncPanels() {
+            const isChecked = document.getElementById('panel-switch').checked;
+            document.getElementById('transcript-area').style.display = isChecked ? 'block' : 'none';
+            document.getElementById('input-area').style.display = isChecked ? 'block' : 'none';
+        }
+
+        function handleChat(e) {
+            if(e.key === 'Enter') {
+                processCommand(e.target.value.toLowerCase());
+                e.target.value = '';
+            }
         }
 
         async function updateBattery() {
@@ -182,68 +202,79 @@
             else root.style.setProperty('--main-color', '#00aaff');
         }
 
-        function toggleMic() {
-            if(!isListening) rec.start();
-            else rec.stop();
-        }
+        function toggleMic() { if(!isListening) rec.start(); else rec.stop(); }
+        rec.onstart = () => { isListening = true; document.getElementById('main-orb').classList.add('listening'); };
+        rec.onend = () => { isListening = false; document.getElementById('main-orb').classList.remove('listening'); };
+        rec.onresult = (e) => { processCommand(e.results[e.results.length - 1][0].transcript.toLowerCase()); };
 
-        rec.onstart = () => {
-            isListening = true;
-            document.getElementById('main-orb').classList.add('listening');
-        };
-
-        rec.onend = () => {
-            isListening = false;
-            document.getElementById('main-orb').classList.remove('listening');
-        };
-
-        rec.onresult = (e) => {
-            const talk = e.results[e.results.length - 1][0].transcript.toLowerCase();
-            processJarvis(talk);
-        };
-
-        function processJarvis(msg) {
+        function processCommand(msg) {
             let response = "";
 
-            if (msg.includes("bugün ne oldu") || msg.includes("haberleri say")) {
+            // "BUGÜN NE OLDU" - 5'Lİ GRUP BAŞLATMA
+            if (msg.includes("bugün ne oldu")) {
                 newsIndex = 0;
-                let newsToSay = selectedNews.slice(0, 5);
-                response = "Efendim, bugün öne çıkan haberler şunlar: " + newsToSay.join(". ") + ". Devam etmemi ister misiniz?";
+                currentGroup = selectedNews.slice(0, 5);
+                response = "Efendim, bugün öne çıkan 5 haber şunlar: " + currentGroup.map((h, i) => `${i+1}. haber: ${h}`).join(". ") + ". Devam et derseniz diğerlerine geçerim.";
+                lastSaid = response;
                 newsIndex = 5;
             } 
-            else if (msg.includes("devam et") || msg.includes("devam")) {
-                if (newsIndex >= selectedNews.length) {
-                    response = "1000 haberlik havuzdan seçilen tüm kayıtları sundum efendim. Başka bir arzunuz?";
-                } else {
-                    let newsToSay = selectedNews.slice(newsIndex, newsIndex + 5);
-                    response = "Devam ediyorum: " + newsToSay.join(". ") + ". Daha fazlası için devam et diyebilirsiniz.";
+            // "DEVAM ET" - SONRAKİ 5'Lİ GRUP
+            else if (msg.includes("devam et")) {
+                currentGroup = selectedNews.slice(newsIndex, newsIndex + 5);
+                if(currentGroup.length > 0) {
+                    response = "Haberlere devam ediyorum: " + currentGroup.map((h, i) => `${i+1}. haber: ${h}`).join(". ");
                     newsIndex += 5;
-                }
-            }
-            else if (msg.includes("nasılsın") || msg.includes("selam")) {
-                response = `İyiyim efendim. Saat ${document.getElementById('clock').innerText}. Şarjınız yüzde ${batLevel}. 1000 haberlik belleğim senkronize edildi.`;
-            }
-            else {
-                const math = msg.match(/(\d+)\s*(artı|eksi|çarpı|bölü|\+|\-|\*|\/)\s*(\d+)/);
-                if (math) {
-                    let n1 = parseFloat(math[1]), op = math[2], n2 = parseFloat(math[3]), res = 0;
-                    if(op.includes("artı") || op === "+") res = n1 + n2;
-                    else if(op.includes("eksi") || op === "-") res = n1 - n2;
-                    else if(op.includes("çarpı") || op === "*") res = n1 * n2;
-                    else if(op.includes("bölü") || op === "/") res = n1 / n2;
-                    response = `Sonuç ${res} efendim.`;
                 } else {
-                    response = "Sizi dinliyorum efendim.";
+                    response = "Tüm önemli haberler bitti efendim.";
+                }
+                lastSaid = response;
+            }
+            // "TEKRAR ET"
+            else if (msg.includes("tekrar et") || msg.includes("yeniden söyle")) {
+                response = lastSaid ? "Tekrar ediyorum: " + lastSaid : "Henüz bir şey söylemedim efendim.";
+            }
+            // "X. HABERİ SÖYLE" (1-5 Arası)
+            else if (msg.match(/([1-5])\.(?: haber|haberi)/)) {
+                let num = parseInt(msg.match(/([1-5])/)[0]);
+                if(currentGroup[num-1]) {
+                    response = `${num}. haberi tekrar ediyorum: ${currentGroup[num-1]}`;
+                } else {
+                    response = "Efendim, şu anki grupta o numaralı bir haber yok.";
                 }
             }
+            // MATEMATİK
+            else if (msg.match(/(\d+)\s*(artı|eksi|çarpı|bölü|\+|\-|\*|\/)\s*(\d+)/)) {
+                const math = msg.match(/(\d+)\s*(artı|eksi|çarpı|bölü|\+|\-|\*|\/)\s*(\d+)/);
+                let n1 = parseFloat(math[1]), op = math[2], n2 = parseFloat(math[3]), res = 0;
+                if(op.includes("artı") || op === "+") res = n1 + n2;
+                else if(op.includes("eksi") || op === "-") res = n1 - n2;
+                else if(op.includes("çarpı") || op === "*") res = n1 * n2;
+                else if(op.includes("bölü") || op === "/") res = n1 / n2;
+                response = `İşlemin sonucu: ${res} efendim.`;
+            } 
+            else if (msg.includes("selam") || msg.includes("nasılsın")) {
+                response = `İyiyim efendim. Şarjınız %${batLevel}.`;
+            } 
+            else {
+                response = "Sizi dinliyorum Efendim.";
+            }
+            
             speak(response);
         }
 
         function speak(t) {
-            document.getElementById('transcript-text').innerText = t;
-            const u = new SpeechSynthesisUtterance(t);
-            u.lang = 'tr-TR';
-            window.speechSynthesis.speak(u);
+            const isTextOn = document.getElementById('panel-switch').checked;
+            const isVoiceOn = document.getElementById('voice-switch').checked;
+
+            if(isTextOn) {
+                document.getElementById('transcript-area').style.display = 'block';
+                document.getElementById('transcript-text').innerText = t;
+            }
+            if(isVoiceOn) {
+                const u = new SpeechSynthesisUtterance(t);
+                u.lang = 'tr-TR';
+                window.speechSynthesis.speak(u);
+            }
         }
     </script>
 </body>
