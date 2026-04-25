@@ -2,172 +2,291 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Infinity - by Çağrı Atav</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>JARVIS — INFINITY™ SMOOTH ENERGY</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Rajdhani:wght@400;600&display=swap" rel="stylesheet">
     <style>
-        body {
-            font-family: 'Segoe UI', sans-serif;
-            background-color: #0f0f0f; /* Dark Mode severiz */
-            color: white;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-            margin: 0;
-            overflow: hidden;
+        :root { 
+            --main: #00aaff; 
+            --accent: #00eeff; 
+            --bg: #020810; 
+            --panel: rgba(4, 15, 30, 0.97); 
         }
 
-        /* Navigasyon ve Menü */
-        .navbar { position: fixed; top: 20px; left: 20px; z-index: 1001; }
-        
-        .brand-link {
-            cursor: pointer;
-            font-weight: bold;
-            color: #a855f7; /* Codeium Moru :) */
-            padding: 10px 20px;
-            border: 2px solid #a855f7;
-            border-radius: 30px;
-            background: rgba(168, 85, 247, 0.1);
-            transition: 0.3s;
+        /* Tüm renk değişimlerini yavaşlat (Hafif hafif bürünsün) */
+        * { 
+            margin: 0; padding: 0; box-sizing: border-box; 
+            -webkit-tap-highlight-color: transparent; 
+            transition: color 2s ease, border-color 2s ease, box-shadow 2s ease, background 2s ease, stroke 2s ease;
         }
 
-        .side-menu {
-            position: fixed;
-            top: 80px;
-            left: -260px;
-            width: 220px;
-            background: #1a1a1a;
-            border: 1px solid #333;
-            padding: 20px;
-            border-radius: 0 20px 20px 0;
-            transition: 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        body { 
+            background: var(--bg); color: #c0e8ff; 
+            font-family: 'Rajdhani', sans-serif; 
+            overflow: hidden; height: 100vh; width: 100vw; 
+            touch-action: none; 
         }
 
-        .side-menu.active { left: 0; }
+        /* GİRİŞ EKRANI */
+        #intro { position: fixed; inset: 0; z-index: 9999; background: #000; display: flex; align-items: center; justify-content: center; transition: 1s; }
+        .inf-logo { width: 150px; stroke: var(--main); stroke-width: 2.5; fill: none; animation: draw 3s infinite alternate; }
+        @keyframes draw { 0% { stroke-dasharray: 0 500; } 100% { stroke-dasharray: 500 0; filter: drop-shadow(0 0 30px var(--main)); } }
 
-        /* Kart Yapısı */
-        .card {
-            width: 320px;
-            padding: 25px;
-            background: #1e1e1e;
-            border-radius: 15px;
-            text-align: center;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-            border: 1px solid #333;
-            cursor: pointer;
-        }
+        #app { opacity: 0; height: 100%; display: flex; flex-direction: column; transition: 1.5s; }
+        header { padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; background: rgba(2,8,16,0.8); border-bottom: 1px solid rgba(255,255,255,0.05); z-index: 10; }
 
-        .delete-btn {
-            background: #ff4757;
-            color: white;
-            border: none;
-            padding: 12px 25px;
-            border-radius: 8px;
-            cursor: pointer;
-            margin-top: 20px;
-            font-weight: bold;
+        /* YAN MENÜ */
+        #drawer {
+            position: fixed; top: 0; left: -320px; width: 280px; height: 100%;
+            background: var(--panel); z-index: 2000; padding: 40px 20px;
+            border-right: 1px solid var(--main); box-shadow: 10px 0 30px #000; transition: 0.5s ease;
         }
+        .drawer-open { left: 0 !important; }
+        .drawer-header { border-bottom: 1px solid var(--main); padding-bottom: 15px; margin-bottom: 25px; font-family: 'Orbitron'; font-size: 14px; color: var(--main); }
+        .menu-item { padding: 15px; margin-bottom: 12px; border-radius: 15px; background: rgba(255,255,255,0.03); cursor: pointer; display: flex; align-items: center; justify-content: space-between; }
+        .by-text { margin-top: auto; font-size: 11px; color: var(--main); text-align: center; font-weight: bold; letter-spacing: 2px; }
 
-        /* Haber Ekranı */
-        #haberEkrani {
-            margin-top: 20px;
-            padding: 15px;
-            border-left: 4px solid #a855f7;
-            background: #252525;
-            width: 80%;
-            max-width: 500px;
-            min-height: 50px;
-            display: none;
+        /* PANELLER */
+        .draggable {
+            position: absolute; width: 92%; max-width: 380px; background: var(--panel); 
+            border: 1px solid var(--main); border-radius: 20px; padding: 20px; z-index: 500;
+            backdrop-filter: blur(25px); box-shadow: 0 0 40px rgba(0,0,0,0.8); cursor: move; display: none;
         }
+        .panel-header { display: flex; justify-content: space-between; margin-bottom: 10px; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 5px; pointer-events: none; }
+        .close-btn { pointer-events: auto; cursor: pointer; color: var(--main); font-size: 20px; }
+
+        /* ORB */
+        .main-content { flex: 1; position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        .orb-btn { 
+            width: 130px; height: 130px; border-radius: 50%; 
+            border: 2px solid var(--main); display: flex; align-items: center; 
+            justify-content: center; box-shadow: 0 0 25px var(--main); cursor: pointer; 
+        }
+        .listening { animation: pulse 0.5s infinite alternate; }
+        @keyframes pulse { to { transform: scale(1.1); box-shadow: 0 0 60px var(--main); } }
+
+        /* HABERLER */
+        #news-panel { width: 92%; height: 180px; background: var(--panel); border-radius: 22px; padding: 18px; overflow-y: auto; border: 1px solid var(--main); margin-top: 20px; }
+        .news-card { font-size: 12px; margin-bottom: 8px; padding: 10px; background: rgba(255,255,255,0.02); border-radius: 12px; border-left: 4px solid var(--main); }
+
+        /* KONTROLLER */
+        .controls { position: fixed; bottom: 15px; right: 15px; display: flex; flex-direction: column; gap: 8px; z-index: 1000; }
+        .switch-wrap { display: flex; align-items: center; justify-content: space-between; gap: 10px; background: var(--panel); padding: 10px 15px; border-radius: 20px; border: 1px solid var(--main); min-width: 155px; font-size: 10px; }
+        .switch { position: relative; width: 34px; height: 18px; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; inset: 0; background: #222; border-radius: 34px; transition: .4s; }
+        .slider:before { position: absolute; content: ""; height: 12px; width: 12px; left: 3px; bottom: 3px; background: white; border-radius: 50%; transition: .4s; }
+        input:checked + .slider { background: var(--main); }
+        input:checked + .slider:before { transform: translateX(16px); }
+
+        select { background: #000; color: var(--main); border: 1px solid var(--main); border-radius: 10px; padding: 3px; outline: none; }
+        #chat-input { width: 100%; background: rgba(0,0,0,0.5); border: 1px solid var(--main); color: white; padding: 12px; border-radius: 12px; outline: none; margin-top: 10px; }
     </style>
 </head>
 <body>
 
-    <nav class="navbar">
-        <div id="menuToggle" class="brand-link">by Çağrı Atav</div>
-        <div id="sideMenu" class="side-menu">
-            <h4 style="margin-top:0">Ses Ayarları</h4>
-            <label><input type="radio" name="voice" value="kadin" checked> Kız Sesi</label><br><br>
-            <label><input type="radio" name="voice" value="erkek"> Erkek Sesi</label>
-        </div>
-    </nav>
-
-    <div id="parentCard" class="card">
-        <h3>Sistem Kontrolü</h3>
-        <p>Haberleri duymak için "Haberler" de veya butona tıkla.</p>
-        <button id="childButton" class="delete-btn">Kartı Sil (Bubbling)</button>
+    <div id="intro">
+        <svg class="inf-logo" viewBox="0 0 100 50"><path d="M30,25 C30,15 15,15 15,25 C15,35 30,35 30,25 C30,15 45,15 45,25 C45,35 30,35 30,25" /></svg>
     </div>
 
-    <div id="haberEkrani"></div>
+    <div id="drawer">
+        <div class="drawer-header">JARVIS PROTOCOLS</div>
+        <div class="menu-item" style="cursor:default;">
+            <span>SES CİNSİYETİ</span>
+            <select id="voice-gender">
+                <option value="erkek">Erkek</option>
+                <option value="kadin">Kadın</option>
+            </select>
+        </div>
+        <div class="menu-item" onclick="syncPanelsDirect(true)">📝 Metne Dökümü Başlat</div>
+        <div class="menu-item" onclick="location.reload()">🔄 Sistemi Resetle</div>
+        <div class="by-text">BY ÇAĞRI ATAV<br>INFINITY TM © 2026</div>
+    </div>
+
+    <div id="app">
+        <header>
+            <div onclick="toggleDrawer()" style="cursor:pointer; font-size:26px; color:var(--main);">☰</div>
+            <div style="font-family:'Orbitron'; font-size:16px; color:var(--main); letter-spacing:2px; font-weight: bold;">JARVIS PRO</div>
+            <div id="clock">00:00</div>
+        </header>
+
+        <div class="main-content">
+            <div id="transcript-area" class="draggable" style="top: 80px; left: 10px;">
+                <div class="panel-header"><span>TRANSCRIPT</span><span class="close-btn" onclick="closeBox('transcript-area')">✖</span></div>
+                <p id="transcript-text" style="font-size:15px; color:var(--main); line-height:1.5;">Efendim, enerji seviyesi takip ediliyor.</p>
+            </div>
+
+            <div id="input-area" class="draggable" style="top: 240px; left: 10px;">
+                <div class="panel-header"><span>METNE GEÇİR</span><span class="close-btn" onclick="closeBox('input-area')">✖</span></div>
+                <input type="text" id="chat-input" placeholder="Emredin..." onkeypress="handleChat(event)">
+            </div>
+
+            <div class="orb-btn" id="main-orb" onclick="toggleMic()">
+                <div style="width:80px; height:80px; border-radius:50%; background:radial-gradient(circle, var(--main), transparent 85%); opacity:0.6;"></div>
+            </div>
+
+            <div id="news-panel">
+                <div id="news-list"></div>
+            </div>
+        </div>
+
+        <div class="controls">
+            <div class="switch-wrap"><span>METİN PANELİ</span><label class="switch"><input type="checkbox" id="panel-switch" onchange="syncPanels()"><span class="slider"></span></label></div>
+            <div class="switch-wrap"><span>SESLİ YANIT</span><label class="switch"><input type="checkbox" id="voice-switch" checked><span class="slider"></span></label></div>
+        </div>
+    </div>
 
     <script>
-        const menuToggle = document.getElementById('menuToggle');
-        const sideMenu = document.getElementById('sideMenu');
-        const card = document.getElementById('parentCard');
-        const button = document.getElementById('childButton');
-        const haberEkrani = document.getElementById('haberEkrani');
-
-        // --- 1. MENÜ VE SES AYARI ---
-        menuToggle.addEventListener('click', (e) => {
-            e.stopPropagation();
-            sideMenu.classList.toggle('active');
-        });
-
-        // --- 2. iPHONE UYUMLU SES TANIMA (SPEECH RECOGNITION) ---
+        let isListening = false;
+        let newsDatabase = [];
+        let newsIndex = 0;
+        let batLevel = 100;
+        
         const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-        if (SpeechRecognition) {
-            const recognition = new SpeechRecognition();
+        const recognition = SpeechRecognition ? new SpeechRecognition() : null;
+        if(recognition) {
             recognition.lang = 'tr-TR';
-            recognition.continuous = true;
+            recognition.continuous = false;
+        }
 
-            recognition.onresult = (event) => {
-                const command = event.results[event.results.length - 1][0].transcript.toLowerCase();
-                console.log("Algılanan Ses:", command);
-                
-                if (command.includes("haberler") || command.includes("selam")) {
-                    haberOkuVeYaz("Efendim, bugün teknoloji dünyasında Infinity projeleri hızla gelişmeye devam ediyor. Çağrı Atav yeni özellikler ekledi.");
-                }
-            };
-            
-            // iPhone için tıklama ile başlatma şartı
-            document.body.addEventListener('click', () => {
+        setTimeout(() => { 
+            document.getElementById('intro').style.opacity = '0';
+            setTimeout(() => { 
+                document.getElementById('intro').style.display = 'none'; 
+                document.getElementById('app').style.opacity = '1'; 
+                init(); 
+            }, 1000);
+        }, 2000);
+
+        function init() {
+            setInterval(() => document.getElementById('clock').innerText = new Date().toLocaleTimeString('tr-TR', {hour:'2-digit', minute:'2-digit'}), 1000);
+            create1000News();
+            updateBattery();
+            makeDraggable(document.getElementById("transcript-area"));
+            makeDraggable(document.getElementById("input-area"));
+        }
+
+        function create1000News() {
+            const subjects = ["Ekonomi", "Teknoloji", "Uzay", "Spor", "Dünya", "Bilim"];
+            const detail = ["kritik gelişme", "yeni rekor", "önemli açıklama", "beklenen haber", "flaş karar"];
+            for(let i=1; i<=1000; i++) {
+                newsDatabase.push(`${subjects[i%6]} Gündemi: #${i} - Bu alanda bir ${detail[i%5]} yaşandı.`);
+            }
+            document.getElementById('news-list').innerHTML = newsDatabase.sort(() => 0.5 - Math.random()).slice(0,30).map(n => `<div class="news-card">${n}</div>`).join('');
+        }
+
+        async function updateBattery() {
+            if (navigator.getBattery) {
+                const b = await navigator.getBattery();
+                const up = () => {
+                    batLevel = Math.round(b.level * 100);
+                    const root = document.documentElement;
+                    
+                    // RENK GEÇİŞLERİ (YAVAŞ YAVAŞ BÜRÜNME)
+                    if(batLevel <= 20) {
+                        root.style.setProperty('--main', '#ff4444');
+                        root.style.setProperty('--accent', '#ff8888');
+                    } else if(batLevel <= 50) {
+                        root.style.setProperty('--main', '#00ff88');
+                        root.style.setProperty('--accent', '#aaffdd');
+                    } else {
+                        root.style.setProperty('--main', '#00aaff');
+                        root.style.setProperty('--accent', '#00eeff');
+                    }
+                };
+                up(); b.onlevelchange = up;
+            }
+        }
+
+        function toggleMic() {
+            if(!recognition) { alert("Ses tanıma aktif değil."); return; }
+            if(!isListening) {
+                window.speechSynthesis.speak(new SpeechSynthesisUtterance("")); // iPhone ses motoru ısınma
                 recognition.start();
-                console.log("Sistem Dinlemede...");
-            }, { once: true });
+            } else {
+                recognition.stop();
+            }
         }
 
-        // --- 3. HEM YAZMA HEM KONUŞMA (SYNTHESIS) ---
-        function haberOkuVeYaz(metin) {
-            // Ekrana Yaz
-            haberEkrani.style.display = 'block';
-            haberEkrani.innerText = metin;
-
-            // Sesli Oku
-            const utterance = new SpeechSynthesisUtterance(metin);
-            const seciliSes = document.querySelector('input[name="voice"]:checked').value;
-            
-            utterance.lang = 'tr-TR';
-            utterance.pitch = seciliSes === 'kadin' ? 1.3 : 0.7; // Kız sesi ince, erkek sesi kalın
-            utterance.rate = 1;
-
-            window.speechSynthesis.speak(utterance);
+        if(recognition) {
+            recognition.onstart = () => { isListening=true; document.getElementById('main-orb').classList.add('listening'); };
+            recognition.onend = () => { isListening=false; document.getElementById('main-orb').classList.remove('listening'); };
+            recognition.onresult = (e) => { processJarvis(e.results[0][0].transcript.toLowerCase()); };
         }
 
-        // --- 4. BUBBLING VE KART SİLME ---
-        button.addEventListener('click', (e) => {
-            console.log("LOG: Butona tıklandı (Child).");
-            // Buraya tıklayınca haber okuma tetikleyebilirsin:
-            haberOkuVeYaz("Kart sistemi kendini imha ediyor. Bubbling tetiklendi.");
-        });
+        function handleChat(e) { if(e.key === 'Enter') { processJarvis(e.target.value.toLowerCase()); e.target.value=''; } }
 
-        card.addEventListener('click', () => {
-            console.log("LOG: Kart (Parent) olayı yakaladı ve siliniyor.");
-            setTimeout(() => { card.remove(); }, 500);
-        });
+        function processJarvis(msg) {
+            let res = "";
+            if (msg.includes("bugün ne oldu") || msg.includes("haberleri oku") || msg.includes("haberler")) {
+                newsIndex = 0;
+                let batch = newsDatabase.slice(0, 5);
+                res = "Efendim, bugün öne çıkanlar şunlar: " + batch.join(". ") + ". Devam etmemi ister misiniz?";
+                newsIndex = 5;
+            } else if (msg.includes("devam et")) {
+                let batch = newsDatabase.slice(newsIndex, newsIndex + 5);
+                res = batch.length > 0 ? "Devam ediyorum: " + batch.join(". ") : "Tüm haberler bitti.";
+                newsIndex += 5;
+            } else if (msg.includes("selam") || msg.includes("nasılsın")) {
+                res = `İyiyim Efendim. Şarjınız %${batLevel}. By Çağrı ATAV imzalı sistemler stabil.`;
+            } else {
+                const math = msg.match(/(\d+)\s*(artı|eksi|çarpı|bölü|\+|\-|\*|\/)\s*(\d+)/);
+                if(math) {
+                    let n1 = parseFloat(math[1]), op = math[2], n2 = parseFloat(math[3]), ans = 0;
+                    if(op.includes("artı") || op==="+") ans = n1 + n2;
+                    else if(op.includes("eksi") || op==="-") ans = n1 - n2;
+                    else if(op.includes("çarpı") || op==="*") ans = n1 * n2;
+                    else if(op.includes("bölü") || op==="/") ans = n1 / n2;
+                    res = `Sonuç: ${ans} Efendim.`;
+                } else res = "Sizi dinliyorum Efendim.";
+            }
+            speak(res);
+        }
 
-        // Dışarı tıklayınca menüyü kapat
-        document.addEventListener('click', () => sideMenu.classList.remove('active'));
+        function speak(t) {
+            document.getElementById('transcript-area').style.display = 'block';
+            document.getElementById('panel-switch').checked = true;
+            document.getElementById('transcript-text').innerText = t;
+
+            if(document.getElementById('voice-switch').checked) {
+                window.speechSynthesis.cancel();
+                const u = new SpeechSynthesisUtterance(t); 
+                u.lang = 'tr-TR';
+                const gender = document.getElementById('voice-gender').value;
+                u.pitch = (gender === 'erkek') ? 0.8 : 1.3;
+                window.speechSynthesis.speak(u);
+            }
+        }
+
+        function toggleDrawer() { document.getElementById('drawer').classList.toggle('drawer-open'); }
+        function closeBox(id) { document.getElementById(id).style.display = 'none'; document.getElementById('panel-switch').checked = false; }
+        function syncPanels() {
+            const check = document.getElementById('panel-switch').checked;
+            document.getElementById('transcript-area').style.display = check ? 'block' : 'none';
+            document.getElementById('input-area').style.display = check ? 'block' : 'none';
+        }
+        function syncPanelsDirect(val) { document.getElementById('panel-switch').checked = val; syncPanels(); toggleDrawer(); }
+
+        function makeDraggable(el) {
+            let posX = 0, posY = 0, startX = 0, startY = 0;
+            el.addEventListener('mousedown', start);
+            el.addEventListener('touchstart', start, {passive: false});
+            function start(e) {
+                if(e.type === 'touchstart') { startX = e.touches[0].clientX; startY = e.touches[0].clientY; }
+                else { startX = e.clientX; startY = e.clientY; }
+                document.addEventListener('mousemove', move);
+                document.addEventListener('touchmove', move, {passive: false});
+                document.addEventListener('mouseup', end); document.addEventListener('touchend', end);
+            }
+            function move(e) {
+                let curX, curY;
+                if(e.type === 'touchmove') { curX = e.touches[0].clientX; curY = e.touches[0].clientY; }
+                else { curX = e.clientX; curY = e.clientY; }
+                posX = startX - curX; posY = startY - curY; startX = curX; startY = curY;
+                el.style.top = (el.offsetTop - posY) + "px"; el.style.left = (el.offsetLeft - posX) + "px";
+            }
+            function end() { document.removeEventListener('mousemove', move); document.removeEventListener('touchmove', move); }
+        }
     </script>
 </body>
 </html>
