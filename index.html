@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>JARVIS — INFINITY™ STABLE</title>
+    <title>JARVIS — INFINITY™ REAL-TIME</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Rajdhani:wght@400;600&display=swap" rel="stylesheet">
     <style>
-        :root { --main: #00aaff; --accent: #00eeff; --bg: #020810; --panel: rgba(4, 15, 30, 0.96); }
+        :root { --main: #00aaff; --accent: #00eeff; --bg: #020810; --panel: rgba(4, 15, 30, 0.98); }
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; transition: color 2s ease, border-color 2s ease, box-shadow 2s ease, background 2s ease; }
         body { background: var(--bg); color: #c0e8ff; font-family: 'Rajdhani', sans-serif; overflow: hidden; height: 100vh; width: 100vw; touch-action: none; }
 
@@ -26,20 +26,11 @@
         .close-btn { pointer-events: auto; cursor: pointer; color: var(--main); font-size: 20px; }
 
         .main-content { flex: 1; position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; }
-        
-        /* ORB - SABİT (Zıplama Silindi) */
-        .orb-btn { 
-            width: 140px; height: 140px; border-radius: 50%; 
-            border: 2px solid var(--main); display: flex; align-items: center; 
-            justify-content: center; box-shadow: 0 0 20px var(--main); 
-            cursor: pointer; z-index: 10; position: relative;
-            transition: 0.3s;
-        }
-        /* Dinleme modunda sadece dış parlama */
-        .listening { box-shadow: 0 0 50px var(--main), inset 0 0 20px var(--main); border-color: #fff; }
+        .orb-btn { width: 140px; height: 140px; border-radius: 50%; border: 2px solid var(--main); display: flex; align-items: center; justify-content: center; box-shadow: 0 0 20px var(--main); cursor: pointer; z-index: 10; position: relative; }
+        .listening { box-shadow: 0 0 50px var(--main), inset 0 0 20px var(--main); }
 
-        #news-panel { width: 92%; height: 180px; background: var(--panel); border-radius: 22px; padding: 18px; overflow-y: auto; border: 1px solid var(--main); margin-top: 20px; }
-        .news-card { font-size: 12px; margin-bottom: 8px; padding: 10px; background: rgba(255,255,255,0.02); border-radius: 12px; border-left: 4px solid var(--main); }
+        #news-panel { width: 92%; height: 220px; background: var(--panel); border-radius: 22px; padding: 18px; overflow-y: auto; border: 1px solid var(--main); margin-top: 20px; }
+        .news-card { font-size: 13px; margin-bottom: 10px; padding: 12px; background: rgba(255,255,255,0.02); border-radius: 12px; border-left: 4px solid var(--main); line-height: 1.4; }
 
         .controls { position: fixed; bottom: 15px; right: 15px; display: flex; flex-direction: column; gap: 8px; z-index: 1000; }
         .switch-wrap { display: flex; align-items: center; justify-content: space-between; gap: 10px; background: var(--panel); padding: 10px 15px; border-radius: 20px; border: 1px solid var(--main); min-width: 155px; font-size: 10px; }
@@ -57,25 +48,25 @@
 <body>
     <div id="intro"><svg class="inf-logo" viewBox="0 0 100 50"><path d="M30,25 C30,15 15,15 15,25 C15,35 30,35 30,25 C30,15 45,15 45,25 C45,35 30,35 30,25" /></svg></div>
     <div id="drawer">
-        <div style="font-family:'Orbitron'; color:var(--main); margin-bottom:20px;">AYARLAR</div>
+        <div style="font-family:'Orbitron'; color:var(--main); margin-bottom:20px;">SİSTEM PANELİ</div>
         <div class="menu-item"><span>SES TONU</span><select id="voice-gender"><option value="erkek">Erkek</option><option value="kadin">Kadın</option></select></div>
-        <div class="menu-item" onclick="location.reload()">🔄 Reset</div>
+        <div class="menu-item" onclick="location.reload()">🔄 Yenile</div>
         <div style="margin-top:auto; font-weight:bold; color:var(--main); text-align:center;">BY ÇAĞRI ATAV</div>
     </div>
     <div id="app">
         <header>
             <div onclick="document.getElementById('drawer').classList.toggle('drawer-open')" style="cursor:pointer; font-size:26px; color:var(--main);">☰</div>
-            <div style="font-family:'Orbitron'; color:var(--main); letter-spacing:2px; font-weight:bold;">JARVIS ULTIMATE</div>
+            <div style="font-family:'Orbitron'; color:var(--main); letter-spacing:2px; font-weight:bold;">JARVIS REAL-TIME</div>
             <div id="clock">00:00</div>
         </header>
         <div class="main-content">
             <div id="transcript-area" class="draggable" style="top: 80px; left: 10px;">
                 <div class="panel-header"><span>ALTYAZI</span><span class="close-btn" onclick="closeBox('transcript-area')">✖</span></div>
-                <p id="transcript-text">Sistem emrinizdedir Efendim.</p>
+                <p id="transcript-text">Gündem verileri analiz edildi Efendim.</p>
             </div>
             <div id="input-area" class="draggable" style="top: 240px; left: 10px;">
-                <div class="panel-header"><span>YAZI</span><span class="close-btn" onclick="closeBox('input-area')">✖</span></div>
-                <input type="text" id="chat-input" placeholder="Yazın..." onkeypress="handleChat(event)">
+                <div class="panel-header"><span>KLAVYE</span><span class="close-btn" onclick="closeBox('input-area')">✖</span></div>
+                <input type="text" id="chat-input" placeholder="Emredin..." onkeypress="handleChat(event)">
             </div>
             <div class="orb-btn" id="main-orb" onclick="toggleMic()">
                 <div style="width:90px; height:90px; border-radius:50%; background:radial-gradient(circle, var(--main), transparent 85%); opacity:0.6; pointer-events:none;"></div>
@@ -88,19 +79,36 @@
         </div>
     </div>
     <script>
-        let isListening = false; let newsDatabase = []; let newsIndex = 0; let batLevel = 100;
+        let isListening = false; let newsDatabase = [
+            "Ekonomi: Merkez Bankası faiz kararını sabit tuttu, piyasalarda yatay seyir hakim.",
+            "Spor: Süper Lig'de zirve yarışı kızışıyor; lider haftayı kayıpsız kapattı.",
+            "Teknoloji: Yeni nesil yapay zeka modelleri artık kodlama hatalarını %90 oranında azaltabiliyor.",
+            "Dünya: Antarktika'daki buz kütlelerinde son 50 yılın en hızlı erimesi gözlemlendi.",
+            "Uzay: NASA'nın Artemis görevi için tasarlanan yeni nesil roket motoru başarıyla test edildi.",
+            "Bilim: Bilim insanları kanser hücrelerini hedef alan yeni bir nano-terapi yöntemi geliştirdi.",
+            "Otomobil: Elektrikli araç bataryalarında 1000 km menzil sunan yeni bir teknoloji tanıtıldı.",
+            "Havacılık: Türkiye'nin yerli insansız savaş uçağı KIZILELMA yeni bir mühimmat testini geçti.",
+            "Sanat: Leonardo da Vinci'nin daha önce bilinmeyen bir taslağı İtalya'da bir arşivde bulundu.",
+            "Borsa: Teknoloji hisselerindeki yükselişle Nasdaq endeksi yeni bir tarihi zirve gördü.",
+            "Enerji: Güneş paneli verimliliğini iki katına çıkaran 'Perovskite' hücreler seri üretime girdi.",
+            "Kültür: UNESCO, Anadolu'daki iki antik kenti daha Dünya Mirası Listesi'ne dahil etti.",
+            "Sağlık: Akıllı saatler artık kan şekeri ölçümünü iğnesiz bir şekilde yapmaya başladı.",
+            "Futbol: Şampiyonlar Ligi'nde yarı final eşleşmeleri belli oldu; devler karşı karşıya geliyor.",
+            "İklim: Küresel sıcaklık artışına karşı Paris Anlaşması hedefleri için acil eylem planı açıklandı."
+        ]; 
+        let newsIndex = 0; let batLevel = 100;
         const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
-        const rec = new SpeechRec(); rec.lang = 'tr-TR'; rec.continuous = false;
+                const rec = SpeechRec ? new SpeechRec() : null; 
+        if(rec) { rec.lang = 'tr-TR'; rec.continuous = false; }
 
         setTimeout(() => { document.getElementById('intro').style.opacity = '0'; setTimeout(() => { document.getElementById('intro').style.display='none'; document.getElementById('app').style.opacity='1'; init(); }, 1000); }, 2000);
 
         function init() {
             setInterval(() => document.getElementById('clock').innerText = new Date().toLocaleTimeString('tr-TR', {hour:'2-digit', minute:'2-digit'}), 1000);
-            const subs = ["Ekonomi", "NASA", "SpaceX", "Yapay Zeka", "Milli Takım", "Teknoloji Devi", "Dünya", "Havacılık"];
-            const acts = ["yeni bir rekor kırdı.", "kritik açıklama yaptı.", "buluş duyurdu.", "beklentileri aştı.", "zirveye oturdu."];
-            for(let i=1; i<=1000; i++) newsDatabase.push(`${subs[i%8]}, ${acts[i%5]} (#${i})`);
-            document.getElementById('news-list').innerHTML = newsDatabase.sort(() => 0.5 - Math.random()).slice(0,30).map(n => `<div class="news-card">${n}</div>`).join('');
-            updateBattery(); makeDraggable(document.getElementById("transcript-area")); makeDraggable(document.getElementById("input-area"));
+            updateBattery();
+            document.getElementById('news-list').innerHTML = newsDatabase.map(n => `<div class="news-card">${n}</div>`).join('');
+            makeDraggable(document.getElementById("transcript-area"));
+            makeDraggable(document.getElementById("input-area"));
         }
 
         async function updateBattery() {
@@ -119,24 +127,30 @@
 
         function toggleMic() {
             window.speechSynthesis.speak(new SpeechSynthesisUtterance(""));
-            if(!isListening) { try { rec.start(); } catch(e) {} } else { try { rec.stop(); } catch(e) {} }
+            if(!isListening && rec) { try { rec.start(); } catch(e) {} } else if(rec) { try { rec.stop(); } catch(e) {} }
         }
 
-        rec.onstart = () => { isListening=true; document.getElementById('main-orb').classList.add('listening'); };
-        rec.onend = () => { isListening=false; document.getElementById('main-orb').classList.remove('listening'); };
-        rec.onresult = (e) => processJarvis(e.results[e.results.length-1][0].transcript.toLowerCase());
+        if(rec) {
+            rec.onstart = () => { isListening=true; document.getElementById('main-orb').classList.add('listening'); };
+            rec.onend = () => { isListening=false; document.getElementById('main-orb').classList.remove('listening'); };
+            rec.onresult = (e) => processJarvis(e.results[e.results.length-1][0].transcript.toLowerCase());
+        }
 
         function handleChat(e) { if(e.key === 'Enter') { processJarvis(e.target.value.toLowerCase()); e.target.value=''; } }
 
         function processJarvis(msg) {
             let res = "";
-            if (msg.includes("haberi oku") || msg.includes("bugün ne oldu")) {
+            if (msg.includes("haberi oku") || msg.includes("haberleri oku") || msg.includes("bugün ne oldu") || msg.includes("haberler")) {
                 newsIndex = 0; let batch = newsDatabase.slice(0, 5);
-                res = "Efendim, bugünün özeti: " + batch.join(". ") + ". Devam etmemi ister misiniz?";
+                res = "Efendim, bugün öne çıkan başlıklar: " + batch.join(". ") + ". Devam etmemi ister misiniz?";
                 newsIndex = 5;
-            } else if (msg.includes("nasılsın") || msg.includes("selam")) {
-                res = `İyiyim Efendim. Şarjınız %${batLevel}. By Çağrı ATAV imzalı sistemler stabil.`;
-            } else { res = "Sizi dinliyorum Efendim."; }
+            } else if (msg.includes("devam et") || msg.includes("devam")) {
+                let batch = newsDatabase.slice(newsIndex, newsIndex + 5);
+                res = batch.length > 0 ? "Haberlere devam ediyorum: " + batch.join(". ") : "Tüm güncel haberler bitti Efendim.";
+                newsIndex += 5;
+            } else if (msg.includes("selam") || msg.includes("nasılsın")) {
+                res = `İyiyim Efendim. Şarjınız %${batLevel}. By Çağrı ATAV imzalı sistemler stabil. Haberleri okumamı ister misiniz?`;
+            } else { res = "Sizi dinliyorum Efendim. Haberleri sormak için Bugün ne oldu diyebilirsiniz."; }
             speak(res);
         }
 
