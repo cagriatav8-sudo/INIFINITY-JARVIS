@@ -3,277 +3,212 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>JARVIS — INFINITY™ MEMORY PRO</title>
+    <title>JARVIS — INFINITY™ PRO</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Rajdhani:wght@400;600&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --main-color: #00aaff;
-            --accent-color: #00eeff;
-            --bg: #020810;
-            --panel: rgba(4, 15, 30, 0.95);
-            --r-lg: 30px;
-            --r-md: 20px;
+        :root { --main: #00aaff; --accent: #00eeff; --bg: #020810; --panel: rgba(4, 15, 30, 0.95); }
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body { background: var(--bg); color: #c0e8ff; font-family: 'Rajdhani', sans-serif; overflow: hidden; height: 100vh; width: 100vw; touch-action: none; }
+
+        /* INTRO */
+        #intro { position: fixed; inset: 0; z-index: 9999; background: #000; display: flex; align-items: center; justify-content: center; transition: 1s; }
+        .inf-logo { width: 150px; stroke: var(--main); stroke-width: 2.5; fill: none; animation: draw 3s infinite alternate; }
+        @keyframes draw { 0% { stroke-dasharray: 0 500; } 100% { stroke-dasharray: 500 0; filter: drop-shadow(0 0 30px var(--main)); } }
+
+        /* APP */
+        #app { opacity: 0; height: 100%; display: flex; flex-direction: column; transition: 1s; }
+        header { padding: 10px 20px; display: flex; justify-content: space-between; align-items: center; background: rgba(2,8,16,0.8); border-bottom: 1px solid rgba(0,170,255,0.1); z-index: 10; }
+
+        /* DRAGGABLE PANELS */
+        .draggable {
+            position: absolute; width: 90%; max-width: 380px;
+            background: var(--panel); border: 1px solid var(--main);
+            border-radius: 20px; padding: 20px; z-index: 500;
+            backdrop-filter: blur(20px); box-shadow: 0 0 30px #000;
+            cursor: move; touch-action: none; display: none;
         }
+        .panel-header { display: flex; justify-content: space-between; margin-bottom: 10px; border-bottom: 1px solid rgba(0,170,255,0.2); padding-bottom: 5px; pointer-events: none; }
+        .close-btn { pointer-events: auto; cursor: pointer; color: var(--main); font-weight: bold; }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; transition: 0.3s; }
-        body { background: var(--bg); color: #c0e8ff; font-family: 'Rajdhani', sans-serif; overflow: hidden; height: 100vh; }
+        /* MAIN UI */
+        .main-content { flex: 1; position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        .orb-btn { width: 130px; height: 130px; border-radius: 50%; border: 2px solid var(--main); display: flex; align-items: center; justify-content: center; box-shadow: 0 0 25px var(--main); cursor: pointer; z-index: 5; }
+        .listening { animation: pulse 0.5s infinite alternate; border-color: var(--accent); }
+        @keyframes pulse { to { transform: scale(1.1); box-shadow: 0 0 50px var(--accent); } }
 
-        #intro { position: fixed; inset: 0; z-index: 9999; background: #000; display: flex; align-items: center; justify-content: center; flex-direction: column; transition: 1s; }
-        .inf-logo { width: 180px; stroke: var(--main-color); stroke-width: 2.5; fill: none; animation: draw 3s infinite alternate; }
-        @keyframes draw { 0% { stroke-dasharray: 0 500; } 100% { stroke-dasharray: 500 0; filter: drop-shadow(0 0 30px var(--main-color)); } }
+        #news-panel { width: 92%; height: 160px; background: var(--panel); border-radius: 20px; padding: 15px; overflow-y: auto; border: 1px solid var(--main); margin-top: 20px; }
+        .news-card { font-size: 13px; margin-bottom: 10px; padding: 10px; background: rgba(0,170,255,0.05); border-radius: 12px; border-left: 4px solid var(--main); }
 
-        #app { opacity: 0; height: 100%; display: flex; flex-direction: column; }
-        header { padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; background: rgba(2,8,16,0.7); backdrop-filter: blur(10px); border-bottom: 1px solid rgba(0,170,255,0.1); }
-
-        .floating-box {
-            position: absolute; top: 90px; width: 95%; max-width: 450px;
-            background: rgba(0, 5, 15, 0.98); border: 1px solid var(--main-color);
-            border-radius: var(--r-lg); padding: 25px; display: none; z-index: 500;
-            backdrop-filter: blur(25px); box-shadow: 0 0 40px rgba(0,0,0,1);
-        }
-        .close-btn { position: absolute; right: 20px; top: 20px; cursor: pointer; color: var(--main-color); font-size: 20px; }
-
-        #chat-input { width: 100%; background: rgba(0, 170, 255, 0.1); border: 1px solid var(--main-color); color: white; padding: 12px; border-radius: var(--r-md); outline: none; margin-top: 15px; }
-
-        .orb-btn { width: 140px; height: 140px; border-radius: 50%; border: 2px solid var(--main-color); margin: 20px auto; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 25px var(--main-color); cursor: pointer; }
-        .listening { animation: pulse 0.5s infinite alternate; border-color: var(--accent-color); }
-        @keyframes pulse { to { transform: scale(1.1); box-shadow: 0 0 45px var(--accent-color); } }
-
-        #news-panel { width: 90%; height: 180px; margin: 10px auto; background: var(--panel); border-radius: var(--r-md); padding: 15px; overflow-y: auto; border: 1px solid var(--main-color); }
-        .news-card { font-size: 13px; margin-bottom: 8px; padding: 10px; background: rgba(0,170,255,0.05); border-radius: 12px; border-left: 4px solid var(--main-color); }
-
-        .controls { position: fixed; bottom: 20px; right: 20px; display: flex; flex-direction: column; gap: 8px; z-index: 1000; }
-        .switch-wrap { display: flex; align-items: center; justify-content: space-between; gap: 10px; background: var(--panel); padding: 10px 15px; border-radius: 20px; border: 1px solid var(--main-color); min-width: 160px; }
-        
-        .switch { position: relative; display: inline-block; width: 40px; height: 22px; }
+        /* CONTROLS */
+        .controls { position: fixed; bottom: 15px; right: 15px; display: flex; flex-direction: column; gap: 8px; z-index: 1000; }
+        .switch-wrap { display: flex; align-items: center; justify-content: space-between; gap: 10px; background: var(--panel); padding: 10px 15px; border-radius: 20px; border: 1px solid var(--main); min-width: 150px; font-size: 11px; }
+        .switch { position: relative; width: 38px; height: 20px; }
         .switch input { opacity: 0; width: 0; height: 0; }
-        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #222; transition: .4s; border-radius: 34px; }
-        .slider:before { position: absolute; content: ""; height: 16px; width: 16px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; }
-        input:checked + .slider { background-color: var(--main-color); }
+        .slider { position: absolute; cursor: pointer; inset: 0; background: #222; border-radius: 34px; transition: .4s; }
+        .slider:before { position: absolute; content: ""; height: 14px; width: 14px; left: 3px; bottom: 3px; background: white; border-radius: 50%; transition: .4s; }
+        input:checked + .slider { background: var(--main); }
         input:checked + .slider:before { transform: translateX(18px); }
 
-        .stats { display: flex; gap: 10px; width: 90%; margin: 10px auto; }
-        .stat-box { flex: 1; background: var(--panel); padding: 12px; border-radius: var(--r-md); text-align: center; border: 1px solid var(--main-color); }
-        
-        footer { padding: 10px; text-align: center; font-size: 10px; opacity: 0.5; font-family: 'Orbitron'; letter-spacing: 2px; }
+        #chat-input { width: 100%; background: rgba(0,0,0,0.4); border: 1px solid var(--main); color: white; padding: 12px; border-radius: 12px; outline: none; margin-top: 10px; }
     </style>
 </head>
 <body>
 
     <div id="intro">
         <svg class="inf-logo" viewBox="0 0 100 50"><path d="M30,25 C30,15 15,15 15,25 C15,35 30,35 30,25 C30,15 45,15 45,25 C45,35 30,35 30,25" /></svg>
-        <div style="margin-top:15px; font-family:'Orbitron'; color:var(--main-color); letter-spacing:8px;">INFINITY TM</div>
     </div>
 
     <div id="app">
         <header>
-            <div style="cursor:pointer; font-size:26px; color:var(--main-color);">☰</div>
-            <div style="font-family:'Orbitron'; letter-spacing:4px; font-weight: bold;">JARVIS</div>
-            <div id="clock">00:00</div>
+            <div style="font-family:'Orbitron'; font-size:16px; color:var(--main); letter-spacing:2px;">JARVIS PRO</div>
+            <div id="clock" style="font-family:'Orbitron'; color:var(--accent);">00:00</div>
         </header>
 
-        <div style="flex:1; display:flex; flex-direction:column; align-items:center; position:relative;">
-            <div class="stats">
-                <div class="stat-box">GÜÇ<b id="bat">--%</b></div>
-                <div class="stat-box">DURUM<b id="status-label">BAĞLI</b></div>
+        <div class="main-content">
+            <div id="transcript-area" class="draggable" style="top: 80px; left: 10px;">
+                <div class="panel-header"><span>ALTYAZI</span><span class="close-btn" onclick="closeBox('transcript-area')">✖</span></div>
+                <p id="transcript-text" style="font-size:15px; color:var(--accent); line-height:1.5;">Efendim, komutlarınızı bekliyorum.</p>
             </div>
 
-            <div id="transcript-area" class="floating-box">
-                <span class="close-btn" onclick="closeBox('transcript-area')">✖</span>
-                <p id="transcript-text" style="color:var(--accent-color); line-height:1.6; font-size: 15px;">Sistem hazır Efendim.</p>
-            </div>
-
-            <div id="input-area" class="floating-box">
-                <span class="close-btn" onclick="closeBox('input-area')">✖</span>
-                <p style="font-size:12px; margin-bottom:5px; opacity: 0.7;">KLAVYE GİRİŞİ:</p>
+            <div id="input-area" class="draggable" style="top: 240px; left: 10px;">
+                <div class="panel-header"><span>KLAVYE GİRİŞİ</span><span class="close-btn" onclick="closeBox('input-area')">✖</span></div>
                 <input type="text" id="chat-input" placeholder="Emredin..." onkeypress="handleChat(event)">
             </div>
 
             <div class="orb-btn" id="main-orb" onclick="toggleMic()">
-                <div style="width:90px; height:90px; border-radius:50%; background:radial-gradient(circle, var(--main-color) 0%, transparent 75%); opacity:0.6;"></div>
+                <div style="width:80px; height:80px; border-radius:50%; background:radial-gradient(circle, var(--main), transparent 85%); opacity:0.6;"></div>
             </div>
 
             <div id="news-panel">
-                <p style="font-size:10px; color:var(--main-color); margin-bottom:12px; letter-spacing:2px; font-weight:bold;">STRATEJİK GÜNDEM (1000 KAYIT)</p>
-                <div id="news-list">Yükleniyor...</div>
+                <div id="news-list"></div>
             </div>
         </div>
 
         <div class="controls">
-            <div class="switch-wrap">
-                <span>METİN PANELİ</span>
-                <label class="switch">
-                    <input type="checkbox" id="panel-switch" onchange="syncPanels()">
-                    <span class="slider"></span>
-                </label>
-            </div>
-            <div class="switch-wrap">
-                <span>SESLİ YANIT</span>
-                <label class="switch">
-                    <input type="checkbox" id="voice-switch" checked>
-                    <span class="slider"></span>
-                </label>
-            </div>
+            <div class="switch-wrap"><span>METİN PANELİ</span><label class="switch"><input type="checkbox" id="panel-switch" onchange="syncPanels()"><span class="slider"></span></label></div>
+            <div class="switch-wrap"><span>SESLİ YANIT</span><label class="switch"><input type="checkbox" id="voice-switch" checked><span class="slider"></span></label></div>
         </div>
-
-        <footer>WITH İNFİNİTY TM FROM ÇAĞRI ATAV</footer>
     </div>
 
     <script>
-        // 1000 HABER ÜRETİCİ
-        const subs = ["Merkez Bankası", "SpaceX", "NASA", "Yapay Zeka", "Milli Takım", "Teknoloji Devi", "Tesla", "Bilim Heyeti"];
-        const acts = ["rekor kırdı.", "açıklama yaptı.", "yeni proje duyurdu.", "hareketlilik yarattı.", "buluşa imza attı."];
-        const newsDatabase = [];
-        for (let i = 1; i <= 1000; i++) {
-            newsDatabase.push(`${subs[Math.floor(Math.random()*subs.length)]}, ${acts[Math.floor(Math.random()*acts.length)]} (#${i})`);
-        }
-
         let isListening = false;
-        let batLevel = 100;
-        let selectedNews = [];
-        let currentGroup = [];
+        let newsDatabase = [];
         let newsIndex = 0;
-        let lastSaid = "";
-
         const rec = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
         rec.lang = 'tr-TR';
+        rec.continuous = false;
 
-        setTimeout(() => {
+        setTimeout(() => { 
             document.getElementById('intro').style.opacity = '0';
-            setTimeout(() => {
-                document.getElementById('intro').style.display = 'none';
-                document.getElementById('app').style.opacity = '1';
-                init();
-            }, 1000);
+            setTimeout(() => { document.getElementById('intro').style.display='none'; document.getElementById('app').style.opacity='1'; init(); }, 1000);
         }, 2000);
 
         function init() {
-            updateClock();
-            loadNews();
-            updateBattery();
+            setInterval(() => document.getElementById('clock').innerText = new Date().toLocaleTimeString('tr-TR', {hour:'2-digit', minute:'2-digit'}), 1000);
+            createNews();
+            makeDraggable(document.getElementById("transcript-area"));
+            makeDraggable(document.getElementById("input-area"));
         }
 
-        function updateClock() {
-            setInterval(() => {
-                document.getElementById('clock').innerText = new Date().toLocaleTimeString('tr-TR', {hour:'2-digit', minute:'2-digit'});
-            }, 1000);
+        function createNews() {
+            const topics = ["Spor", "Ekonomi", "Teknoloji", "Dünya", "Bilim"];
+            for(let i=1; i<=100; i++) {
+                newsDatabase.push(`${topics[i%5]} Gündemi: Kayıt No ${i}. Önemli gelişmeler yaşanıyor.`);
+            }
+            document.getElementById('news-list').innerHTML = newsDatabase.slice(0,30).map(n => `<div class="news-card">${n}</div>`).join('');
         }
 
-        function loadNews() {
-            selectedNews = newsDatabase.sort(() => 0.5 - Math.random()).slice(0, 100);
-            document.getElementById('news-list').innerHTML = selectedNews.slice(0,30).map(n => `<div class="news-card">${n}</div>`).join('');
-            newsIndex = 0;
-        }
-
-        function closeBox(id) { 
-            document.getElementById(id).style.display = 'none'; 
-            if(id === 'input-area' || id === 'transcript-area') document.getElementById('panel-switch').checked = false;
-        }
-        
+        function closeBox(id) { document.getElementById(id).style.display = 'none'; }
         function syncPanels() {
-            const isChecked = document.getElementById('panel-switch').checked;
-            document.getElementById('transcript-area').style.display = isChecked ? 'block' : 'none';
-            document.getElementById('input-area').style.display = isChecked ? 'block' : 'none';
+            const check = document.getElementById('panel-switch').checked;
+            document.getElementById('transcript-area').style.display = check ? 'block' : 'none';
+            document.getElementById('input-area').style.display = check ? 'block' : 'none';
         }
 
-        function handleChat(e) {
-            if(e.key === 'Enter') {
-                processCommand(e.target.value.toLowerCase());
-                e.target.value = '';
-            }
-        }
-
-        async function updateBattery() {
-            if (navigator.getBattery) {
-                const b = await navigator.getBattery();
-                const up = () => {
-                    batLevel = Math.round(b.level * 100);
-                    document.getElementById('bat').innerText = `%${batLevel}`;
-                    updateTheme(batLevel);
-                };
-                up(); b.onlevelchange = up;
-            }
-        }
-
-        function updateTheme(level) {
-            const root = document.documentElement;
-            if(level <= 20) root.style.setProperty('--main-color', '#ff4444');
-            else if(level <= 50) root.style.setProperty('--main-color', '#00ff88');
-            else root.style.setProperty('--main-color', '#00aaff');
-        }
-
+        function handleChat(e) { if(e.key === 'Enter') { processJarvis(e.target.value.toLowerCase()); e.target.value=''; } }
         function toggleMic() { if(!isListening) rec.start(); else rec.stop(); }
-        rec.onstart = () => { isListening = true; document.getElementById('main-orb').classList.add('listening'); };
-        rec.onend = () => { isListening = false; document.getElementById('main-orb').classList.remove('listening'); };
-        rec.onresult = (e) => { processCommand(e.results[e.results.length - 1][0].transcript.toLowerCase()); };
+        rec.onstart = () => { isListening=true; document.getElementById('main-orb').classList.add('listening'); };
+        rec.onend = () => { isListening=false; document.getElementById('main-orb').classList.remove('listening'); };
+        rec.onresult = (e) => processJarvis(e.results[e.results.length-1][0].transcript.toLowerCase());
 
-        function processCommand(msg) {
-            let response = "";
+        function processJarvis(msg) {
+            let res = "";
 
-            // "BUGÜN NE OLDU" - 5'Lİ GRUP BAŞLATMA
-            if (msg.includes("bugün ne oldu")) {
+            // --- HABER OKUMA IF BLOĞU ---
+            if (msg.includes("bugün ne oldu") || msg.includes("haberi oku") || msg.includes("haberleri oku")) {
                 newsIndex = 0;
-                currentGroup = selectedNews.slice(0, 5);
-                response = "Efendim, bugün öne çıkan 5 haber şunlar: " + currentGroup.map((h, i) => `${i+1}. haber: ${h}`).join(". ") + ". Devam et derseniz diğerlerine geçerim.";
-                lastSaid = response;
+                let firstBatch = newsDatabase.slice(0, 5);
+                res = "Efendim, bugün öne çıkan haberler şunlar: " + firstBatch.join(". ") + ". Devam et derseniz okumaya devam ederim.";
                 newsIndex = 5;
             } 
-            // "DEVAM ET" - SONRAKİ 5'Lİ GRUP
-            else if (msg.includes("devam et")) {
-                currentGroup = selectedNews.slice(newsIndex, newsIndex + 5);
-                if(currentGroup.length > 0) {
-                    response = "Haberlere devam ediyorum: " + currentGroup.map((h, i) => `${i+1}. haber: ${h}`).join(". ");
+            else if (msg.includes("devam et") || msg.includes("diğerlerini oku")) {
+                let nextBatch = newsDatabase.slice(newsIndex, newsIndex + 5);
+                if(nextBatch.length > 0) {
+                    res = "Devam ediyorum: " + nextBatch.join(". ");
                     newsIndex += 5;
                 } else {
-                    response = "Tüm önemli haberler bitti efendim.";
-                }
-                lastSaid = response;
-            }
-            // "TEKRAR ET"
-            else if (msg.includes("tekrar et") || msg.includes("yeniden söyle")) {
-                response = lastSaid ? "Tekrar ediyorum: " + lastSaid : "Henüz bir şey söylemedim efendim.";
-            }
-            // "X. HABERİ SÖYLE" (1-5 Arası)
-            else if (msg.match(/([1-5])\.(?: haber|haberi)/)) {
-                let num = parseInt(msg.match(/([1-5])/)[0]);
-                if(currentGroup[num-1]) {
-                    response = `${num}. haberi tekrar ediyorum: ${currentGroup[num-1]}`;
-                } else {
-                    response = "Efendim, şu anki grupta o numaralı bir haber yok.";
+                    res = "Tüm haberler bitti Efendim.";
                 }
             }
-            // MATEMATİK
-            else if (msg.match(/(\d+)\s*(artı|eksi|çarpı|bölü|\+|\-|\*|\/)\s*(\d+)/)) {
-                const math = msg.match(/(\d+)\s*(artı|eksi|çarpı|bölü|\+|\-|\*|\/)\s*(\d+)/);
-                let n1 = parseFloat(math[1]), op = math[2], n2 = parseFloat(math[3]), res = 0;
-                if(op.includes("artı") || op === "+") res = n1 + n2;
-                else if(op.includes("eksi") || op === "-") res = n1 - n2;
-                else if(op.includes("çarpı") || op === "*") res = n1 * n2;
-                else if(op.includes("bölü") || op === "/") res = n1 / n2;
-                response = `İşlemin sonucu: ${res} efendim.`;
-            } 
             else if (msg.includes("selam") || msg.includes("nasılsın")) {
-                response = `İyiyim efendim. Şarjınız %${batLevel}.`;
-            } 
-            else {
-                response = "Sizi dinliyorum Efendim.";
+                res = "İyiyim Efendim, sistemi sizin için optimize ettim. Haberleri okumamı ister misiniz?";
             }
-            
-            speak(response);
+            else {
+                res = "Sizi dinliyorum Efendim.";
+            }
+
+            speak(res);
         }
 
         function speak(t) {
-            const isTextOn = document.getElementById('panel-switch').checked;
-            const isVoiceOn = document.getElementById('voice-switch').checked;
-
-            if(isTextOn) {
-                document.getElementById('transcript-area').style.display = 'block';
-                document.getElementById('transcript-text').innerText = t;
-            }
-            if(isVoiceOn) {
-                const u = new SpeechSynthesisUtterance(t);
-                u.lang = 'tr-TR';
+            // Yazılı olarak göster
+            document.getElementById('transcript-area').style.display = 'block';
+            document.getElementById('panel-switch').checked = true;
+            document.getElementById('transcript-text').innerText = t;
+            
+            // Sesli olarak oku
+            if(document.getElementById('voice-switch').checked) {
+                const u = new SpeechSynthesisUtterance(t); 
+                u.lang='tr-TR'; 
+                u.rate = 1.0;
                 window.speechSynthesis.speak(u);
+            }
+        }
+
+        // --- GELİŞMİŞ SÜRÜKLE BIRAK (MOBİL + PC) ---
+        function makeDraggable(el) {
+            let posX = 0, posY = 0, startX = 0, startY = 0;
+            el.addEventListener('mousedown', start);
+            el.addEventListener('touchstart', start, {passive: false});
+
+            function start(e) {
+                if(e.type === 'touchstart') {
+                    startX = e.touches[0].clientX; startY = e.touches[0].clientY;
+                } else {
+                    startX = e.clientX; startY = e.clientY;
+                }
+                document.addEventListener('mousemove', move);
+                document.addEventListener('touchmove', move, {passive: false});
+                document.addEventListener('mouseup', end);
+                document.addEventListener('touchend', end);
+            }
+
+            function move(e) {
+                let currentX, currentY;
+                if(e.type === 'touchmove') {
+                    currentX = e.touches[0].clientX; currentY = e.touches[0].clientY;
+                } else {
+                    currentX = e.clientX; currentY = e.clientY;
+                }
+                posX = startX - currentX; posY = startY - currentY;
+                startX = currentX; startY = currentY;
+                el.style.top = (el.offsetTop - posY) + "px";
+                el.style.left = (el.offsetLeft - posX) + "px";
+            }
+
+            function end() {
+                document.removeEventListener('mousemove', move);
+                document.removeEventListener('touchmove', move);
             }
         }
     </script>
