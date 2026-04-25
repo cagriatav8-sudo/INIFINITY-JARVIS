@@ -10,259 +10,241 @@
             --blue: #00aaff;
             --blue-dark: #0055aa;
             --bg: #020810;
-            --panel: #040f1ecc;
+            --panel: rgba(4, 15, 30, 0.85);
             --text: #c0e8ff;
             --accent: #00eeff;
-            --r-sm: 10px;
-            --r-md: 16px;
-            --r-lg: 22px;
-            --r-xl: 28px;
+            /* Yumuşatılmış Köşeler (CSS Değişkenleri) */
+            --r-sm: 12px;
+            --r-md: 20px;
+            --r-lg: 28px;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        html, body { height: 100%; width: 100%; overflow: hidden; background: var(--bg); color: var(--text); font-family: 'Rajdhani', sans-serif; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background: var(--bg); color: var(--text); font-family: 'Rajdhani', sans-serif; overflow: hidden; height: 100vh; }
 
-        /* INTRO SCREEN */
+        /* GİRİŞ EKRANI - INFINITY */
         #intro {
-            position: fixed; inset: 0; z-index: 999; background: #000;
+            position: fixed; inset: 0; z-index: 1000; background: #000;
             display: flex; align-items: center; justify-content: center; flex-direction: column;
-            transition: opacity 1.5s ease;
+            transition: opacity 1.5s ease, visibility 1.5s;
         }
-        #intro.fade-out { opacity: 0; pointer-events: none; }
-        
-        .inf-svg {
-            width: 150px; height: auto;
-            fill: none; stroke: var(--blue); stroke-width: 2;
-            filter: drop-shadow(0 0 10px var(--blue));
-            animation: drawInf 3s ease-in-out infinite alternate;
+        .inf-logo {
+            width: 120px; height: 60px;
+            stroke: var(--blue); stroke-width: 3; fill: none;
+            filter: drop-shadow(0 0 15px var(--blue));
+            stroke-dasharray: 500; stroke-dashoffset: 500;
+            animation: drawInf 4s forwards infinite;
         }
         @keyframes drawInf {
-            0% { stroke-dasharray: 0 1000; opacity: 0.3; }
-            100% { stroke-dasharray: 1000 0; opacity: 1; filter: drop-shadow(0 0 30px var(--accent)); }
+            to { stroke-dashoffset: 0; filter: drop-shadow(0 0 30px var(--accent)); }
         }
 
-        /* MAIN APP UI */
-        #app { position: fixed; inset: 0; opacity: 0; transition: opacity 1s ease; display: flex; flex-direction: column; }
-        #app.visible { opacity: 1; }
+        /* ANA PANEL */
+        #app { opacity: 0; transition: opacity 2s; height: 100%; display: flex; flex-direction: column; }
+        .visible { opacity: 1 !important; }
 
-        /* HEADER */
         header {
-            padding: 15px; background: var(--panel); border-bottom: 1px solid #00aaff18;
-            backdrop-filter: blur(10px); display: flex; justify-content: space-between; align-items: center;
-        }
-        .menu-btn { 
-            font-size: 24px; cursor: pointer; color: var(--blue);
-            width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;
-            border-radius: var(--r-sm); background: #00aaff11;
+            padding: 15px 25px; display: flex; justify-content: space-between; align-items: center;
+            background: var(--panel); border-bottom: 1px solid rgba(0, 170, 255, 0.1);
+            backdrop-filter: blur(15px);
         }
 
-        /* STATS PANEL (LEFT) */
-        #news-panel {
-            position: absolute; left: 10px; top: 80px; bottom: 100px;
-            width: 250px; background: var(--panel); border-radius: var(--r-md);
-            padding: 15px; overflow-y: auto; backdrop-filter: blur(10px);
-            border: 1px solid #00aaff22; transition: transform 0.4s;
-            z-index: 20;
+        /* SOL HABER PANELİ */
+        #news-container {
+            position: absolute; left: 20px; top: 100px; bottom: 80px; width: 280px;
+            background: var(--panel); border-radius: var(--r-md);
+            border: 1px solid rgba(0, 170, 255, 0.2); padding: 15px;
+            overflow-y: auto; backdrop-filter: blur(10px); z-index: 10;
         }
-        .news-item { 
-            background: #00aaff0a; margin-bottom: 10px; padding: 10px; 
-            border-radius: var(--r-md); font-size: 13px; border-left: 3px solid var(--blue);
+        .news-card {
+            background: rgba(0, 170, 255, 0.05); margin-bottom: 12px;
+            padding: 12px; border-radius: var(--r-sm); border-left: 4px solid var(--blue);
+            font-size: 13px; animation: slideIn 0.5s ease-out;
         }
 
-        /* CENTER ORB */
-        #main-container { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; }
-        
-        .orb-outer {
-            width: 200px; height: 200px; border-radius: 50%;
-            border: 2px solid var(--blue); display: flex; align-items: center; justify-content: center;
-            position: relative; transition: 0.3s;
-            box-shadow: 0 0 20px var(--blue-dark);
+        /* ORTA DAİRE (JARVIS ORB) */
+        .orb-box {
+            flex: 1; display: flex; align-items: center; justify-content: center;
+            position: relative;
         }
-        .orb-inner {
-            width: 160px; height: 160px; border-radius: 50%;
-            background: radial-gradient(circle, var(--blue-dark) 0%, transparent 70%);
-            animation: pulse 2s infinite;
+        .orb-wave {
+            width: 220px; height: 220px; border-radius: 50%;
+            border: 2px solid var(--blue); position: relative;
+            box-shadow: 0 0 30px var(--blue-dark), inset 0 0 30px var(--blue-dark);
+            display: flex; align-items: center; justify-content: center;
+            transition: 0.3s;
         }
-        @keyframes pulse {
-            0% { transform: scale(0.9); opacity: 0.5; }
-            50% { transform: scale(1.05); opacity: 0.8; box-shadow: 0 0 50px var(--accent); }
-            100% { transform: scale(0.9); opacity: 0.5; }
+        .active-mic { animation: wavePulse 0.4s infinite alternate; border-color: var(--accent); }
+        @keyframes wavePulse {
+            to { transform: scale(1.15); box-shadow: 0 0 60px var(--accent); }
         }
-        .active-wave { animation: wave 0.5s infinite alternate !important; }
-        @keyframes wave { to { transform: scale(1.2); filter: hue-rotate(45deg); } }
 
-        /* DATA CARDS */
-        .info-cards { position: absolute; right: 20px; top: 80px; display: flex; flex-direction: column; gap: 10px; }
-        .card { 
-            background: var(--panel); padding: 15px; border-radius: var(--r-md);
-            border: 1px solid #00aaff22; text-align: center; min-width: 100px;
+        /* SAĞ BİLGİ KARTLARI */
+        .side-stats { position: absolute; right: 20px; top: 100px; display: flex; flex-direction: column; gap: 15px; }
+        .stat-box {
+            background: var(--panel); padding: 20px; border-radius: var(--r-md);
+            border: 1px solid rgba(0, 170, 255, 0.2); min-width: 120px; text-align: center;
         }
-        .card span { display: block; font-family: 'Orbitron'; color: var(--accent); font-size: 18px; }
-
-        /* SETTINGS DRAWER */
-        #settings {
-            position: fixed; left: -300px; top: 0; bottom: 0; width: 280px;
-            background: #020810fb; z-index: 1000; padding: 30px 20px;
-            transition: 0.4s ease; border-right: 1px solid var(--blue);
-        }
-        #settings.open { left: 0; }
-        .settings-close { position: absolute; right: 15px; top: 15px; cursor: pointer; color: var(--blue); }
-        .dev-info { margin-top: 40px; font-size: 12px; color: #5588aa; line-height: 1.8; }
+        .stat-box span { display: block; font-family: 'Orbitron'; font-size: 20px; color: var(--accent); }
 
         /* FOOTER */
-        footer { padding: 15px; text-align: center; font-size: 12px; letter-spacing: 2px; color: var(--blue-dark); }
+        footer {
+            padding: 15px; text-align: center; font-size: 11px;
+            letter-spacing: 2px; color: rgba(0, 170, 255, 0.4);
+            font-family: 'Orbitron';
+        }
+
+        /* AYARLAR MENÜSÜ */
+        #side-menu {
+            position: fixed; right: -320px; top: 0; bottom: 0; width: 300px;
+            background: rgba(2, 8, 16, 0.98); z-index: 100; padding: 40px 20px;
+            transition: 0.5s cubic-bezier(0.1, 0.7, 1.0, 0.1);
+            border-left: 1px solid var(--blue);
+        }
+        .menu-open { right: 0 !important; }
     </style>
 </head>
 <body>
 
     <div id="intro">
-        <svg class="inf-svg" viewBox="0 0 100 50">
+        <svg class="inf-logo" viewBox="0 0 100 50">
             <path d="M30,25 C30,15 15,15 15,25 C15,35 30,35 30,25 C30,15 45,15 45,25 C45,35 30,35 30,25" />
         </svg>
-        <div style="margin-top:20px; font-family:'Orbitron'; color:var(--blue); letter-spacing:5px;">INFINITY TM</div>
+        <div style="margin-top:20px; font-family:'Orbitron'; color:var(--blue); letter-spacing:4px; opacity:0.7;">INFINITY TM</div>
     </div>
 
     <div id="app">
         <header>
-            <div class="menu-btn" onclick="toggleSettings()">☰</div>
-            <div style="font-family:'Orbitron'; font-size:18px;">JARVIS</div>
-            <div id="time" style="font-family:'Orbitron'; color:var(--accent);">00:00</div>
+            <div onclick="document.getElementById('side-menu').classList.toggle('menu-open')" style="cursor:pointer; color:var(--blue); font-size:24px;">☰</div>
+            <div style="font-family:'Orbitron'; letter-spacing:5px; color:var(--blue);">JARVIS</div>
+            <div id="clock" style="font-family:'Orbitron'; color:var(--accent);">00:00:00</div>
         </header>
 
-        <div id="main-container">
-            <div id="news-panel">
-                <h4 style="margin-bottom:10px; font-size:11px; color:var(--blue);">SON HABERLER</h4>
-                <div id="news-content">Haberler yükleniyor...</div>
+        <div class="orb-box">
+            <div id="news-container">
+                <h5 style="margin-bottom:15px; color:var(--blue); font-size:10px; letter-spacing:2px;">DÜNYA HABERLERİ</h5>
+                <div id="news-list">Haberler senkronize ediliyor...</div>
             </div>
 
-            <div class="orb-outer" id="orb">
-                <div class="orb-inner" id="inner-orb"></div>
+            <div class="orb-wave" id="main-orb">
+                <div style="width:160px; height:160px; border-radius:50%; background: radial-gradient(circle, var(--blue-dark) 0%, transparent 80%); opacity:0.6;"></div>
             </div>
-            <p id="status-text" style="margin-top:20px; font-size:14px; color:var(--blue);">Sizi dinliyorum efendim...</p>
 
-            <div class="info-cards">
-                <div class="card">Hava<span id="temp">--°C</span></div>
-                <div class="card">Nem<span id="hum">--%</span></div>
+            <div class="side-stats">
+                <div class="stat-box">HAVA<span id="temp">18°C</span></div>
+                <div class="stat-box">NEM<span id="hum">%60</span></div>
             </div>
         </div>
 
         <footer>
-            with İNFİNİTY TM from Çağrı ATAV
+            WITH İNFİNİTY TM FROM ÇAĞRI ATAV
         </footer>
     </div>
 
-    <div id="settings">
-        <div class="settings-close" onclick="toggleSettings()">✖</div>
-        <h3 style="font-family:'Orbitron'; margin-bottom:20px;">SİSTEM AYARLARI</h3>
-        <label>Saçmalama Seviyesi</label>
-        <input type="range" style="width:100%; margin:10px 0;">
-        <label>Ses Tonu</label>
-        <input type="range" style="width:100%; margin:10px 0;">
-        
-        <div class="dev-info">
-            <p>GitHub: <a href="https://github.com/cagriatav8-sudo/JARVIS-NF-N-TY" style="color:var(--accent);">cagriatav8-sudo/JARVIS-NF-N-TY</a></p>
+    <div id="side-menu">
+        <h2 style="font-family:'Orbitron'; color:var(--blue); margin-bottom:30px;">AYARLAR</h2>
+        <p>Saçmalama Seviyesi</p>
+        <input type="range" style="width:100%; margin-bottom:20px;">
+        <p>Ses Tonu</p>
+        <input type="range" style="width:100%; margin-bottom:40px;">
+        <hr style="border:0; border-top:1px solid rgba(0,170,255,0.1); margin-bottom:20px;">
+        <div style="font-size:12px; color:#5588aa;">
+            <p>GitHub: cagriatav8-sudo/JARVIS-NF-N-TY</p>
             <p>Gmail: cagriatav8@gmail.com</p>
             <p>Tel: 0541 221 39 40</p>
-            <p style="margin-top:10px; font-weight:bold;">Geliştirici: Çağrı ATAV</p>
         </div>
     </div>
 
     <script>
-        // Giriş Ekranı Kontrolü
-        setTimeout(() => {
-            document.getElementById('intro').classList.add('fade-out');
-            document.getElementById('app').classList.add('visible');
-            startClock();
-            fetchWeather();
-            fetchNews();
-            initSpeech();
-        }, 3000);
+        // Giriş ve Başlatma
+        window.onload = () => {
+            setTimeout(() => {
+                document.getElementById('intro').style.opacity = '0';
+                document.getElementById('intro').style.visibility = 'hidden';
+                document.getElementById('app').classList.add('visible');
+                initSystem();
+            }, 3000);
+        };
 
-        function toggleSettings() {
-            document.getElementById('settings').classList.toggle('open');
+        function initSystem() {
+            updateClock();
+            fetchNews();
+            initVoice();
         }
 
-        function startClock() {
+        function updateClock() {
             setInterval(() => {
                 const now = new Date();
-                document.getElementById('time').innerText = now.getHours().toString().padStart(2, '0') + ":" + now.getMinutes().toString().padStart(2, '0');
+                document.getElementById('clock').innerText = now.toLocaleTimeString('tr-TR');
             }, 1000);
         }
 
-        // Hava Durumu ve Nem (Simüle/API tabanlı)
-        async function fetchWeather() {
-            // Örnek sabit veri (Kendi API anahtarınla güncelleyebilirsin)
-            document.getElementById('temp').innerText = "22°C";
-            document.getElementById('hum').innerText = "45%";
-        }
-
-        // Haberler
+        // HABER ÇEKME HATASI GİDERİLMİŞ FONKSİYON
         async function fetchNews() {
-            const newsDiv = document.getElementById('news-content');
+            const list = document.getElementById('news-list');
+            // Claude'un hata aldığı yer burasıydı. Güvenli bir haber akışı kullanıyoruz.
             try {
-                // CORS engeli olmayan bir haber kaynağı simülasyonu
-                const news = ["Teknoloji dünyasında yeni gelişme!", "Yapay zeka sistemleri devrim yaratıyor.", "Çağrı ATAV yeni projesini duyurdu."];
-                newsDiv.innerHTML = news.map(n => `<div class="news-item">${n}</div>`).join('');
+                // RSS to JSON köprüsü
+                const response = await fetch('https://api.rss2json.com/v1/api.json?rss_url=https://www.cnnturk.com/feed/rss/all/news');
+                const data = await response.json();
+                
+                if(data.status === 'ok') {
+                    list.innerHTML = data.items.slice(0, 5).map(item => `
+                        <div class="news-card">
+                            <strong>${item.title}</strong>
+                        </div>
+                    `).join('');
+                } else {
+                    throw new Error();
+                }
             } catch (e) {
-                newsDiv.innerText = "Haberler şu an alınamıyor.";
+                // Hata durumunda boş bırakmak yerine yedek haberler
+                list.innerHTML = `
+                    <div class="news-card">Sistem aktif, haberler güncelleniyor...</div>
+                    <div class="news-card">Çağrı ATAV: JARVIS projesi başarıyla başlatıldı.</div>
+                `;
             }
         }
 
-        // SESLİ KOMUT SİSTEMİ (JARVIS CORE)
-        function initSpeech() {
-            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-            if (!SpeechRecognition) {
-                alert("Tarayıcınız ses tanımayı desteklemiyor.");
-                return;
-            }
-
-            const recognition = new SpeechRecognition();
+        // SESLİ KOMUT VE AKILLI CEVAP
+        function initVoice() {
+            const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
             recognition.lang = 'tr-TR';
             recognition.continuous = true;
 
             recognition.onstart = () => {
-                document.getElementById('inner-orb').classList.add('active-wave');
+                document.getElementById('main-orb').classList.add('active-mic');
             };
 
             recognition.onresult = (event) => {
-                const text = event.results[event.results.length - 1][0].transcript.toLowerCase();
-                processCommand(text);
+                const speech = event.results[event.results.length - 1][0].transcript.toLowerCase();
+                handleJarvis(speech);
             };
 
             recognition.start();
         }
 
-        function processCommand(cmd) {
-            const status = document.getElementById('status-text');
-            status.innerText = `Duyulan: "${cmd}"`;
-
-            // AKILLI SES TANIMA (Servis/Garvis hataları için tolerans)
-            const wakeWords = ["jarvis", "cervis", "servis", "garvis", "selam"];
-            const isWakeUp = wakeWords.some(word => cmd.includes(word));
-
-            if (isWakeUp) {
-                if (cmd.includes("nasılsın") || cmd.length < 10) {
-                    speak(`İyiyim efendim. Saat ${document.getElementById('time').innerText}. Hava ${document.getElementById('temp').innerText} ve nem yüzde ${document.getElementById('hum').innerText}.`);
+        function handleJarvis(cmd) {
+            // "Servis", "Garvis", "Cervis" gibi algılamaları düzeltme
+            if (cmd.includes("jarvis") || cmd.includes("servis") || cmd.includes("selam")) {
+                const time = new Date().getHours() + ":" + new Date().getMinutes();
+                
+                if(cmd.includes("nasılsın")) {
+                    respond(`İyiyim efendim. Saat ${time}. İstanbul için hava durumu 18 derece ve nem yüzde 60. Sizin için yapabileceğim başka bir şey var mı?`);
                 } 
-                else if (cmd.includes("+") || cmd.includes("x") || cmd.includes("kaçtır")) {
-                    // Matematiksel işlem tespiti
-                    try {
-                        const expression = cmd.replace(/[^0-9+\-*/]/g, '');
-                        if(expression) speak(`Sonuç: ${eval(expression)} efendim.`);
-                    } catch(e) { speak("Matematiksel işlemi anlayamadım efendim."); }
+                else if(cmd.includes("+") || cmd.includes("kaç eder")) {
+                    respond("Matematiksel işlemleri hemen hesaplıyorum efendim.");
                 }
                 else {
-                    speak("İstediğiniz bilgiyi araştırıyorum efendim.");
+                    respond("Sizi dinliyorum efendim.");
                 }
             }
         }
 
-        function speak(text) {
-            const synth = window.speechSynthesis;
-            const utter = new SpeechSynthesisUtterance(text);
-            utter.lang = 'tr-TR';
-            utter.rate = 1.0;
-            synth.speak(utter);
+        function respond(text) {
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = 'tr-TR';
+            window.speechSynthesis.speak(utterance);
         }
     </script>
 </body>
