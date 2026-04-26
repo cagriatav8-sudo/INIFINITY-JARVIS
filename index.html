@@ -1,128 +1,203 @@
-async function updateBattery() {
-    if (navigator.getBattery) {
-        const b = await navigator.getBattery();
-        const up = () => {
-            const batLevel = Math.round(b.level * 100);
-            applyTheme(batLevel);
-            announceStatus(batLevel);
-        };
-        up(); 
-        b.onlevelchange = up;
-    } else {
-        applyTheme(100);
-        announceStatus(100);
-    }
-}
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Akıllı Batarya ve Haber Paneli</title>
+    <style>
+        :root {
+            --main: #00aaff;
+            --accent: #00eeff;
+            --bg: #121212;
+        }
 
-function getDailyNews() {
-    return [
-        "Ekonomi ve Savaş: Orta Doğu'daki gerilim nedeniyle artan petrol fiyatları, sentetik elyaf maliyetlerini yükseltti. Türkiye'deki tekstil sektörü yeniden doğal pamuğa yönelmeye başladı.",
-        "Spor: Bugün Türkiye'de derbi heyecanı var! Süper Lig'in 31. haftasında Galatasaray ve Fenerbahçe şampiyonluk yarışı için Rams Park'ta karşı karşıya geliyor.",
-        "Yazılım ve Teknoloji: Oracle gibi dev teknoloji şirketleri, yapay zeka yatırımlarına odaklanmak için kadrolarında büyük değişikliklere gidiyor. Ayrıca Türkiye'de TÜBİTAK bilim olimpiyatları başvuruları güncellendi.",
-        "Gündem ve Doğa: Bugün sabah saatlerinde Bingöl Yedisu merkezli 4.4 büyüklüğünde bir deprem meydana geldi, çevre illerde de hissedildi.",
-        "Hava Durumu: Meteoroloji bugün için yedi ilde gök gürültülü sağanak yağış ve Marmara bölgesi için fırtına uyarısı yaptı."
-    ];
-}
+        body {
+            background-color: var(--bg);
+            color: white;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+            transition: background 0.5s ease;
+        }
 
-function announceStatus(level) {
-    let message = "";
-    if (level > 50) {
-        message = "Selam! Bataryan gayet iyi durumda, enerji doluyuz.";
-    } else if (level > 20 && level <= 50) {
-        message = "Haberler orta şekerli, batarya yarıya indi haberin olsun.";
-    } else if (level > 10 && level <= 20) {
-        message = "Dikkat et knk, şarj azalıyor. Kırmızı bölgeye giriyoruz.";
-    } else {
-        message = "Eyvah! Pil bitmek üzere, hemen şarja tak yoksa kapanacağım.";
-    }
+        #status-text {
+            font-size: 1.5rem;
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 0 20px;
+            min-height: 3rem;
+            color: var(--main);
+            text-shadow: 0 0 10px rgba(0, 170, 255, 0.3);
+        }
 
-    const statusElement = document.getElementById('status-text');
-    if (statusElement) {
-        statusElement.innerText = message;
-    }
+        #blue-circle {
+            width: 120px;
+            height: 120px;
+            background: radial-gradient(circle, var(--accent), var(--main));
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.2s, box-shadow 0.3s;
+            border: none;
+            outline: none;
+            box-shadow: 0 0 15px rgba(0, 170, 255, 0.5);
+        }
 
-    window.speechSynthesis.cancel();
-    const speech = new SpeechSynthesisUtterance(message);
-    speech.lang = 'tr-TR';
-    speech.rate = 1;
-    window.speechSynthesis.speak(speech);
-}
+        #blue-circle:active {
+            transform: scale(0.9);
+        }
 
-function applyTheme(level) {
-    const root = document.documentElement;
-    if (level <= 10) {
-        root.style.transition = "all 0.3s ease-out"; 
-        root.style.setProperty('--main', '#ffffff');
-        root.style.setProperty('--accent', '#ffffff');
-        return;
-    }
-    root.style.transition = "all 2s ease";
-    if (level > 50) {
-        root.style.setProperty('--main', '#00aaff');
-        root.style.setProperty('--accent', '#00eeff');
-    } else if (level > 20 && level <= 50) {
-        root.style.setProperty('--main', '#00ff88');
-        root.style.setProperty('--accent', '#aaff00');
-    } else if (level > 10 && level <= 20) {
-        root.style.setProperty('--main', '#ff4444');
-        root.style.setProperty('--accent', '#ff8800');
-    }
-}
+        #blue-circle svg {
+            fill: white;
+            width: 50px;
+            height: 50px;
+        }
 
-function startListening() {
-    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-    
-    if (!SpeechRecognition) {
-        alert("Tarayıcınız ses tanımayı desteklemiyor.");
-        return;
-    }
+        .hint {
+            margin-top: 20px;
+            font-size: 0.9rem;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
 
-    const recognition = new SpeechRecognition();
-    recognition.lang = 'tr-TR';
-    recognition.interimResults = false;
+    <div id="status-text">Sistem Hazır. Başlatmak için mavi daireye dokun Efendim.</div>
 
-    recognition.onstart = () => {
-        const circle = document.getElementById('blue-circle');
-        if (circle) circle.style.boxShadow = "0 0 20px #00aaff";
-    };
+    <button id="blue-circle">
+        <svg viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/><path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg>
+    </button>
 
-    recognition.onresult = (event) => {
-        const text = event.results[0][0].transcript.toLowerCase();
-        
-        if (text.includes("haber") || text.includes("neler oluyor")) {
-            const news = getDailyNews();
-            let fullNews = "Efendim, bugünün öne çıkan haberleri şunlar: " + news.join(" ");
-            const speech = new SpeechSynthesisUtterance(fullNews);
+    <div class="hint">"Haberler" veya "Batarya" diyebilirsiniz.</div>
+
+    <script>
+        async function updateBattery() {
+            if (navigator.getBattery) {
+                const b = await navigator.getBattery();
+                const up = () => {
+                    const batLevel = Math.round(b.level * 100);
+                    applyTheme(batLevel);
+                    announceStatus(batLevel);
+                };
+                up(); 
+                b.onlevelchange = up;
+            } else {
+                applyTheme(100);
+                announceStatus(100);
+            }
+        }
+
+        function getDailyNews() {
+            return [
+                "Ekonomi: Orta Doğu'daki gerilimlerin enerji maliyetlerini artırması üzerine Türkiye tekstil sektörü, maliyetleri düşürmek için yerli pamuk üretimine odaklanma kararı aldı.",
+                "Spor: Bugün Süper Lig'de kritik derbi günü. Galatasaray ve Fenerbahçe şampiyonluk yolunda karşı karşıya geliyor.",
+                "Yazılım: Büyük teknoloji firmaları veri merkezlerini yapay zeka işlemcileriyle donatmak için yeni donanım mimarilerine geçiş yapıyor.",
+                "Haber: Marmara bölgesi için kuvvetli rüzgar ve fırtına uyarısı yapıldı, ulaşımda aksamalara karşı dikkatli olunması istendi."
+            ];
+        }
+
+        function announceStatus(level) {
+            let message = "";
+            if (level > 50) {
+                message = "Selam! Bataryan gayet iyi durumda, enerji doluyuz.";
+            } else if (level > 20 && level <= 50) {
+                message = "Haberler orta şekerli, batarya yarıya indi haberin olsun.";
+            } else if (level > 10 && level <= 20) {
+                message = "Dikkat et knk, şarj azalıyor. Kırmızı bölgeye giriyoruz.";
+            } else {
+                message = "Eyvah! Pil bitmek üzere, hemen şarja tak yoksa kapanacağım.";
+            }
+
+            const statusElement = document.getElementById('status-text');
+            if (statusElement) {
+                statusElement.innerText = message;
+            }
+
+            window.speechSynthesis.cancel();
+            const speech = new SpeechSynthesisUtterance(message);
             speech.lang = 'tr-TR';
             window.speechSynthesis.speak(speech);
-        } else if (text.includes("batarya") || text.includes("pil")) {
-            if (navigator.getBattery) {
-                navigator.getBattery().then(b => {
-                    const level = Math.round(b.level * 100);
-                    announceStatus(level);
-                });
-            }
-        } else {
-            const reply = new SpeechSynthesisUtterance("Sizi dinliyorum Efendim, haberleri duymak isterseniz haberler demeniz yeterli.");
-            reply.lang = 'tr-TR';
-            window.speechSynthesis.speak(reply);
         }
-    };
 
-    recognition.onend = () => {
-        const circle = document.getElementById('blue-circle');
-        if (circle) circle.style.boxShadow = "none";
-    };
+        function applyTheme(level) {
+            const root = document.documentElement;
+            if (level <= 10) {
+                root.style.setProperty('--main', '#ff0000');
+                root.style.setProperty('--accent', '#ff4444');
+                return;
+            }
+            if (level > 50) {
+                root.style.setProperty('--main', '#00aaff');
+                root.style.setProperty('--accent', '#00eeff');
+            } else if (level > 20 && level <= 50) {
+                root.style.setProperty('--main', '#00ff88');
+                root.style.setProperty('--accent', '#aaff00');
+            } else if (level > 10 && level <= 20) {
+                root.style.setProperty('--main', '#ff4444');
+                root.style.setProperty('--accent', '#ff8800');
+            }
+        }
 
-    recognition.start();
-}
+        function startListening() {
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            
+            if (!SpeechRecognition) {
+                alert("Tarayıcınız ses tanımayı desteklemiyor.");
+                return;
+            }
 
-const blueCircle = document.getElementById('blue-circle');
-if (blueCircle) {
-    blueCircle.addEventListener('click', () => {
-        updateBattery(); 
-        startListening();
-    });
-}
+            const recognition = new SpeechRecognition();
+            recognition.lang = 'tr-TR';
+            recognition.interimResults = false;
 
-updateBattery();
+            recognition.onstart = () => {
+                document.getElementById('status-text').innerText = "Dinliyorum Efendim...";
+                document.getElementById('blue-circle').style.boxShadow = "0 0 30px #00eeff";
+            };
+
+            recognition.onresult = (event) => {
+                const text = event.results[0][0].transcript.toLowerCase();
+                
+                if (text.includes("haber") || text.includes("neler oluyor")) {
+                    const news = getDailyNews();
+                    let fullNews = "Efendim, bugünün öne çıkan haberleri şunlar: " + news.join(" ");
+                    document.getElementById('status-text').innerText = "Haberler okunuyor...";
+                    const speech = new SpeechSynthesisUtterance(fullNews);
+                    speech.lang = 'tr-TR';
+                    window.speechSynthesis.speak(speech);
+                } else if (text.includes("batarya") || text.includes("pil") || text.includes("şarj")) {
+                    updateBattery();
+                } else {
+                    const reply = new SpeechSynthesisUtterance("Sizi dinliyorum Efendim, haberler için haberler demeniz yeterli.");
+                    reply.lang = 'tr-TR';
+                    window.speechSynthesis.speak(reply);
+                }
+            };
+
+            recognition.onend = () => {
+                document.getElementById('blue-circle').style.boxShadow = "0 0 15px rgba(0, 170, 255, 0.5)";
+            };
+
+            recognition.start();
+        }
+
+        document.getElementById('blue-circle').addEventListener('click', () => {
+            startListening();
+        });
+
+        // Sayfa ilk yüklendiğinde temayı ayarla (ses çalmaz, sadece renkleri ayarlar)
+        window.onload = () => {
+            if (navigator.getBattery) {
+                navigator.getBattery().then(b => applyTheme(Math.round(b.level * 100)));
+            }
+        };
+    </script>
+</body>
+</html>
