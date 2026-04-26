@@ -1,59 +1,52 @@
-// Matematiksel kelimeleri sembollere çeviren sözlük
-const mathMap = {
-    "artı": "+", "topla": "+", "toplamı": "+",
-    "eksi": "-", "çıkar": "-", "farkı": "-",
-    "çarpı": "*", "çarp": "*", "çarpımı": "*",
-    "bölü": "/", "böl": "/", "oranı": "/"
-};
-
 function jarvisMath(input) {
-    let text = input.toLowerCase();
+    // Girdiyi temizle ve küçük harfe çevir
+    let text = input.toLowerCase().trim();
     
-    // Kelimeleri sembollere çevir (artı -> +)
-    for (let key in mathMap) {
-        text = text.replace(new RegExp(key, 'g'), mathMap[key]);
+    // 1. Kelime bazlı operatörleri sembole çevir
+    const wordToSymbol = {
+        "artı": "+", "topla": "+", 
+        "eksi": "-", "çıkar": "-", 
+        "çarpı": "*", "çarp": "*", "x": "*", // 'x' harfini çarpma yap
+        "bölü": "/", "böl": "/", ":": "/"    // ':' işaretini bölme yap
+    };
+
+    for (let key in wordToSymbol) {
+        // Kelimeleri (veya x gibi sembolleri) gerçek operatörlere dönüştür
+        text = text.replace(new RegExp(key, 'g'), wordToSymbol[key]);
     }
 
-    // Sadece sayıları ve operatörleri ayıkla (Örn: "15 + 25 kaçtır" -> "15+25")
-    let match = text.match(/\d+\s*[\+\-\*\/]\s*\d+/);
+    // 2. Matematiksel kalıbı bul: (Sayı) (Operatör) (Sayı)
+    // Bu regex: "15+25", "10 x 5", "100/2" gibi her şeyi yakalar
+    let match = text.match(/(\d+)\s*([\+\-\*\/])\s*(\d+)/);
 
     if (match) {
         try {
-            let result = eval(match[0]); // Basit işlemler için güvenlidir
+            const num1 = parseFloat(match[1]);
+            const operator = match[2];
+            const num2 = parseFloat(match[3]);
+            let result;
+
+            // Güvenli hesaplama (eval yerine switch)
+            switch (operator) {
+                case '+': result = num1 + num2; break;
+                case '-': result = num1 - num2; break;
+                case '*': result = num1 * num2; break;
+                case '/': result = num2 !== 0 ? num1 / num2 : "Sıfıra bölünemez"; break;
+            }
+
             let response = `İşlem sonucu: ${result}, Efendim.`;
             
-            // Ekranda göster
+            // Arayüzü güncelle
             document.getElementById('transcript-text').innerText = response;
             
-            // Sesli yanıt ver (Eğer switch açıksa)
+            // Sesli yanıt (Switch açıksa)
             if (document.getElementById('voice-switch').checked) {
                 speak(response);
             }
             return true;
         } catch (e) {
-            console.error("Matematik hatası:", e);
             return false;
         }
     }
     return false;
-}
-
-// Sesli yanıt fonksiyonu
-function speak(text) {
-    const synth = window.speechSynthesis;
-    const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = 'tr-TR';
-    // Cinsiyet seçimine göre ses ayarı buraya eklenebilir
-    synth.speak(utterance);
-}
-
-// Klavye girişini yakalama (Mevcut handleChat fonksiyonunu güncelle)
-function handleChat(event) {
-    if (event.key === "Enter") {
-        let input = event.target.value;
-        if (!jarvisMath(input)) {
-            document.getElementById('transcript-text').innerText = "Bunu anlayamadım Efendim.";
-        }
-        event.target.value = ""; // Inputu temizle
-    }
 }
