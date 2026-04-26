@@ -1,280 +1,128 @@
-<!DOCTYPE html>
-<html lang="tr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Çağrı ATAV | Yazılımcı</title>
-    <style>
-        body, html {
-            margin: 0;
-            padding: 0;
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-            font-family: 'Segoe UI', sans-serif;
-            background: #0d0d0d;
-            color: #fff;
-        }
+async function updateBattery() {
+    if (navigator.getBattery) {
+        const b = await navigator.getBattery();
+        const up = () => {
+            const batLevel = Math.round(b.level * 100);
+            applyTheme(batLevel);
+            announceStatus(batLevel);
+        };
+        up(); 
+        b.onlevelchange = up;
+    } else {
+        applyTheme(100);
+        announceStatus(100);
+    }
+}
 
-        canvas {
-            display: block;
-            position: fixed;
-            top: 0;
-            left: 0;
-            z-index: -1;
-        }
+function getDailyNews() {
+    return [
+        "Ekonomi ve Savaş: Orta Doğu'daki gerilim nedeniyle artan petrol fiyatları, sentetik elyaf maliyetlerini yükseltti. Türkiye'deki tekstil sektörü yeniden doğal pamuğa yönelmeye başladı.",
+        "Spor: Bugün Türkiye'de derbi heyecanı var! Süper Lig'in 31. haftasında Galatasaray ve Fenerbahçe şampiyonluk yarışı için Rams Park'ta karşı karşıya geliyor.",
+        "Yazılım ve Teknoloji: Oracle gibi dev teknoloji şirketleri, yapay zeka yatırımlarına odaklanmak için kadrolarında büyük değişikliklere gidiyor. Ayrıca Türkiye'de TÜBİTAK bilim olimpiyatları başvuruları güncellendi.",
+        "Gündem ve Doğa: Bugün sabah saatlerinde Bingöl Yedisu merkezli 4.4 büyüklüğünde bir deprem meydana geldi, çevre illerde de hissedildi.",
+        "Hava Durumu: Meteoroloji bugün için yedi ilde gök gürültülü sağanak yağış ve Marmara bölgesi için fırtına uyarısı yaptı."
+    ];
+}
 
-        .grid-container {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            grid-template-rows: auto repeat(2, 1fr);
-            gap: 30px;
-            padding: 50px;
-            height: 100vh;
-            box-sizing: border-box;
-            opacity: 0;
-            animation: fadeInContent 1s ease forwards;
-            animation-delay: 2.5s;
-        }
+function announceStatus(level) {
+    let message = "";
+    if (level > 50) {
+        message = "Selam! Bataryan gayet iyi durumda, enerji doluyuz.";
+    } else if (level > 20 && level <= 50) {
+        message = "Haberler orta şekerli, batarya yarıya indi haberin olsun.";
+    } else if (level > 10 && level <= 20) {
+        message = "Dikkat et knk, şarj azalıyor. Kırmızı bölgeye giriyoruz.";
+    } else {
+        message = "Eyvah! Pil bitmek üzere, hemen şarja tak yoksa kapanacağım.";
+    }
 
-        .box {
-            background: rgba(26, 26, 26, 0.9);
-            border: 2px solid #ff0055;
-            border-radius: 40px;
-            padding: 30px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            position: relative;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
+    const statusElement = document.getElementById('status-text');
+    if (statusElement) {
+        statusElement.innerText = message;
+    }
 
-        .box:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 30px rgba(255, 0, 85, 0.3);
-        }
+    window.speechSynthesis.cancel();
+    const speech = new SpeechSynthesisUtterance(message);
+    speech.lang = 'tr-TR';
+    speech.rate = 1;
+    window.speechSynthesis.speak(speech);
+}
 
-        .box h2 {
-            margin: 0 0 10px 0;
-            color: #ff0055;
-            font-size: 1.2em;
-            text-transform: uppercase;
-        }
+function applyTheme(level) {
+    const root = document.documentElement;
+    if (level <= 10) {
+        root.style.transition = "all 0.3s ease-out"; 
+        root.style.setProperty('--main', '#ffffff');
+        root.style.setProperty('--accent', '#ffffff');
+        return;
+    }
+    root.style.transition = "all 2s ease";
+    if (level > 50) {
+        root.style.setProperty('--main', '#00aaff');
+        root.style.setProperty('--accent', '#00eeff');
+    } else if (level > 20 && level <= 50) {
+        root.style.setProperty('--main', '#00ff88');
+        root.style.setProperty('--accent', '#aaff00');
+    } else if (level > 10 && level <= 20) {
+        root.style.setProperty('--main', '#ff4444');
+        root.style.setProperty('--accent', '#ff8800');
+    }
+}
 
-        .box p { margin: 5px 0; color: #ccc; font-weight: 500; }
-        .box a { color: #ff0055; text-decoration: none; font-weight: bold; }
+function startListening() {
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    
+    if (!SpeechRecognition) {
+        alert("Tarayıcınız ses tanımayı desteklemiyor.");
+        return;
+    }
 
-        #name-box {
-            grid-column: 1 / span 2;
-            flex-direction: row;
-            justify-content: space-between;
-            padding: 20px 60px;
-            background: rgba(20, 20, 20, 0.95);
-        }
+    const recognition = new SpeechRecognition();
+    recognition.lang = 'tr-TR';
+    recognition.interimResults = false;
 
-        #name-box .info {
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
-        }
+    recognition.onstart = () => {
+        const circle = document.getElementById('blue-circle');
+        if (circle) circle.style.boxShadow = "0 0 20px #00aaff";
+    };
 
-        #name-box h1 {
-            font-size: 1.8em;
-            margin: 0;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-        }
-
-        #name-box span {
-            color: #ff0055;
-            font-size: 0.9em;
-            font-weight: bold;
-        }
-
-        #loader-wrapper {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: #0d0d0d;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 9999;
-            transition: all 0.8s cubic-bezier(0.68, -0.55, 0.27, 1.55);
-        }
-
-        .infinity-loader {
-            position: relative;
-            width: 80px;
-            height: 40px;
-            display: flex;
-            justify-content: center;
-        }
-
-        .infinity-loader .curve {
-            position: absolute;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            border: 5px solid transparent;
-            border-top-color: #ff0055;
-            border-left-color: #ff0055;
-            animation: rotateInfinity 1.5s linear infinite;
-        }
-
-        .left-curve { left: 0; }
-        .right-curve {
-            right: 0;
-            animation-delay: -0.75s;
-            border-top-color: #ff0055;
-            border-right-color: #ff0055;
-            border-left-color: transparent;
-        }
-
-        @keyframes rotateInfinity {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        #loader-wrapper.moving {
-            width: 60px;
-            height: 30px;
-            top: 45px;
-            left: calc(100% - 120px);
-            background: transparent;
-        }
-
-        #loader-wrapper.moving .infinity-loader {
-            transform: scale(0.6);
-        }
-
-        @keyframes fadeInContent {
-            to { opacity: 1; }
-        }
-    </style>
-</head>
-<body>
-
-    <canvas id="starfield"></canvas>
-
-    <div id="loader-wrapper">
-        <div class="infinity-loader">
-            <div class="curve left-curve"></div>
-            <div class="curve right-curve"></div>
-        </div>
-    </div>
-
-    <div class="grid-container">
+    recognition.onresult = (event) => {
+        const text = event.results[0][0].transcript.toLowerCase();
         
-        <div class="box" id="name-box">
-            <div class="info">
-                <h1>ÇAĞRI ATAV</h1>
-                <span>YAZILIMCI</span>
-            </div>
-            <div id="logo-target" style="width: 60px; height: 30px;"></div>
-        </div>
-
-        <div class="box">
-            <h2>E-Posta</h2>
-            <p><a href="mailto:cagriatav8@gmail.com">cagriatav8@gmail.com</a></p>
-        </div>
-
-        <div class="box">
-            <h2>Telefon</h2>
-            <p><a href="tel:05412213940">0541 221 39 40</a></p>
-        </div>
-
-        <div class="box">
-            <h2>Yetenekler</h2>
-            <p>JavaScript, Node.js, Arduino</p>
-        </div>
-
-        <div class="box">
-            <h2>İletişim</h2>
-            <p><a href="https://wa.me/905412213940" target="_blank">WhatsApp'tan Yaz</a></p>
-        </div>
-
-    </div>
-
-    <script>
-        // Sesli Karşılama Fonksiyonu
-        function sesliKarsilama() {
-            if (window.speechSynthesis.speaking) return; 
-            
-            const mesaj = new SpeechSynthesisUtterance();
-            mesaj.text = "Selam! Ben Çağrı Atav. Yazılımcı ve teknoloji meraklısıyım. JavaScript, Node.js ve Arduino ile projeler geliştiriyorum. Portfolyoma hoş geldin!";
-            mesaj.lang = 'tr-TR';
-            mesaj.rate = 1; 
-            mesaj.pitch = 1;
-            
-            window.speechSynthesis.speak(mesaj);
-        }
-
-        window.addEventListener('load', function() {
-            const loader = document.getElementById('loader-wrapper');
-            const target = document.getElementById('logo-target');
-
-            setTimeout(() => {
-                loader.classList.add('moving');
-                setTimeout(() => {
-                    target.appendChild(loader.querySelector('.infinity-loader'));
-                    loader.style.display = 'none';
-                    // Otomatik başlatma denemesi
-                    sesliKarsilama();
-                }, 800);
-            }, 1500);
-        });
-
-        // Tarayıcı engeline karşı herhangi bir tıklamada sesi başlat
-        document.body.addEventListener('click', function() {
-            sesliKarsilama();
-        }, { once: true });
-
-        // Arka plan animasyonu (Starfield)
-        const canvas = document.getElementById('starfield');
-        const ctx = canvas.getContext('2d');
-        let width, height, stars;
-
-        function init() {
-            width = canvas.width = window.innerWidth;
-            height = canvas.height = window.innerHeight;
-            stars = [];
-            for (let i = 0; i < 150; i++) {
-                stars.push({
-                    x: Math.random() * width,
-                    y: Math.random() * height,
-                    z: Math.random() * width,
-                    o: Math.random()
+        if (text.includes("haber") || text.includes("neler oluyor")) {
+            const news = getDailyNews();
+            let fullNews = "Efendim, bugünün öne çıkan haberleri şunlar: " + news.join(" ");
+            const speech = new SpeechSynthesisUtterance(fullNews);
+            speech.lang = 'tr-TR';
+            window.speechSynthesis.speak(speech);
+        } else if (text.includes("batarya") || text.includes("pil")) {
+            if (navigator.getBattery) {
+                navigator.getBattery().then(b => {
+                    const level = Math.round(b.level * 100);
+                    announceStatus(level);
                 });
             }
+        } else {
+            const reply = new SpeechSynthesisUtterance("Sizi dinliyorum Efendim, haberleri duymak isterseniz haberler demeniz yeterli.");
+            reply.lang = 'tr-TR';
+            window.speechSynthesis.speak(reply);
         }
+    };
 
-        function draw() {
-            ctx.fillStyle = '#0d0d0d';
-            ctx.fillRect(0, 0, width, height);
+    recognition.onend = () => {
+        const circle = document.getElementById('blue-circle');
+        if (circle) circle.style.boxShadow = "none";
+    };
 
-            for (let star of stars) {
-                let px = (star.x - width / 2) * (width / star.z) + width / 2;
-                let py = (star.y - height / 2) * (width / star.z) + height / 2;
-                let r = (1 - star.z / width) * 2;
+    recognition.start();
+}
 
-                ctx.fillStyle = `rgba(255, 0, 85, ${star.o})`;
-                ctx.beginPath();
-                ctx.arc(px, py, r, 0, Math.PI * 2);
-                ctx.fill();
+const blueCircle = document.getElementById('blue-circle');
+if (blueCircle) {
+    blueCircle.addEventListener('click', () => {
+        updateBattery(); 
+        startListening();
+    });
+}
 
-                star.z -= 0.5;
-                if (star.z <= 0) star.z = width;
-            }
-            requestAnimationFrame(draw);
-        }
-
-        window.addEventListener('resize', init);
-        init();
-        draw();
-    </script>
-</body>
-</html>
+updateBattery();
