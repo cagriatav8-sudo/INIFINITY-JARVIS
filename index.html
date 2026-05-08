@@ -1,223 +1,637 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>JARVIS — INFINITY™ MATH PRO</title>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Rajdhani:wght@400;600&display=swap" rel="stylesheet">
-    <style>
-        :root { --main: #00aaff; --accent: #00eeff; --bg: #020810; --panel: rgba(4, 15, 30, 0.98); }
-        
-        /* Tüm renk değişimleri yavaş yavaş bürünsün (2 saniye) */
-        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; 
-            transition: color 2s ease, border-color 2s ease, box-shadow 2s ease, background 2s ease; }
-        
-        body { background: var(--bg); color: #c0e8ff; font-family: 'Rajdhani', sans-serif; overflow: hidden; height: 100vh; width: 100vw; touch-action: none; }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>JARVIS — INFINITY™ REAL-TIME</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --main: #00aaff;
+  --accent: #00eeff;
+  --bg: #020810;
+  --panel: rgba(4, 15, 30, 0.98);
+  --glow: rgba(0,170,255,0.3);
+}
+* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
 
-        #intro { position: fixed; inset: 0; z-index: 9999; background: #000; display: flex; align-items: center; justify-content: center; transition: 1s; }
-        .inf-logo { width: 150px; stroke: var(--main); stroke-width: 2.5; fill: none; animation: draw 3s infinite alternate; }
-        @keyframes draw { 0% { stroke-dasharray: 0 500; } 100% { stroke-dasharray: 500 0; filter: drop-shadow(0 0 30px var(--main)); } }
+body { background:var(--bg); color:#c0e8ff; font-family:'Rajdhani',sans-serif; overflow:hidden; height:100vh; width:100vw; touch-action:none; }
 
-        #app { opacity: 0; height: 100%; display: flex; flex-direction: column; transition: 1.5s; }
-        header { padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; background: rgba(2,8,16,0.8); border-bottom: 1px solid rgba(255,255,255,0.05); z-index: 100; }
+/* ── INTRO ── */
+#intro { position:fixed; inset:0; z-index:9999; background:#000; display:flex; align-items:center; justify-content:center; flex-direction:column; gap:20px; transition:opacity 1s; }
+.inf-logo { width:150px; stroke:var(--main); stroke-width:2.5; fill:none; animation:draw 3s infinite alternate; }
+@keyframes draw { 0%{stroke-dasharray:0 500;}100%{stroke-dasharray:500 0;filter:drop-shadow(0 0 30px var(--main));} }
+.intro-text { font-family:'Orbitron'; color:var(--main); font-size:12px; letter-spacing:4px; opacity:0.6; animation:pulse 1.5s infinite; }
+@keyframes pulse { 0%,100%{opacity:0.3;}50%{opacity:1;} }
 
-        #drawer { position: fixed; top: 0; left: -320px; width: 280px; height: 100%; background: var(--panel); z-index: 2000; padding: 40px 20px; border-right: 1px solid var(--main); box-shadow: 10px 0 30px #000; transition: 0.5s ease; }
-        .drawer-open { left: 0 !important; }
-        .menu-item { padding: 15px; margin-bottom: 12px; border-radius: 15px; background: rgba(255,255,255,0.03); cursor: pointer; display: flex; align-items: center; justify-content: space-between; }
+/* ── APP ── */
+#app { opacity:0; height:100%; display:flex; flex-direction:column; transition:opacity 1.5s; }
 
-        .draggable { position: absolute; width: 92%; max-width: 380px; background: var(--panel); border: 1px solid var(--main); border-radius: 20px; padding: 20px; z-index: 500; backdrop-filter: blur(25px); box-shadow: 0 0 40px rgba(0,0,0,0.8); cursor: move; display: none; }
-        .panel-header { display: flex; justify-content: space-between; margin-bottom: 10px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 5px; pointer-events: none; }
-        .close-btn { pointer-events: auto; cursor: pointer; color: var(--main); font-size: 20px; }
+/* ── HEADER ── */
+header {
+  padding: 10px 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(2,8,16,0.92);
+  border-bottom: 1px solid rgba(0,170,255,0.15);
+  z-index: 100;
+  gap: 10px;
+}
+.header-left { display:flex; align-items:center; gap:12px; }
+.header-right { display:flex; align-items:center; gap:10px; }
 
-        .main-content { flex: 1; position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; }
-        .orb-btn { width: 140px; height: 140px; border-radius: 50%; border: 2px solid var(--main); display: flex; align-items: center; justify-content: center; box-shadow: 0 0 20px var(--main); cursor: pointer; z-index: 10; position: relative; }
-        .listening { box-shadow: 0 0 50px var(--main), inset 0 0 20px var(--main); }
+#menu-btn {
+  cursor:pointer; font-size:24px; color:var(--main);
+  width:36px; height:36px; display:flex; align-items:center; justify-content:center;
+  border-radius:10px; border:1px solid rgba(0,170,255,0.2);
+  transition: all 0.3s; flex-shrink:0;
+}
+#menu-btn:hover { background:rgba(0,170,255,0.1); }
 
-        #news-panel { width: 92%; height: 220px; background: var(--panel); border-radius: 22px; padding: 18px; overflow-y: auto; border: 1px solid var(--main); margin-top: 20px; }
-        .news-card { font-size: 13px; margin-bottom: 10px; padding: 12px; background: rgba(255,255,255,0.02); border-radius: 12px; border-left: 4px solid var(--main); line-height: 1.4; }
+.logo-text { font-family:'Orbitron'; color:var(--main); letter-spacing:2px; font-weight:bold; font-size:13px; white-space:nowrap; }
 
-        .controls { position: fixed; bottom: 15px; right: 15px; display: flex; flex-direction: column; gap: 8px; z-index: 1000; }
-        .switch-wrap { display: flex; align-items: center; justify-content: space-between; gap: 10px; background: var(--panel); padding: 10px 15px; border-radius: 20px; border: 1px solid var(--main); min-width: 155px; font-size: 10px; }
-        .switch { position: relative; width: 34px; height: 18px; }
-        .switch input { opacity: 0; width: 0; height: 0; }
-        .slider { position: absolute; cursor: pointer; inset: 0; background: #222; border-radius: 34px; transition: .4s; }
-        .slider:before { position: absolute; content: ""; height: 12px; width: 12px; left: 3px; bottom: 3px; background: white; border-radius: 50%; transition: .4s; }
-        input:checked + .slider { background: var(--main); }
-        input:checked + .slider:before { transform: translateX(16px); }
+/* Theme buttons */
+.theme-btns { display:flex; gap:4px; }
+.theme-dot {
+  width:18px; height:18px; border-radius:50%; cursor:pointer;
+  border:2px solid transparent; transition:transform 0.2s, border-color 0.2s;
+}
+.theme-dot:hover { transform:scale(1.3); border-color:white; }
+.theme-dot.active { border-color:white; transform:scale(1.2); }
 
-        select { background: #000; color: var(--main); border: 1px solid var(--main); border-radius: 10px; padding: 3px; outline: none; }
-        #chat-input { width: 100%; background: rgba(0,0,0,0.5); border: 1px solid var(--main); color: white; padding: 12px; border-radius: 12px; outline: none; margin-top: 10px; }
-    </style>
+/* Battery widget */
+#bat-widget {
+  display:flex; align-items:center; gap:6px;
+  background:rgba(0,0,0,0.4); border:1px solid rgba(0,170,255,0.25);
+  border-radius:10px; padding:4px 10px; font-size:11px; color:var(--main);
+  white-space:nowrap;
+}
+.bat-icon { position:relative; width:24px; height:13px; border:2px solid var(--main); border-radius:3px; }
+.bat-icon::after { content:''; position:absolute; right:-5px; top:3px; width:3px; height:7px; background:var(--main); border-radius:0 2px 2px 0; }
+.bat-fill { height:100%; border-radius:1px; transition:width 0.5s, background 0.5s; }
+
+/* RGB bar */
+#rgb-bar {
+  height:3px; width:100%;
+  background:linear-gradient(90deg, #ff0000, #ff8800, #ffff00, #00ff00, #00ffff, #0088ff, #ff00ff, #ff0000);
+  background-size:200% 100%;
+  animation:rgbShift 4s linear infinite;
+  transition:opacity 0.3s;
+}
+@keyframes rgbShift { 0%{background-position:0% 50%;}100%{background-position:200% 50%;} }
+
+#clock { font-family:'Orbitron'; font-size:13px; color:var(--main); white-space:nowrap; }
+
+/* ── DRAWER ── */
+#drawer {
+  position:fixed; top:0; left:-320px; width:280px; height:100%;
+  background:var(--panel); z-index:2000; padding:20px;
+  border-right:1px solid var(--main); box-shadow:10px 0 40px #000;
+  transition:left 0.4s cubic-bezier(.4,0,.2,1);
+  display:flex; flex-direction:column; gap:10px;
+}
+.drawer-open { left:0 !important; }
+.drawer-title { font-family:'Orbitron'; color:var(--main); font-size:12px; letter-spacing:3px; margin-bottom:6px; }
+.menu-item {
+  padding:13px 15px; border-radius:14px;
+  background:rgba(255,255,255,0.03); cursor:pointer;
+  display:flex; align-items:center; justify-content:space-between;
+  border:1px solid rgba(0,170,255,0.08); transition:background 0.2s;
+  font-size:13px;
+}
+.menu-item:hover { background:rgba(0,170,255,0.08); }
+.menu-sep { height:1px; background:rgba(0,170,255,0.1); margin:6px 0; }
+
+/* Theme picker in drawer */
+.drawer-themes { display:flex; gap:8px; flex-wrap:wrap; }
+.drawer-theme-btn {
+  padding:6px 12px; border-radius:20px; font-size:11px; cursor:pointer;
+  border:1px solid; transition:all 0.2s; font-family:'Rajdhani';
+}
+
+select { background:#000; color:var(--main); border:1px solid var(--main); border-radius:8px; padding:4px 6px; outline:none; font-family:'Rajdhani'; }
+
+/* ── MAIN CONTENT ── */
+.main-content { flex:1; position:relative; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:10px; overflow:hidden; }
+
+/* ── DRAGGABLE PANELS ── */
+.draggable {
+  position:absolute; width:92%; max-width:380px;
+  background:var(--panel); border:1px solid var(--main);
+  border-radius:20px; padding:18px; z-index:500;
+  backdrop-filter:blur(25px); box-shadow:0 0 40px rgba(0,0,0,0.8);
+  cursor:move; display:none;
+  transition: border-color 2s, box-shadow 2s;
+}
+.panel-header { display:flex; justify-content:space-between; margin-bottom:10px; border-bottom:1px solid rgba(255,255,255,0.08); padding-bottom:6px; pointer-events:none; color:var(--main); font-size:11px; letter-spacing:2px; }
+.close-btn { pointer-events:auto; cursor:pointer; color:var(--main); font-size:18px; opacity:0.7; }
+.close-btn:hover { opacity:1; }
+
+/* ── ORB ── */
+.orb-wrap { position:relative; }
+.orb-ring {
+  position:absolute; border-radius:50%; border:1px solid;
+  border-color:var(--main); opacity:0.2;
+  animation:orbPulse 3s ease-in-out infinite;
+}
+.orb-ring:nth-child(1) { width:170px; height:170px; top:-15px; left:-15px; animation-delay:0s; }
+.orb-ring:nth-child(2) { width:200px; height:200px; top:-30px; left:-30px; animation-delay:1s; }
+@keyframes orbPulse { 0%,100%{opacity:0.1;transform:scale(1);}50%{opacity:0.3;transform:scale(1.04);} }
+
+.orb-btn {
+  width:140px; height:140px; border-radius:50%;
+  border:2px solid var(--main); display:flex; align-items:center; justify-content:center;
+  box-shadow:0 0 25px var(--glow); cursor:pointer; z-index:10; position:relative;
+  transition: box-shadow 0.3s, border-color 2s;
+}
+.orb-btn:hover { box-shadow:0 0 40px var(--main), 0 0 80px var(--glow); }
+.listening { box-shadow:0 0 60px var(--main), inset 0 0 30px var(--glow) !important; }
+.orb-inner { width:90px; height:90px; border-radius:50%; background:radial-gradient(circle, var(--main), transparent 85%); opacity:0.5; pointer-events:none; transition:opacity 0.3s; }
+
+/* ── STATUS LINE ── */
+#status-line { font-size:11px; color:var(--main); opacity:0.6; letter-spacing:2px; margin-top:12px; text-align:center; }
+
+/* ── NEWS PANEL ── */
+#news-panel {
+  width:100%; max-width:500px;
+  height:210px; background:var(--panel); border-radius:22px;
+  padding:14px 16px; overflow-y:auto; border:1px solid rgba(0,170,255,0.25);
+  margin-top:16px; transition:border-color 2s;
+}
+#news-panel::-webkit-scrollbar { width:4px; }
+#news-panel::-webkit-scrollbar-track { background:transparent; }
+#news-panel::-webkit-scrollbar-thumb { background:var(--main); border-radius:4px; }
+
+.news-header { font-size:10px; letter-spacing:3px; color:var(--main); opacity:0.5; margin-bottom:10px; display:flex; justify-content:space-between; align-items:center; }
+.news-card { font-size:12.5px; margin-bottom:9px; padding:11px 12px; background:rgba(255,255,255,0.02); border-radius:11px; border-left:3px solid var(--main); line-height:1.45; transition:border-color 2s, background 0.2s; }
+.news-card:hover { background:rgba(0,170,255,0.05); }
+.news-cat { font-size:10px; opacity:0.5; letter-spacing:1px; margin-bottom:3px; }
+.news-loading { text-align:center; color:var(--main); opacity:0.4; font-size:12px; padding:20px; letter-spacing:2px; }
+.news-dot { display:inline-block; animation:dotBlink 1.2s infinite; }
+.news-dot:nth-child(2) { animation-delay:0.2s; }
+.news-dot:nth-child(3) { animation-delay:0.4s; }
+@keyframes dotBlink { 0%,100%{opacity:0.2;}50%{opacity:1;} }
+
+/* ── SWITCHES ── */
+.controls { position:fixed; bottom:15px; right:15px; display:flex; flex-direction:column; gap:8px; z-index:1000; }
+.switch-wrap { display:flex; align-items:center; justify-content:space-between; gap:10px; background:var(--panel); padding:9px 14px; border-radius:20px; border:1px solid rgba(0,170,255,0.2); min-width:155px; font-size:10px; letter-spacing:1px; transition:border-color 2s; }
+.switch { position:relative; width:34px; height:18px; flex-shrink:0; }
+.switch input { opacity:0; width:0; height:0; }
+.slider { position:absolute; cursor:pointer; inset:0; background:#222; border-radius:34px; transition:.4s; }
+.slider:before { position:absolute; content:""; height:12px; width:12px; left:3px; bottom:3px; background:white; border-radius:50%; transition:.4s; }
+input:checked+.slider { background:var(--main); }
+input:checked+.slider:before { transform:translateX(16px); }
+
+/* ── CHAT INPUT ── */
+#chat-input { width:100%; background:rgba(0,0,0,0.5); border:1px solid var(--main); color:white; padding:11px 14px; border-radius:12px; outline:none; margin-top:10px; font-family:'Rajdhani'; font-size:14px; transition:border-color 2s; }
+#chat-input::placeholder { color:rgba(0,170,255,0.35); }
+
+/* ── THEME TRANSITIONS ── */
+.theme-transition * { transition: color 1.5s ease, border-color 1.5s ease, box-shadow 1.5s ease, background-color 1.5s ease !important; }
+
+/* ── OVERLAY ── */
+#overlay { position:fixed; inset:0; background:rgba(0,0,0,0); z-index:1999; display:none; }
+.overlay-active { display:block !important; }
+</style>
 </head>
 <body>
-    <div id="intro"><svg class="inf-logo" viewBox="0 0 100 50"><path d="M30,25 C30,15 15,15 15,25 C15,35 30,35 30,25 C30,15 45,15 45,25 C45,35 30,35 30,25" /></svg></div>
-    
-    <div id="drawer">
-        <div style="font-family:'Orbitron'; color:var(--main); margin-bottom:20px;">PROTOKOL PANELİ</div>
-        <div class="menu-item"><span>SES TONU</span><select id="voice-gender"><option value="erkek">Erkek</option><option value="kadin">Kadın</option></select></div>
-        <div class="menu-item" onclick="location.reload()">🔄 Yenile</div>
-        <div style="margin-top:auto; font-weight:bold; color:var(--main); text-align:center;">BY ÇAĞRI ATAV</div>
+
+<div id="intro">
+  <svg class="inf-logo" viewBox="0 0 100 50">
+    <path d="M30,25 C30,15 15,15 15,25 C15,35 30,35 30,25 C30,15 45,15 45,25 C45,35 30,35 30,25"/>
+  </svg>
+  <div class="intro-text">SİSTEM BAŞLATILIYOR<span class="news-dot">.</span><span class="news-dot">.</span><span class="news-dot">.</span></div>
+</div>
+
+<!-- DRAWER OVERLAY -->
+<div id="overlay" onclick="closeDrawer()"></div>
+
+<!-- DRAWER -->
+<div id="drawer">
+  <div class="drawer-title">⚙ PROTOKOL PANELİ</div>
+  
+  <div class="menu-sep"></div>
+  
+  <div style="font-size:11px; letter-spacing:2px; color:var(--main); opacity:0.5; margin-bottom:6px;">RENK TEMASI</div>
+  <div class="drawer-themes" id="drawer-themes">
+    <div class="drawer-theme-btn" onclick="setTheme('blue')" data-theme="blue" style="color:#00aaff;border-color:#00aaff;">🔵 Mavi</div>
+    <div class="drawer-theme-btn" onclick="setTheme('cyan')" data-theme="cyan" style="color:#00ffff;border-color:#00ffff;">💠 Cyan</div>
+    <div class="drawer-theme-btn" onclick="setTheme('purple')" data-theme="purple" style="color:#bf00ff;border-color:#bf00ff;">🟣 Mor</div>
+    <div class="drawer-theme-btn" onclick="setTheme('green')" data-theme="green" style="color:#00ff88;border-color:#00ff88;">🟢 Yeşil</div>
+    <div class="drawer-theme-btn" onclick="setTheme('orange')" data-theme="orange" style="color:#ff8800;border-color:#ff8800;">🟠 Turuncu</div>
+    <div class="drawer-theme-btn" onclick="setTheme('red')" data-theme="red" style="color:#ff3333;border-color:#ff3333;">🔴 Kırmızı</div>
+    <div class="drawer-theme-btn" onclick="setTheme('gold')" data-theme="gold" style="color:#ffd700;border-color:#ffd700;">🟡 Gold</div>
+    <div class="drawer-theme-btn active" onclick="setTheme('auto')" data-theme="auto" style="color:#aaa;border-color:#aaa;">🔋 Şarj</div>
+  </div>
+
+  <div class="menu-sep"></div>
+
+  <div class="menu-item">
+    <span>SES TONU</span>
+    <select id="voice-gender"><option value="erkek">Erkek</option><option value="kadin">Kadın</option></select>
+  </div>
+  <div class="menu-item" onclick="location.reload()">🔄 Sistemi Yenile</div>
+  <div class="menu-item" onclick="fetchNews()">📡 Haberleri Güncelle</div>
+  
+  <div style="margin-top:auto; font-weight:bold; color:var(--main); text-align:center; font-size:11px; letter-spacing:2px; opacity:0.5;">BY ÇAĞRI ATAV</div>
+</div>
+
+<!-- APP -->
+<div id="app">
+  <div id="rgb-bar"></div>
+  
+  <header>
+    <div class="header-left">
+      <div id="menu-btn" onclick="toggleDrawer()">☰</div>
+      <div class="logo-text">JARVIS</div>
     </div>
 
-    <div id="app">
-        <header>
-            <div onclick="document.getElementById('drawer').classList.toggle('drawer-open')" style="cursor:pointer; font-size:26px; color:var(--main);">☰</div>
-            <div style="font-family:'Orbitron'; color:var(--main); letter-spacing:2px; font-weight:bold;">JARVIS REAL-TIME</div>
-            <div id="clock">00:00</div>
-        </header>
-        
-        <div class="main-content">
-            <div id="transcript-area" class="draggable" style="top: 80px; left: 10px;">
-                <div class="panel-header"><span>SÖZCÜK ALANI</span><span class="close-btn" onclick="closeBox('transcript-area')">✖</span></div>
-                <p id="transcript-text">Sistem hazır Efendim.</p>
-            </div>
-            
-            <div id="input-area" class="draggable" style="top: 240px; left: 10px;">
-                <div class="panel-header"><span>KLAVYE</span><span class="close-btn" onclick="closeBox('input-area')">✖</span></div>
-                <input type="text" id="chat-input" placeholder="İşlem veya komut girin..." onkeypress="handleChat(event)">
-            </div>
-            
-            <div class="orb-btn" id="main-orb" onclick="toggleMic()">
-                <div style="width:90px; height:90px; border-radius:50%; background:radial-gradient(circle, var(--main), transparent 85%); opacity:0.6; pointer-events:none;"></div>
-            </div>
-            
-            <div id="news-panel"><div id="news-list"></div></div>
-        </div>
+    <div id="clock">00:00</div>
 
-        <div class="controls">
-            <div class="switch-wrap"><span>METİN PANELİ</span><label class="switch"><input type="checkbox" id="panel-switch" onchange="syncPanels()"><span class="slider"></span></label></div>
-            <div class="switch-wrap"><span>SESLİ YANIT</span><label class="switch"><input type="checkbox" id="voice-switch" checked><span class="slider"></span></label></div>
-        </div>
+    <div class="header-right">
+      <!-- Theme quick dots -->
+      <div class="theme-btns">
+        <div class="theme-dot" onclick="setTheme('blue')" style="background:#00aaff;" title="Mavi"></div>
+        <div class="theme-dot" onclick="setTheme('purple')" style="background:#bf00ff;" title="Mor"></div>
+        <div class="theme-dot" onclick="setTheme('green')" style="background:#00ff88;" title="Yeşil"></div>
+        <div class="theme-dot" onclick="setTheme('orange')" style="background:#ff8800;" title="Turuncu"></div>
+        <div class="theme-dot" onclick="setTheme('auto')" style="background:linear-gradient(135deg,#00aaff,#00ff88,#ff4444);" title="Şarj Modu"></div>
+      </div>
+
+      <!-- Battery -->
+      <div id="bat-widget">
+        <div class="bat-icon"><div class="bat-fill" id="bat-fill"></div></div>
+        <span id="bat-pct">--</span>
+      </div>
+    </div>
+  </header>
+
+  <div class="main-content">
+    <!-- Transcript panel -->
+    <div id="transcript-area" class="draggable" style="top:80px;left:10px;">
+      <div class="panel-header">
+        <span>◈ SÖZCÜK ALANI</span>
+        <span class="close-btn" onclick="closeBox('transcript-area')">✖</span>
+      </div>
+      <p id="transcript-text" style="font-size:14px;line-height:1.5;">Sistem hazır Efendim.</p>
     </div>
 
-    <script>
-        let isListening = false; 
-        let newsDatabase = [
-            "Ekonomi: Merkez Bankası yeni piyasa verilerini paylaştı, döviz kurlarında stabilite bekleniyor.",
-            "Teknoloji: Yeni nesil işlemciler 1 nanometre sınırını aşarak veri hızında devrim yarattı.",
-            "Spor: Süper Lig'de zirve yarışı kızışıyor, lider takım hazırlıklarını tamamladı.",
-            "Dünya: Küresel iklim zirvesinde okyanus temizliği için dev bütçe ayrıldı.",
-            "Bilim: Bilim insanları hücre yenilenmesini %50 hızlandıran bir enzim keşfetti.",
-            "Uzay: NASA'nın Artemis görevi için tasarlanan roket fırlatma rampasına yerleştirildi.",
-            "Otomobil: Elektrikli araçlarda batarya ömrünü iki katına çıkaran teknoloji duyuruldu.",
-            "Havacılık: Türkiye'nin yerli insansız savaş uçağı KIZILELMA yeni bir mühimmat testini geçti.",
-            "Borsa: Teknoloji hisselerindeki yükselişle endeks yeni bir rekor kırdı.",
-            "Sanat: Leonardo da Vinci'nin daha önce bilinmeyen bir taslağı İtalya'da bulundu."
-        ]; 
-        let newsIndex = 0; let batLevel = 100;
+    <!-- Input panel -->
+    <div id="input-area" class="draggable" style="top:240px;left:10px;">
+      <div class="panel-header">
+        <span>◈ KLAVYE GİRİŞİ</span>
+        <span class="close-btn" onclick="closeBox('input-area')">✖</span>
+      </div>
+      <input type="text" id="chat-input" placeholder="İşlem veya komut girin..." onkeypress="handleChat(event)">
+    </div>
 
-        const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
-        const rec = SpeechRec ? new SpeechRec() : null; 
-        if(rec) { rec.lang = 'tr-TR'; rec.continuous = false; }
+    <!-- ORB -->
+    <div class="orb-wrap">
+      <div class="orb-ring"></div>
+      <div class="orb-ring"></div>
+      <div class="orb-btn" id="main-orb" onclick="toggleMic()">
+        <div class="orb-inner"></div>
+      </div>
+    </div>
+    <div id="status-line">◆ HAZIR ◆</div>
 
-        setTimeout(() => { 
-            document.getElementById('intro').style.opacity = '0'; 
-            setTimeout(() => { document.getElementById('intro').style.display='none'; document.getElementById('app').style.opacity='1'; init(); }, 1000); 
-        }, 2000);
+    <!-- News -->
+    <div id="news-panel">
+      <div class="news-header">
+        <span>◈ CANLI HABERLER</span>
+        <span id="news-time">—</span>
+      </div>
+      <div id="news-list">
+        <div class="news-loading">Haberler yükleniyor<span class="news-dot">.</span><span class="news-dot">.</span><span class="news-dot">.</span></div>
+      </div>
+    </div>
+  </div>
 
-        function init() {
-            setInterval(() => document.getElementById('clock').innerText = new Date().toLocaleTimeString('tr-TR', {hour:'2-digit', minute:'2-digit'}), 1000);
-            updateBattery();
-            document.getElementById('news-list').innerHTML = newsDatabase.map(n => `<div class="news-card">${n}</div>`).join('');
-            makeDraggable(document.getElementById("transcript-area"));
-            makeDraggable(document.getElementById("input-area"));
-        }
+  <div class="controls">
+    <div class="switch-wrap"><span>METİN PANELİ</span><label class="switch"><input type="checkbox" id="panel-switch" onchange="syncPanels()"><span class="slider"></span></label></div>
+    <div class="switch-wrap"><span>SESLİ YANIT</span><label class="switch"><input type="checkbox" id="voice-switch" checked><span class="slider"></span></label></div>
+  </div>
+</div>
 
-        async function updateBattery() {
-            if (navigator.getBattery) {
-                const b = await navigator.getBattery();
-                const up = () => {
-                    batLevel = Math.round(b.level * 100);
-                    const root = document.documentElement;
-                    if(batLevel <= 20) root.style.setProperty('--main', '#ff4444');
-                    else if(batLevel <= 50) root.style.setProperty('--main', '#00ff88');
-                    else root.style.setProperty('--main', '#00aaff');
-                };
-                up(); b.onlevelchange = up;
-            }
-        }
+<script>
+// ── STATE ──
+let isListening = false;
+let batLevel = 100;
+let themeMode = 'auto'; // auto = battery-based
+let drawerOpen = false;
+let allNews = [];
+let newsPage = 0;
 
-        function toggleMic() {
-            window.speechSynthesis.speak(new SpeechSynthesisUtterance(""));
-            if(!isListening && rec) { try { rec.start(); } catch(e) {} } else if(rec) { try { rec.stop(); } catch(e) {} }
-        }
+// ── THEMES ──
+const THEMES = {
+  blue:   { main:'#00aaff', accent:'#00eeff', glow:'rgba(0,170,255,0.3)' },
+  cyan:   { main:'#00ffee', accent:'#00ffcc', glow:'rgba(0,255,238,0.3)' },
+  purple: { main:'#bf00ff', accent:'#df44ff', glow:'rgba(191,0,255,0.3)' },
+  green:  { main:'#00ff88', accent:'#44ffaa', glow:'rgba(0,255,136,0.3)' },
+  orange: { main:'#ff8800', accent:'#ffaa33', glow:'rgba(255,136,0,0.3)' },
+  red:    { main:'#ff3333', accent:'#ff6666', glow:'rgba(255,51,51,0.3)' },
+  gold:   { main:'#ffd700', accent:'#ffe566', glow:'rgba(255,215,0,0.3)' },
+};
 
-        if(rec) {
-            rec.onstart = () => { isListening=true; document.getElementById('main-orb').classList.add('listening'); };
-            rec.onend = () => { isListening=false; document.getElementById('main-orb').classList.remove('listening'); };
-            rec.onresult = (e) => processCommand(e.results[e.results.length-1][0].transcript.toLowerCase());
-        }
+function applyTheme(key) {
+  const t = THEMES[key];
+  if (!t) return;
+  document.body.classList.add('theme-transition');
+  const r = document.documentElement;
+  r.style.setProperty('--main', t.main);
+  r.style.setProperty('--accent', t.accent);
+  r.style.setProperty('--glow', t.glow);
+  setTimeout(() => document.body.classList.remove('theme-transition'), 1600);
+  // Update active state on drawer
+  document.querySelectorAll('[data-theme]').forEach(el => {
+    el.classList.toggle('active', el.dataset.theme === themeMode);
+  });
+}
 
-        function handleChat(e) { if(e.key === 'Enter') { processCommand(e.target.value.toLowerCase()); e.target.value=''; } }
+function setTheme(mode) {
+  themeMode = mode;
+  closeDrawer();
+  if (mode === 'auto') {
+    updateBatteryColor();
+  } else {
+    applyTheme(mode);
+  }
+  document.querySelectorAll('[data-theme]').forEach(el => {
+    el.classList.toggle('active', el.dataset.theme === mode);
+  });
+}
 
-        function processCommand(msg) {
-            let res = "";
-            
-            // --- GELİŞMİŞ MATEMATİK MOTORU (+ - * x / ve kelime desteği) ---
-            const mathMatch = msg.match(/(\d+)\s*(artı|eksi|çarpı|bölü|\+|\-|\*|x|\/)\s*(\d+)/);
-            
-            if (mathMatch) {
-                let n1 = parseFloat(mathMatch[1]);
-                let op = mathMatch[2];
-                let n2 = parseFloat(mathMatch[3]);
-                let ans = 0;
-                
-                if(op.includes("artı") || op === "+") ans = n1 + n2;
-                else if(op.includes("eksi") || op === "-") ans = n1 - n2;
-                else if(op.includes("çarpı") || op === "*" || op === "x") ans = n1 * n2;
-                else if(op.includes("bölü") || op === "/") ans = n1 / n2;
-                
-                res = `İşlemin sonucu: ${ans} Efendim.`;
-            } 
-            else if (msg.includes("haberi oku") || msg.includes("haberleri oku") || msg.includes("bugün ne oldu")) {
-                newsIndex = 0; let batch = newsDatabase.slice(0, 5);
-                res = "Efendim, bugün öne çıkan başlıklar şunlar: " + batch.join(". ") + ". Devam etmemi ister misiniz?";
-                newsIndex = 5;
-            } 
-            else if (msg.includes("selam") || msg.includes("nasılsın")) {
-                res = `İyiyim Efendim. Şarjınız %${batLevel}. By Çağrı ATAV imzalı sistemler stabil.`;
-            } 
-            else { res = "Sizi dinliyorum Efendim."; }
-            speak(res);
-        }
+function updateBatteryColor() {
+  // Battery widget fill
+  const fill = document.getElementById('bat-fill');
+  const pct = document.getElementById('bat-pct');
+  if (fill) {
+    fill.style.width = batLevel + '%';
+    const color = batLevel <= 20 ? '#ff4444' : batLevel <= 50 ? '#00ff88' : '#00aaff';
+    fill.style.background = color;
+    if (pct) { pct.textContent = batLevel + '%'; pct.style.color = color; }
+  }
+  if (themeMode === 'auto') {
+    const key = batLevel <= 20 ? 'red' : batLevel <= 50 ? 'green' : 'blue';
+    applyTheme(key);
+  }
+}
 
-        function speak(t) {
-            document.getElementById('transcript-area').style.display = 'block';
-            document.getElementById('panel-switch').checked = true;
-            document.getElementById('transcript-text').innerText = t;
-            
-            if(document.getElementById('voice-switch').checked) {
-                window.speechSynthesis.cancel();
-                const u = new SpeechSynthesisUtterance(t); u.lang = 'tr-TR';
-                const g = document.getElementById('voice-gender').value;
-                u.pitch = (g === 'erkek') ? 0.8 : 1.3;
-                window.speechSynthesis.speak(u);
-            }
-        }
+// ── DRAWER ──
+function toggleDrawer() {
+  drawerOpen = !drawerOpen;
+  document.getElementById('drawer').classList.toggle('drawer-open', drawerOpen);
+  document.getElementById('overlay').classList.toggle('overlay-active', drawerOpen);
+  document.getElementById('menu-btn').textContent = drawerOpen ? '✕' : '☰';
+}
+function closeDrawer() {
+  drawerOpen = false;
+  document.getElementById('drawer').classList.remove('drawer-open');
+  document.getElementById('overlay').classList.remove('overlay-active');
+  document.getElementById('menu-btn').textContent = '☰';
+}
 
-        function closeBox(id) { document.getElementById(id).style.display = 'none'; }
-        function syncPanels() {
-            const c = document.getElementById('panel-switch').checked;
-            document.getElementById('transcript-area').style.display = c ? 'block' : 'none';
-            document.getElementById('input-area').style.display = c ? 'block' : 'none';
-        }
+// ── SPEECH ──
+const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
+const rec = SpeechRec ? new SpeechRec() : null;
+if (rec) { rec.lang = 'tr-TR'; rec.continuous = false; }
 
-        function makeDraggable(el) {
-            let px = 0, py = 0, sx = 0, sy = 0;
-            const h = el.querySelector('.panel-header') || el;
-            h.onmousedown = s; h.ontouchstart = s;
-            function s(e) {
-                if(e.type === 'touchstart') { sx = e.touches[0].clientX; sy = e.touches[0].clientY; } else { sx = e.clientX; sy = e.clientY; }
-                document.onmousemove = m; document.ontouchmove = m; document.onmouseup = end; document.ontouchend = end;
-            }
-            function m(e) {
-                let cx, cy;
-                if(e.type === 'touchmove') { cx = e.touches[0].clientX; cy = e.touches[0].clientY; } else { cx = e.clientX; cy = e.clientY; }
-                px = sx - cx; py = sy - cy; sx = cx; sy = cy;
-                el.style.top = (el.offsetTop - py) + "px"; el.style.left = (el.offsetLeft - px) + "px";
-            }
-            function end() { document.onmousemove = null; document.ontouchmove = null; }
-        }
-    </script>
+function toggleMic() {
+  window.speechSynthesis.speak(new SpeechSynthesisUtterance(""));
+  if (!isListening && rec) { try { rec.start(); } catch(e) {} }
+  else if (rec) { try { rec.stop(); } catch(e) {} }
+}
+if (rec) {
+  rec.onstart = () => {
+    isListening = true;
+    document.getElementById('main-orb').classList.add('listening');
+    document.getElementById('status-line').textContent = '● DİNLİYORUM...';
+  };
+  rec.onend = () => {
+    isListening = false;
+    document.getElementById('main-orb').classList.remove('listening');
+    document.getElementById('status-line').textContent = '◆ HAZIR ◆';
+  };
+  rec.onresult = e => processCommand(e.results[e.results.length-1][0].transcript.toLowerCase());
+}
+
+function handleChat(e) {
+  if (e.key === 'Enter') { processCommand(e.target.value.toLowerCase()); e.target.value = ''; }
+}
+
+function processCommand(msg) {
+  let res = "";
+  const mathMatch = msg.match(/(\d+[\.,]?\d*)\s*(artı|eksi|çarpı|bölü|\+|\-|\*|x|\/)\s*(\d+[\.,]?\d*)/);
+  if (mathMatch) {
+    let n1 = parseFloat(mathMatch[1].replace(',','.'));
+    let op = mathMatch[2];
+    let n2 = parseFloat(mathMatch[3].replace(',','.'));
+    let ans = 0;
+    if (op.includes("artı") || op==="+") ans = n1+n2;
+    else if (op.includes("eksi") || op==="-") ans = n1-n2;
+    else if (op.includes("çarpı") || op==="*" || op==="x") ans = n1*n2;
+    else if (op.includes("bölü") || op==="/") ans = n2!==0 ? (n1/n2).toFixed(4).replace(/\.?0+$/,'') : "tanımsız";
+    res = `İşlemin sonucu: ${ans} Efendim.`;
+  } else if (msg.includes("haberi oku") || msg.includes("haberleri oku") || msg.includes("bugün ne oldu")) {
+    if (allNews.length > 0) {
+      const batch = allNews.slice(0, 5).map(n => n.title);
+      res = "Efendim, öne çıkan başlıklar: " + batch.join(". ") + ".";
+    } else {
+      res = "Haberler yükleniyor Efendim, lütfen bekleyin.";
+    }
+  } else if (msg.includes("haberleri güncelle") || msg.includes("haber güncelle")) {
+    fetchNews();
+    res = "Haberler güncelleniyor Efendim.";
+  } else if (msg.includes("selam") || msg.includes("nasılsın") || msg.includes("merhaba")) {
+    res = `İyiyim Efendim. Şarjınız %${batLevel}. By Çağrı ATAV imzalı sistemler stabil.`;
+  } else if (msg.includes("saat")) {
+    res = `Saat ${new Date().toLocaleTimeString('tr-TR',{hour:'2-digit',minute:'2-digit'})} Efendim.`;
+  } else if (msg.includes("tarih")) {
+    res = `Bugün ${new Date().toLocaleDateString('tr-TR',{weekday:'long',day:'numeric',month:'long',year:'numeric'})} Efendim.`;
+  } else {
+    res = "Sizi dinliyorum Efendim. Başka bir komut mu?";
+  }
+  speak(res);
+}
+
+function speak(t) {
+  document.getElementById('transcript-area').style.display = 'block';
+  document.getElementById('panel-switch').checked = true;
+  document.getElementById('transcript-text').innerText = t;
+  if (document.getElementById('voice-switch').checked) {
+    window.speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(t);
+    u.lang = 'tr-TR';
+    u.pitch = document.getElementById('voice-gender').value === 'erkek' ? 0.8 : 1.3;
+    window.speechSynthesis.speak(u);
+  }
+}
+
+function closeBox(id) { document.getElementById(id).style.display='none'; }
+function syncPanels() {
+  const c = document.getElementById('panel-switch').checked;
+  document.getElementById('transcript-area').style.display = c ? 'block' : 'none';
+  document.getElementById('input-area').style.display = c ? 'block' : 'none';
+}
+
+// ── DRAG ──
+function makeDraggable(el) {
+  let px=0,py=0,sx=0,sy=0;
+  const h = el.querySelector('.panel-header') || el;
+  h.style.pointerEvents = 'auto';
+  h.onmousedown = s; h.ontouchstart = s;
+  function s(e) {
+    if(e.target.classList.contains('close-btn')) return;
+    if(e.type==='touchstart'){sx=e.touches[0].clientX;sy=e.touches[0].clientY;}
+    else{sx=e.clientX;sy=e.clientY;}
+    document.onmousemove=m; document.ontouchmove=m; document.onmouseup=end; document.ontouchend=end;
+  }
+  function m(e) {
+    let cx,cy;
+    if(e.type==='touchmove'){cx=e.touches[0].clientX;cy=e.touches[0].clientY;}else{cx=e.clientX;cy=e.clientY;}
+    px=sx-cx; py=sy-cy; sx=cx; sy=cy;
+    el.style.top=(el.offsetTop-py)+"px"; el.style.left=(el.offsetLeft-px)+"px";
+  }
+  function end(){document.onmousemove=null;document.ontouchmove=null;}
+}
+
+// ── BATTERY ──
+async function updateBattery() {
+  if (navigator.getBattery) {
+    try {
+      const b = await navigator.getBattery();
+      const up = () => { batLevel = Math.round(b.level*100); updateBatteryColor(); };
+      up(); b.onlevelchange = up;
+    } catch(e) {}
+  } else {
+    batLevel = 100; updateBatteryColor();
+  }
+}
+
+// ── LIVE NEWS via multiple RSS/API sources ──
+const NEWS_SOURCES = [
+  // GNews API (free, no key needed for basic use via proxy)
+  'https://gnews.io/api/v4/top-headlines?lang=tr&max=10&apikey=demo',
+  // Fallback: RSS via rss2json
+  'https://api.rss2json.com/v1/api.json?rss_url=https%3A%2F%2Fwww.hurriyet.com.tr%2Frss%2Fanasayfa',
+  'https://api.rss2json.com/v1/api.json?rss_url=https%3A%2F%2Fwww.sabah.com.tr%2FRss%2FAnaSayfa',
+  'https://api.rss2json.com/v1/api.json?rss_url=https%3A%2F%2Fwww.milliyet.com.tr%2Frss%2FrssNew%2FgundemRss.xml',
+  'https://api.rss2json.com/v1/api.json?rss_url=https%3A%2F%2Fwww.ntv.com.tr%2Frss',
+  'https://api.rss2json.com/v1/api.json?rss_url=https%3A%2F%2Fwww.cnnturk.com%2Ffeed%2Frss%2Fall%2Fnews',
+  'https://api.rss2json.com/v1/api.json?rss_url=https%3A%2F%2Fwww.haberturk.com%2Frss',
+  'https://api.rss2json.com/v1/api.json?rss_url=https%3A%2F%2Fwww.cumhuriyet.com.tr%2Frss%2Fall.xml',
+  'https://api.rss2json.com/v1/api.json?rss_url=https%3A%2F%2Fwww.aa.com.tr%2Ftr%2Frss%2Fdefault',
+];
+
+async function fetchNewsFromRSS(url) {
+  try {
+    const r = await fetch(url, {signal: AbortSignal.timeout(8000)});
+    const d = await r.json();
+    if (d.items && d.items.length > 0) {
+      return d.items.map(item => ({
+        title: item.title || '',
+        description: (item.description || '').replace(/<[^>]*>/g,'').substring(0,120),
+        category: item.categories ? item.categories[0] : (d.feed ? d.feed.title : 'Haber'),
+        link: item.link || '',
+        pubDate: item.pubDate || ''
+      })).filter(n => n.title.length > 10);
+    }
+  } catch(e) {}
+  return [];
+}
+
+async function fetchNews() {
+  const listEl = document.getElementById('news-list');
+  const timeEl = document.getElementById('news-time');
+  listEl.innerHTML = '<div class="news-loading">Haberler çekiliyor<span class="news-dot">.</span><span class="news-dot">.</span><span class="news-dot">.</span></div>';
+
+  let collected = [];
+
+  // Fire all RSS fetches in parallel
+  const fetches = NEWS_SOURCES.slice(1).map(url => fetchNewsFromRSS(url));
+  const results = await Promise.allSettled(fetches);
+  results.forEach(r => {
+    if (r.status === 'fulfilled') collected = collected.concat(r.value);
+  });
+
+  // Deduplicate by title similarity
+  const seen = new Set();
+  collected = collected.filter(n => {
+    const key = n.title.substring(0,40).toLowerCase();
+    if (seen.has(key)) return false;
+    seen.add(key); return true;
+  });
+
+  // Shuffle for variety
+  for (let i = collected.length-1; i > 0; i--) {
+    const j = Math.floor(Math.random()*(i+1));
+    [collected[i],collected[j]] = [collected[j],collected[i]];
+  }
+
+  // If we got very few, add backup static news
+  if (collected.length < 5) {
+    collected = collected.concat(BACKUP_NEWS);
+  }
+
+  allNews = collected;
+  renderNews();
+  timeEl.textContent = new Date().toLocaleTimeString('tr-TR',{hour:'2-digit',minute:'2-digit'});
+}
+
+function renderNews() {
+  const listEl = document.getElementById('news-list');
+  if (allNews.length === 0) {
+    listEl.innerHTML = '<div class="news-loading">Haber bulunamadı.</div>';
+    return;
+  }
+  listEl.innerHTML = allNews.map(n => `
+    <div class="news-card">
+      <div class="news-cat">${n.category || 'HABER'}</div>
+      <div>${n.title}</div>
+      ${n.description ? `<div style="font-size:11px;opacity:0.45;margin-top:4px;">${n.description}</div>` : ''}
+    </div>
+  `).join('');
+}
+
+// Backup news (shown if all APIs fail)
+const BACKUP_NEWS = [
+  {title:"Merkez Bankası piyasa verilerini paylaştı, döviz kurlarında stabilite bekleniyor.",category:"EKONOMİ"},
+  {title:"Yeni nesil işlemciler 1 nanometre sınırını aşarak veri hızında devrim yarattı.",category:"TEKNOLOJİ"},
+  {title:"Süper Lig'de zirve yarışı kızışıyor, lider takım hazırlıklarını tamamladı.",category:"SPOR"},
+  {title:"Küresel iklim zirvesinde okyanus temizliği için dev bütçe ayrıldı.",category:"DÜNYA"},
+  {title:"Bilim insanları hücre yenilenmesini hızlandıran yeni bir enzim keşfetti.",category:"BİLİM"},
+  {title:"NASA'nın Artemis görevi için tasarlanan roket fırlatma rampasına yerleştirildi.",category:"UZAY"},
+  {title:"Elektrikli araçlarda batarya ömrünü iki katına çıkaran teknoloji duyuruldu.",category:"OTOMOTİV"},
+  {title:"Türkiye'nin yerli insansız savaş uçağı KIZILELMA yeni bir mühimmat testini geçti.",category:"SAVUNMA"},
+  {title:"Teknoloji hisselerindeki yükselişle borsa endeksi yeni bir rekor kırdı.",category:"BORSA"},
+  {title:"Leonardo da Vinci'nin daha önce bilinmeyen bir taslağı İtalya'da bulundu.",category:"SANAT"},
+];
+
+// ── CLOCK ──
+function updateClock() {
+  document.getElementById('clock').innerText = new Date().toLocaleTimeString('tr-TR',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+}
+
+// ── INIT ──
+setTimeout(() => {
+  document.getElementById('intro').style.opacity = '0';
+  setTimeout(() => {
+    document.getElementById('intro').style.display = 'none';
+    document.getElementById('app').style.opacity = '1';
+    init();
+  }, 1000);
+}, 2200);
+
+function init() {
+  setInterval(updateClock, 1000);
+  updateBattery();
+  makeDraggable(document.getElementById("transcript-area"));
+  makeDraggable(document.getElementById("input-area"));
+  fetchNews();
+  // Refresh news every 5 minutes
+  setInterval(fetchNews, 5 * 60 * 1000);
+}
+</script>
 </body>
 </html>
