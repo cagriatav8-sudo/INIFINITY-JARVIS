@@ -1,6 +1,3 @@
-
-
-
 <!DOCTYPE html>
 <html lang="tr">
 <head>
@@ -83,7 +80,7 @@ header {
 }
 .bat-icon { position:relative; width:24px; height:13px; border:2px solid var(--main); border-radius:3px; transition: border-color 1.5s ease; }
 .bat-icon::after { content:''; position:absolute; right:-5px; top:3px; width:3px; height:7px; background:var(--main); border-radius:0 2px 2px 0; transition: background 1.5s ease; }
-.bat-fill { height:100%; border-radius:1px; transition:width 0.5s, background 0.5s; }
+.bat-fill { height:100%; border-radius:1px; transition:width 0.8s ease, background 1.5s ease; }
 
 /* RGB bar */
 #rgb-bar {
@@ -123,6 +120,15 @@ header {
   padding:6px 12px; border-radius:20px; font-size:11px; cursor:pointer;
   border:1px solid; transition:all 0.2s; font-family:'Rajdhani';
 }
+
+/* Şarj teması önizleme butonu – canlı gradyan */
+.auto-preview-dot {
+  width:18px; height:18px; border-radius:50%; cursor:pointer;
+  border:2px solid transparent; transition:transform 0.2s, border-color 0.2s;
+  flex-shrink:0;
+}
+.auto-preview-dot:hover { transform:scale(1.3); border-color:white; }
+.auto-preview-dot.active { border-color:white; transform:scale(1.2); }
 
 select { background:#000; color:var(--main); border:1px solid var(--main); border-radius:8px; padding:4px 6px; outline:none; font-family:'Rajdhani'; transition: background 1.5s ease, color 1.5s ease, border-color 1.5s ease; }
 
@@ -166,6 +172,13 @@ select { background:#000; color:var(--main); border:1px solid var(--main); borde
 
 /* ── STATUS LINE ── */
 #status-line { font-size:11px; color:var(--main); opacity:0.6; letter-spacing:2px; margin-top:12px; text-align:center; transition: color 1.5s ease; }
+
+/* ── BATTERY MODE INDICATOR ── */
+#bat-mode-bar {
+  display:none; width:100%; max-width:500px;
+  height:4px; border-radius:4px; margin-top:6px;
+  transition: background 1.5s ease;
+}
 
 /* ── NEWS PANEL ── */
 #news-panel {
@@ -219,44 +232,20 @@ body.theme-white {
   --drawer-sep: rgba(26,86,219,0.12);
   --input-placeholder: rgba(26,86,219,0.4);
 }
-
-body.theme-white #chat-input {
-  background: rgba(240,244,255,0.8);
-  color: #1e293b;
-}
-
+body.theme-white #chat-input { background: rgba(240,244,255,0.8); color: #1e293b; }
 body.theme-white .slider { background: #cbd5e1; }
 body.theme-white .slider:before { background: #64748b; }
 body.theme-white input:checked+.slider { background: var(--main); }
 body.theme-white input:checked+.slider:before { background: white; }
-
 body.theme-white .news-card { background: rgba(26,86,219,0.04); }
 body.theme-white .news-card:hover { background: rgba(26,86,219,0.08); }
-
 body.theme-white .menu-item { background: rgba(26,86,219,0.03); }
 body.theme-white .menu-item:hover { background: rgba(26,86,219,0.07); }
-
-body.theme-white #bat-widget {
-  background: rgba(26,86,219,0.06);
-  border-color: rgba(26,86,219,0.25);
-}
-
-body.theme-white #drawer {
-  box-shadow: 10px 0 40px rgba(0,0,0,0.12);
-}
-
-body.theme-white .draggable {
-  box-shadow: 0 4px 24px rgba(0,0,0,0.1);
-}
-
-body.theme-white select {
-  background: #f0f4ff;
-  color: #1e293b;
-}
-
-body.theme-white .orb-btn:hover {
-  box-shadow: 0 0 40px rgba(26,86,219,0.4), 0 0 80px rgba(26,86,219,0.15);
-}
+body.theme-white #bat-widget { background: rgba(26,86,219,0.06); border-color: rgba(26,86,219,0.25); }
+body.theme-white #drawer { box-shadow: 10px 0 40px rgba(0,0,0,0.12); }
+body.theme-white .draggable { box-shadow: 0 4px 24px rgba(0,0,0,0.1); }
+body.theme-white select { background: #f0f4ff; color: #1e293b; }
+body.theme-white .orb-btn:hover { box-shadow: 0 0 40px rgba(26,86,219,0.4), 0 0 80px rgba(26,86,219,0.15); }
 
 /* ── OVERLAY ── */
 #overlay { position:fixed; inset:0; background:rgba(0,0,0,0); z-index:1999; display:none; }
@@ -272,15 +261,11 @@ body.theme-white .orb-btn:hover {
   <div class="intro-text">SİSTEM BAŞLATILIYOR<span class="news-dot">.</span><span class="news-dot">.</span><span class="news-dot">.</span></div>
 </div>
 
-<!-- DRAWER OVERLAY -->
 <div id="overlay" onclick="closeDrawer()"></div>
 
-<!-- DRAWER -->
 <div id="drawer">
   <div class="drawer-title">⚙ PROTOKOL PANELİ</div>
-  
   <div class="menu-sep"></div>
-  
   <div style="font-size:11px; letter-spacing:2px; color:var(--main); opacity:0.5; margin-bottom:6px; transition: color 1.5s ease;">RENK TEMASI</div>
   <div class="drawer-themes" id="drawer-themes">
     <div class="drawer-theme-btn" onclick="setTheme('blue')" data-theme="blue" style="color:#00aaff;border-color:#00aaff;">🔵 Mavi</div>
@@ -291,44 +276,35 @@ body.theme-white .orb-btn:hover {
     <div class="drawer-theme-btn" onclick="setTheme('red')" data-theme="red" style="color:#ff3333;border-color:#ff3333;">🔴 Kırmızı</div>
     <div class="drawer-theme-btn" onclick="setTheme('gold')" data-theme="gold" style="color:#ffd700;border-color:#ffd700;">🟡 Gold</div>
     <div class="drawer-theme-btn" onclick="setTheme('white')" data-theme="white" style="color:#1a56db;border-color:#1a56db;background:rgba(240,244,255,0.8);">⬜ Beyaz</div>
-    <div class="drawer-theme-btn active" onclick="setTheme('auto')" data-theme="auto" style="color:#aaa;border-color:#aaa;">🔋 Şarj</div>
+    <div class="drawer-theme-btn" onclick="setTheme('auto')" data-theme="auto" style="color:#aaa;border-color:#aaa;">🔋 Şarj</div>
   </div>
-
   <div class="menu-sep"></div>
-
   <div class="menu-item">
     <span>SES TONU</span>
     <select id="voice-gender"><option value="erkek">Erkek</option><option value="kadin">Kadın</option></select>
   </div>
   <div class="menu-item" onclick="location.reload()">🔄 Sistemi Yenile</div>
   <div class="menu-item" onclick="fetchNews()">📡 Haberleri Güncelle</div>
-  
   <div style="margin-top:auto; font-weight:bold; color:var(--main); text-align:center; font-size:11px; letter-spacing:2px; opacity:0.5; transition: color 1.5s ease;">BY ÇAĞRI ATAV</div>
 </div>
 
-<!-- APP -->
 <div id="app">
   <div id="rgb-bar"></div>
-  
   <header>
     <div class="header-left">
       <div id="menu-btn" onclick="toggleDrawer()">☰</div>
       <div class="logo-text">JARVIS</div>
     </div>
-
     <div id="clock">00:00</div>
-
     <div class="header-right">
-      <!-- Theme quick dots -->
       <div class="theme-btns">
         <div class="theme-dot" onclick="setTheme('blue')" style="background:#00aaff;" title="Mavi"></div>
         <div class="theme-dot" onclick="setTheme('purple')" style="background:#bf00ff;" title="Mor"></div>
         <div class="theme-dot" onclick="setTheme('green')" style="background:#00ff88;" title="Yeşil"></div>
         <div class="theme-dot" onclick="setTheme('white')" style="background:linear-gradient(135deg,#f0f4ff,#1a56db);border:1px solid #cbd5e1;" title="Beyaz"></div>
-        <div class="theme-dot" onclick="setTheme('auto')" style="background:linear-gradient(135deg,#00aaff,#00ff88,#ff4444);" title="Şarj Modu"></div>
+        <!-- Şarj modu dot – rengi JS ile canlı güncellenir -->
+        <div class="auto-preview-dot theme-dot" id="auto-dot" onclick="setTheme('auto')" title="Şarj Modu"></div>
       </div>
-
-      <!-- Battery -->
       <div id="bat-widget">
         <div class="bat-icon"><div class="bat-fill" id="bat-fill"></div></div>
         <span id="bat-pct">--</span>
@@ -337,7 +313,6 @@ body.theme-white .orb-btn:hover {
   </header>
 
   <div class="main-content">
-    <!-- Transcript panel -->
     <div id="transcript-area" class="draggable" style="top:80px;left:10px;">
       <div class="panel-header">
         <span>◈ SÖZCÜK ALANI</span>
@@ -346,7 +321,6 @@ body.theme-white .orb-btn:hover {
       <p id="transcript-text" style="font-size:14px;line-height:1.5;">Sistem hazır Efendim.</p>
     </div>
 
-    <!-- Input panel -->
     <div id="input-area" class="draggable" style="top:240px;left:10px;">
       <div class="panel-header">
         <span>◈ KLAVYE GİRİŞİ</span>
@@ -355,7 +329,6 @@ body.theme-white .orb-btn:hover {
       <input type="text" id="chat-input" placeholder="İşlem veya komut girin..." onkeypress="handleChat(event)">
     </div>
 
-    <!-- ORB -->
     <div class="orb-wrap">
       <div class="orb-ring"></div>
       <div class="orb-ring"></div>
@@ -365,7 +338,9 @@ body.theme-white .orb-btn:hover {
     </div>
     <div id="status-line">◆ HAZIR ◆</div>
 
-    <!-- News -->
+    <!-- Şarj modu renk barı -->
+    <div id="bat-mode-bar"></div>
+
     <div id="news-panel">
       <div class="news-header">
         <span>◈ CANLI HABERLER</span>
@@ -387,23 +362,44 @@ body.theme-white .orb-btn:hover {
 // ── STATE ──
 let isListening = false;
 let batLevel = 100;
-let themeMode = 'auto';
+let themeMode = 'blue';
 let drawerOpen = false;
 let allNews = [];
 
-// ── THEMES ──
-const THEMES = {
-  blue:   { key:'blue' },
-  cyan:   { key:'cyan' },
-  purple: { key:'purple' },
-  green:  { key:'green' },
-  orange: { key:'orange' },
-  red:    { key:'red' },
-  gold:   { key:'gold' },
-  white:  { key:'white' },
-  auto:   { key:'auto' },
-};
+// ── BATTERY COLOR MATH ──
+// %100 → mavi (#00aaff)  hue≈200
+// %50  → yeşil (#00ff88) hue≈150
+// %20  → kırmızı (#ff3333) hue≈0
+// Aralarda: doğrusal hue interpolasyon
+function batteryHue(pct) {
+  if (pct >= 50) {
+    // 50-100: yeşil(150) → mavi(200)
+    const t = (pct - 50) / 50;
+    return Math.round(150 + t * 50); // 150..200
+  } else if (pct >= 20) {
+    // 20-50: kırmızı(0) → sarı(60) → yeşil(150) — sarı 35'te geçiş
+    const t = (pct - 20) / 30;
+    return Math.round(t * 150); // 0..150
+  } else {
+    // 0-20: kırmızı kalır ama doygunluk değişir
+    return 0;
+  }
+}
 
+function batteryColorFromPct(pct) {
+  const h = batteryHue(pct);
+  // Düşük şarjda doygunluk biraz artar (daha alarm kırmızısı)
+  const s = pct <= 20 ? 100 : 90;
+  const l = pct <= 20 ? 55 : 58;
+  return `hsl(${h}, ${s}%, ${l}%)`;
+}
+
+function batteryGlowFromPct(pct) {
+  const h = batteryHue(pct);
+  return `hsla(${h}, 90%, 58%, 0.3)`;
+}
+
+// ── THEMES ──
 const THEME_CSS_VARS = {
   blue:   { main:'#00aaff', accent:'#00eeff', glow:'rgba(0,170,255,0.3)', bg:'#020810', panel:'rgba(4,15,30,0.98)', textBody:'#c0e8ff', headerBg:'rgba(2,8,16,0.92)', headerBorder:'rgba(0,170,255,0.15)', newsBorder:'rgba(0,170,255,0.25)', switchBorder:'rgba(0,170,255,0.2)', menuBorder:'rgba(0,170,255,0.08)', drawerSep:'rgba(0,170,255,0.1)', placeholder:'rgba(0,170,255,0.35)' },
   cyan:   { main:'#00ffee', accent:'#00ffcc', glow:'rgba(0,255,238,0.3)', bg:'#020810', panel:'rgba(4,15,30,0.98)', textBody:'#c0e8ff', headerBg:'rgba(2,8,16,0.92)', headerBorder:'rgba(0,255,238,0.15)', newsBorder:'rgba(0,255,238,0.25)', switchBorder:'rgba(0,255,238,0.2)', menuBorder:'rgba(0,255,238,0.08)', drawerSep:'rgba(0,255,238,0.1)', placeholder:'rgba(0,255,238,0.35)' },
@@ -414,15 +410,32 @@ const THEME_CSS_VARS = {
   gold:   { main:'#ffd700', accent:'#ffe566', glow:'rgba(255,215,0,0.3)', bg:'#100e02', panel:'rgba(30,28,4,0.98)', textBody:'#fff0c0', headerBg:'rgba(16,14,2,0.92)', headerBorder:'rgba(255,215,0,0.15)', newsBorder:'rgba(255,215,0,0.25)', switchBorder:'rgba(255,215,0,0.2)', menuBorder:'rgba(255,215,0,0.08)', drawerSep:'rgba(255,215,0,0.1)', placeholder:'rgba(255,215,0,0.35)' },
 };
 
+function applyThemeVars(main, glow, bg, panel, textBody, headerBg, headerBorder, newsBorder, switchBorder, menuBorder, drawerSep, placeholder) {
+  const r = document.documentElement;
+  document.body.classList.remove('theme-white');
+  document.body.style.background = bg;
+  document.body.style.color = textBody;
+  r.style.setProperty('--main', main);
+  r.style.setProperty('--glow', glow);
+  r.style.setProperty('--bg', bg);
+  r.style.setProperty('--panel', panel);
+  r.style.setProperty('--text-body', textBody);
+  r.style.setProperty('--header-bg', headerBg);
+  r.style.setProperty('--header-border', headerBorder);
+  r.style.setProperty('--news-bg', panel);
+  r.style.setProperty('--news-border', newsBorder);
+  r.style.setProperty('--switch-wrap-border', switchBorder);
+  r.style.setProperty('--menu-item-border', menuBorder);
+  r.style.setProperty('--drawer-sep', drawerSep);
+  r.style.setProperty('--input-placeholder', placeholder);
+}
+
 function applyTheme(key) {
   const r = document.documentElement;
-  
-  // Remove white class first
   document.body.classList.remove('theme-white');
 
   if (key === 'white') {
     document.body.classList.add('theme-white');
-    // White tema için CSS değişkenlerini direkt set et
     r.style.setProperty('--main', '#1a56db');
     r.style.setProperty('--accent', '#1c4ed8');
     r.style.setProperty('--glow', 'rgba(26,86,219,0.15)');
@@ -444,49 +457,98 @@ function applyTheme(key) {
 
   const t = THEME_CSS_VARS[key];
   if (!t) return;
-  document.body.style.background = t.bg;
-  document.body.style.color = t.textBody;
-  r.style.setProperty('--main', t.main);
-  r.style.setProperty('--accent', t.accent);
-  r.style.setProperty('--glow', t.glow);
-  r.style.setProperty('--bg', t.bg);
-  r.style.setProperty('--panel', t.panel);
-  r.style.setProperty('--text-body', t.textBody);
-  r.style.setProperty('--header-bg', t.headerBg);
-  r.style.setProperty('--header-border', t.headerBorder);
-  r.style.setProperty('--news-bg', t.panel);
-  r.style.setProperty('--news-border', t.newsBorder);
-  r.style.setProperty('--switch-wrap-border', t.switchBorder);
-  r.style.setProperty('--menu-item-border', t.menuBorder);
-  r.style.setProperty('--drawer-sep', t.drawerSep);
-  r.style.setProperty('--input-placeholder', t.placeholder);
+  applyThemeVars(
+    t.main, t.glow, t.bg, t.panel, t.textBody,
+    t.headerBg, t.headerBorder, t.newsBorder,
+    t.switchBorder, t.menuBorder, t.drawerSep, t.placeholder
+  );
 }
 
-function setTheme(mode) {
-  themeMode = mode;
-  closeDrawer();
-  if (mode === 'auto') {
-    updateBatteryColor();
-  } else {
-    applyTheme(mode);
+// ── AUTO TEMA: pil seviyesine göre sürekli renk geçişi ──
+function applyAutoTheme() {
+  const pct = batLevel;
+  const main = batteryColorFromPct(pct);
+  const glow = batteryGlowFromPct(pct);
+  const hue  = batteryHue(pct);
+
+  // Arka plan tonunu da hafifçe boyaya boyala
+  const bgHue = hue;
+  const bg = `hsl(${bgHue}, 60%, 3%)`;
+  const panel = `hsla(${bgHue}, 50%, 5%, 0.98)`;
+  const textBody = `hsl(${bgHue}, 60%, 85%)`;
+  const headerBg = `hsla(${bgHue}, 60%, 2%, 0.92)`;
+  const headerBorder = `hsla(${hue}, 80%, 55%, 0.15)`;
+  const newsBorder = `hsla(${hue}, 80%, 55%, 0.25)`;
+  const switchBorder = `hsla(${hue}, 80%, 55%, 0.2)`;
+  const menuBorder = `hsla(${hue}, 80%, 55%, 0.08)`;
+  const drawerSep = `hsla(${hue}, 80%, 55%, 0.1)`;
+  const placeholder = `hsla(${hue}, 80%, 55%, 0.35)`;
+
+  document.body.classList.remove('theme-white');
+  applyThemeVars(main, glow, bg, panel, textBody, headerBg, headerBorder, newsBorder, switchBorder, menuBorder, drawerSep, placeholder);
+
+  // Şarj barı
+  const bar = document.getElementById('bat-mode-bar');
+  bar.style.display = 'block';
+  // Gradient: kırmızı → sarı → yeşil → mavi, işaretçi pct konumunda
+  bar.style.background = `linear-gradient(90deg,
+    hsl(0,100%,55%) 0%,
+    hsl(60,100%,50%) 30%,
+    hsl(120,90%,50%) 50%,
+    hsl(150,90%,55%) 70%,
+    hsl(200,90%,58%) 100%)`;
+  bar.style.position = 'relative';
+  bar.style.overflow = 'visible';
+  // İşaretçi
+  bar.style.boxShadow = `${pct}% 0 0 2px ${main}`;
+
+  // Şarj dot önizleme güncelle
+  updateAutoDot();
+}
+
+function updateAutoDot() {
+  const dot = document.getElementById('auto-dot');
+  if (!dot) return;
+  const main = batteryColorFromPct(batLevel);
+  const hue2 = batteryHue(batLevel);
+  // Gradient ile canlı gözüksün
+  dot.style.background = `conic-gradient(
+    hsl(0,100%,55%) 0deg,
+    hsl(60,100%,50%) 108deg,
+    hsl(150,90%,55%) 216deg,
+    hsl(200,90%,58%) 324deg,
+    hsl(0,100%,55%) 360deg
+  )`;
+  // Şarj modunda aktifse border main renge dönsün
+  if (themeMode === 'auto') {
+    dot.style.borderColor = main;
   }
-  document.querySelectorAll('[data-theme]').forEach(el => {
-    el.classList.toggle('active', el.dataset.theme === mode);
-  });
 }
 
-function updateBatteryColor() {
+// ── BATTERY UPDATE ──
+function updateBattery() {
   const fill = document.getElementById('bat-fill');
-  const pct = document.getElementById('bat-pct');
+  const pct  = document.getElementById('bat-pct');
   if (fill) {
     fill.style.width = batLevel + '%';
-    const color = batLevel <= 20 ? '#ff4444' : batLevel <= 50 ? '#00ff88' : '#00aaff';
+    const color = batteryColorFromPct(batLevel);
     fill.style.background = color;
     if (pct) { pct.textContent = batLevel + '%'; pct.style.color = color; }
   }
-  if (themeMode === 'auto') {
-    const key = batLevel <= 20 ? 'red' : batLevel <= 50 ? 'green' : 'blue';
-    applyTheme(key);
+  updateAutoDot();
+  if (themeMode === 'auto') applyAutoTheme();
+}
+
+// ── BATTERY API ──
+async function initBattery() {
+  if (navigator.getBattery) {
+    try {
+      const b = await navigator.getBattery();
+      const up = () => { batLevel = Math.round(b.level * 100); updateBattery(); };
+      up(); b.onlevelchange = up;
+    } catch(e) { batLevel = 100; updateBattery(); }
+  } else {
+    batLevel = 100; updateBattery();
   }
 }
 
@@ -502,6 +564,34 @@ function closeDrawer() {
   document.getElementById('drawer').classList.remove('drawer-open');
   document.getElementById('overlay').classList.remove('overlay-active');
   document.getElementById('menu-btn').textContent = '☰';
+}
+
+function setTheme(mode) {
+  themeMode = mode;
+  closeDrawer();
+
+  // Şarj barını kapat başlangıçta
+  document.getElementById('bat-mode-bar').style.display = 'none';
+
+  if (mode === 'auto') {
+    applyAutoTheme();
+  } else {
+    applyTheme(mode);
+  }
+
+  document.querySelectorAll('[data-theme]').forEach(el => {
+    el.classList.toggle('active', el.dataset.theme === mode);
+  });
+  // Header dotları
+  document.querySelectorAll('.theme-dot:not(#auto-dot)').forEach(el => {
+    el.classList.remove('active');
+  });
+  const autoDot = document.getElementById('auto-dot');
+  if (mode === 'auto') {
+    autoDot.classList.add('active');
+  } else {
+    autoDot.classList.remove('active');
+  }
 }
 
 // ── SPEECH ──
@@ -608,19 +698,6 @@ function makeDraggable(el) {
   function end(){document.onmousemove=null;document.ontouchmove=null;}
 }
 
-// ── BATTERY ──
-async function updateBattery() {
-  if (navigator.getBattery) {
-    try {
-      const b = await navigator.getBattery();
-      const up = () => { batLevel = Math.round(b.level*100); updateBatteryColor(); };
-      up(); b.onlevelchange = up;
-    } catch(e) {}
-  } else {
-    batLevel = 100; updateBatteryColor();
-  }
-}
-
 // ── LIVE NEWS ──
 const NEWS_SOURCES = [
   'https://api.rss2json.com/v1/api.json?rss_url=https%3A%2F%2Fwww.hurriyet.com.tr%2Frss%2Fanasayfa',
@@ -654,30 +731,14 @@ async function fetchNews() {
   const listEl = document.getElementById('news-list');
   const timeEl = document.getElementById('news-time');
   listEl.innerHTML = '<div class="news-loading">Haberler çekiliyor<span class="news-dot">.</span><span class="news-dot">.</span><span class="news-dot">.</span></div>';
-
   let collected = [];
   const fetches = NEWS_SOURCES.map(url => fetchNewsFromRSS(url));
   const results = await Promise.allSettled(fetches);
-  results.forEach(r => {
-    if (r.status === 'fulfilled') collected = collected.concat(r.value);
-  });
-
+  results.forEach(r => { if (r.status === 'fulfilled') collected = collected.concat(r.value); });
   const seen = new Set();
-  collected = collected.filter(n => {
-    const key = n.title.substring(0,40).toLowerCase();
-    if (seen.has(key)) return false;
-    seen.add(key); return true;
-  });
-
-  for (let i = collected.length-1; i > 0; i--) {
-    const j = Math.floor(Math.random()*(i+1));
-    [collected[i],collected[j]] = [collected[j],collected[i]];
-  }
-
-  if (collected.length < 5) {
-    collected = collected.concat(BACKUP_NEWS);
-  }
-
+  collected = collected.filter(n => { const key = n.title.substring(0,40).toLowerCase(); if (seen.has(key)) return false; seen.add(key); return true; });
+  for (let i = collected.length-1; i > 0; i--) { const j = Math.floor(Math.random()*(i+1)); [collected[i],collected[j]] = [collected[j],collected[i]]; }
+  if (collected.length < 5) collected = collected.concat(BACKUP_NEWS);
   allNews = collected;
   renderNews();
   timeEl.textContent = new Date().toLocaleTimeString('tr-TR',{hour:'2-digit',minute:'2-digit'});
@@ -685,10 +746,7 @@ async function fetchNews() {
 
 function renderNews() {
   const listEl = document.getElementById('news-list');
-  if (allNews.length === 0) {
-    listEl.innerHTML = '<div class="news-loading">Haber bulunamadı.</div>';
-    return;
-  }
+  if (allNews.length === 0) { listEl.innerHTML = '<div class="news-loading">Haber bulunamadı.</div>'; return; }
   listEl.innerHTML = allNews.map(n => `
     <div class="news-card">
       <div class="news-cat">${n.category || 'HABER'}</div>
@@ -728,13 +786,14 @@ setTimeout(() => {
 
 function init() {
   setInterval(updateClock, 1000);
-  updateBattery();
+  initBattery();
   makeDraggable(document.getElementById("transcript-area"));
   makeDraggable(document.getElementById("input-area"));
   fetchNews();
   setInterval(fetchNews, 5 * 60 * 1000);
+  // Otomatik dot'u başlangıçta renderla
+  updateAutoDot();
 }
 </script>
 </body>
 </html>
-
